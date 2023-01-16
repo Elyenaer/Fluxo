@@ -37,7 +37,7 @@ class AccountRegister {
       AccountRegister reg = AccountRegister();
 
       reg.id = int.parse(data['id']);
-      if(data['credit'] == 'c'){
+      if(data['credit'] == 'C'){
         reg.credit = true;
       }else{
         reg.credit = false;
@@ -56,7 +56,8 @@ class AccountRegister {
       List<AccountRegister> registers = [];
 
       // to get data from all documents sequentially
-      await collectionRef.get().then((querySnapshot) {
+      await collectionRef
+        .get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountRegister);
         }
@@ -64,7 +65,7 @@ class AccountRegister {
       
       return registers;
     }catch(e){
-      print("ERRO GETDATA --> $e");
+      print("ERRO GETDATA -> $e");
       return null;
     }
   }

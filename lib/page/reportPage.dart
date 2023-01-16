@@ -1,10 +1,14 @@
 
+import 'package:firebase_write/components/dateWidget.dart';
 import 'package:firebase_write/help/convert.dart';
+import 'package:firebase_write/register/accountRegister.dart';
 import 'package:firebase_write/register/financialEntryRegister.dart';
+import 'package:firebase_write/settings/formats.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
-import 'package:scrollable_table_view/scrollable_table_view.dart';
 
 import '../help/mask.dart';
 import '../help/valid.dart';
@@ -19,32 +23,16 @@ class reportPage extends StatefulWidget{
 
   // ignore: non_constant_identifier_names
   class _MyHomePageState extends State<reportPage> {
+    late List<_tempRowRegister> registers = <_tempRowRegister>[];
 
-    var products = [
-  {
-    "product_id": "PR1000",
-    "product_name": "KFC Chicken",
-  },
-  {
-    "product_id": "PR1001",
-    "product_name": "Italian Pizza",
-  }
-];
-
-    var many_products = [
-  {
-    "product_id": "PR1000",
-    "product_name": "KFC Chicken",
-  },
-  {
-    "product_id": "PR1001",
-    "product_name": "Italian Pizza",
-  }
-];
+    late final List<Widget> _columnTitle = <Widget>[];
+    static const double _columnWidth = 100;
+    static const double _rowHeight = 50;
+    
 
     final TextEditingController _tecDateStart = TextEditingController(text: '');
     final TextEditingController _tecDateEnd = TextEditingController(text: '');
-    late final PaginationController _paginationController;
+    late DateTime start,end;
 
     String? _errorDateStart;
     String? _errorDateEnd;
@@ -52,43 +40,135 @@ class reportPage extends StatefulWidget{
     static const List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
     String periodValue = periodList.first;
 
-  _MyHomePageState(){
-    _paginationController = PaginationController(
-      rowCount: many_products.length,
-      rowsPerPage: 10,
-    );
+  _MyHomePageState(){    
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(Duration(days: 10)));      
+    _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
+    _getColumnTitle();
+    _getAccount();    
   }
 
-  _periodTitle(){
-    List<String> periodList = <String>[];
+  _getAccount() async{
+    AccountRegister a = AccountRegister();
+    List<AccountRegister>? account = await a.getData();
+   
+    registers.clear();
+    for(int i=0;i<account!.length;i++){
+      _tempRowRegister temp = _tempRowRegister(account[i],_columnTitle.length-1);
+      registers.add(temp);
+    }
+  }
+
+  _getColumnTitle(){    
+    _columnTitle.clear();
+    _columnTitle.add(_titleItem(""));
+    DateTime d;
     if(periodValue=="Diário"){
-      DateTime d = convert.StringToDatetime(_tecDateStart.text);
-      int periodLenght = convert.StringToDatetime(_tecDateEnd.text)
-      .difference(d).inDays;
+      start = convert.StringToDatetime(_tecDateStart.text);
+      end = convert.StringToDatetime(_tecDateEnd.text);
+      d = start;
+      int periodLenght = end.difference(d).inDays;
       for(int i=0;i<periodLenght+1;i++){
-        periodList.add(d.year.toString() +
+        _columnTitle.add(_titleItem(d.year.toString() +
          "\n" + convert.DatetimeMonthBr(d.month) + 
-         "\n" + d.day.toString());
+         "\n" + d.day.toString()));
         d = d.add(const Duration(days: 1));        
       }
     }
-    return periodList;
+    else if(periodValue=="Semanal"){
+      start = convert.getWeekday(
+        convert.StringToDatetime(_tecDateStart.text),false,5);
+      end = convert.getWeekday(
+        convert.StringToDatetime(_tecDateEnd.text),true,5);    
+      d = start;
+      while(!d.isAfter(end)){
+        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        d = d.add(const Duration(days: 7));              
+      }
+    }else if(periodValue=="Mensal"){
+      start = convert.getMonth(
+        convert.StringToDatetime(_tecDateStart.text),true);
+      end = convert.getMonth(
+        convert.StringToDatetime(_tecDateEnd.text),true);
+      d = start;
+      while(!d.isAfter(end)){
+        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        d = DateTime(d.year+1);     
+      }
+    }
+
   }
 
-  _typeTitle(){
-
-    
-    
+  // ignore: non_constant_identifier_names
+  _titleItem(String label) {
+    return Container(
+      child: Text(
+        label, 
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          )
+        ),
+      color: Colors.black,
+      width: _columnWidth,
+      height: 56,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+    );
   }
+  
+  Future<String> _getRegister() async {
+    try{
+      _getColumnTitle();
+      _getAccount();
+      FinancialEntryRegister r = FinancialEntryRegister();
+      List<FinancialEntryRegister>? reg = await r.getDataGapDate(start,end);
+      int positionArray = 0;
+      DateTime d = start;
+      DateTime d2; //interval from d to d2
 
-  _getRegister() async {
-    FinancialEntryRegister r = FinancialEntryRegister();
-    List<FinancialEntryRegister>? reg = await r.getDataGapDate(_tecDateStart.text,_tecDateEnd.text);
-    
+      while(!d.isAfter(end)){
 
+        if(periodValue=="Diário"){
+          d2 = d;
+        }else if(periodValue=="Semanal"){
+          d2 = d.add(const Duration(days: 6));
+        }else if(periodValue=="Mensal"){
+          d2 = convert.getMonth(d,false);
+        }else{
+          d2 = convert.getYear(d,false);
+        }
 
+        for(int i=0;i<reg!.length;i++){
+          if(reg[i].date.isAfter(d2)){
+            break;
+          }else if(reg[i].date.isBefore(d)){
+            continue;
+          }
+          for(int j=0;j<registers.length;j++){
+            if(reg[i].accountId==registers[j].account.id){
+              registers[j].include(reg[i],positionArray);
+            }
+          }
+        }
+
+        if(periodValue=="Diário"){
+          d = d.add(const Duration(days: 1));
+        }else if(periodValue=="Semanal"){
+          d = d.add(const Duration(days: 7));
+        }else if(periodValue=="Mensal"){
+          d = convert.addMonth(d);
+        }else{
+          d = DateTime(d.year+1,1,1);
+        }    
+
+        positionArray++;
+      }
+      return '';
+    }catch(e){
+      print('ERRO _GETREGISTER -> $e');
+      return '';
+    }
   }
 
   @override
@@ -123,8 +203,8 @@ class reportPage extends StatefulWidget{
               child: Row(
                 children: [
                   Expanded(
-                    child: _panel(context)
-                  )
+                    child: _panel(context),
+                  ),
                 ]
               )
             )         
@@ -155,10 +235,10 @@ class reportPage extends StatefulWidget{
             initialDate: DateTime.now(),
             firstDate: DateTime(2000), 
             lastDate: DateTime(2100));
-          if (pickeddate != null){
-            setState(() {
-              _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-            });
+            if (pickeddate != null){
+              setState(() {
+                _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
+              });
             }
           },
         onChanged: (value) {
@@ -197,6 +277,7 @@ class reportPage extends StatefulWidget{
               });
             }
           },
+          
         onChanged: (value) {
           setState(() {
             _errorDateEnd = valid.checkDate(_tecDateEnd.text);
@@ -231,61 +312,265 @@ class reportPage extends StatefulWidget{
     );
   }
 
-  /*
-  Widget _panel(BuildContext context) {
-    _getRegister();
-    List<String> columnTitle = _periodTitle();
-    var columns = columnTitle;
-    return ScrollableTableView(
-      paginationController: _paginationController,
-      columns: columns.map((column) {
-        return TableViewColumn(     
-          width: 80,     
-          labelFontSize: 11.5,
-          label: column,
-        );
-      }).toList(),
-      rows: many_products.map((product) {
-        return TableViewRow(
-          height: 60,
-          cells: columns.map((column) {
-            return TableViewCell(
-              child: Text(product[column] ?? ""),
-            );
-          }).toList(),
-        );
-      }).toList(),
-    );
-  }*/
-
-  Widget _panel(BuildContext context) {
-    //_getRegister();
-    List<String> columnTitle = _periodTitle();
-    var columns = columnTitle;
-    return ScrollableTableView(
-      paginationController: _paginationController,
-      columns: columns.map((column) {
-        return TableViewColumn(     
-          width: 80,     
-          labelFontSize: 11.5,
-          label: column,
-        );
-      }).toList(),
-      rows: many_products.map((product) {
-        return TableViewRow(
-          cells: [
-            TableViewCell(
-              child: TextButton(
-              onPressed: () {
-                
-              },
-              child: const Text("5.000,00"),
+  FutureBuilder<String> _panel(BuildContext context){
+    return FutureBuilder<String>(
+    future: _getRegister(), // a previously-obtained Future<String> or null
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        List<Widget> children;
+        if (snapshot.hasData) {
+          children = <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)
+                ),
+              child: HorizontalDataTable(
+                leftHandSideColumnWidth: 100,
+                rightHandSideColumnWidth: _columnWidth*(_columnTitle.length-1),
+                isFixedHeader: true,
+                headerWidgets: _columnTitle,
+                leftSideItemBuilder: _rowTitle,
+                rightSideItemBuilder: _rowPanel,
+                itemCount: registers.length,
+                rowSeparatorWidget: const Divider(
+                  color: Colors.black54,
+                  height: 1.0,
+                  thickness: 0.0,
+                ),
+              ),
+              height: MediaQuery.of(context).size.height-200,
+            ),     
+          ];
+        } else if (snapshot.hasError) {
+          children = <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
             ),
-            )
-          ],          
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text('Error: ${snapshot.error}'),
+            ),
+          ];
+        } else {
+          children = const <Widget>[
+            SizedBox(
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(),
+            ),
+          ];
+        }
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
         );
-      }).toList(),
+      },
     );
+  }
+
+  Widget _rowTitle(BuildContext context, int index) {
+    return Container(
+      child: Text(
+          registers[index].account.description,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          )
+        ),
+      color: Colors.grey,
+      height: _rowHeight,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
+  }
+
+  Widget _rowPanel(BuildContext context, int index) {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          height: _rowHeight,
+          child: Row(            
+            children: _getRowsPanel(registers[index]),
+          )
+        )
+      ],
+    );
+  }
+
+  List<Widget> _getRowsPanel(_tempRowRegister r){
+    List<Widget> rows = <Widget>[];
+    for(int i=0;i<r.register.length;i++){
+      rows.add(
+        SizedBox(
+          width: _columnWidth,
+          child: TextButton(
+            child: Text(convert.doubleToCurrencyBR(r.register[i].sum)),
+            onPressed: () {
+              _showRegisters(context, r.register[i]);
+            },              
+          ),
+        ),
+      );
+    }    
+    return rows;
+  }
+
+  Future<void> _showRegisters(BuildContext context,_tempCellRegister r) {
+    
+    List<Widget> containerRegisters = <Widget>[];
+    for(int i=0;i<r.cellRegister.length;i++){
+      if(i>0){
+        containerRegisters.add(const SizedBox(height: 10,));
+      }
+      containerRegisters.add(_showRegister(r.cellRegister[i]));      
+    }
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          children: [
+            _showRegisterTittle('Titulo'),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(8),
+                children: containerRegisters,
+              ),
+            ),
+          ],    
+        );        
+      }
+    );
+  }
+
+  Widget _showRegisterTittle(String title){
+    return Container(
+      color: const Color.fromARGB(255, 195, 212, 220),
+      height: 60,
+      padding: const EdgeInsets.fromLTRB(10,10,10,0),
+      child: Center(
+        child: Row(
+          verticalDirection: VerticalDirection.up,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Transform.scale(
+              alignment: Alignment.centerLeft,
+              scale: 0.5,
+              child: FloatingActionButton(
+                child: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Expanded(
+              child:Center(
+                child: formats.standard(title)
+              ), 
+            ),   
+            Transform.scale(
+              alignment: Alignment.centerRight,
+              scale: 0.5,
+              child: FloatingActionButton(
+                child: const Icon(Icons.addchart_outlined),                                
+                onPressed: () {
+                  
+                },
+              ),
+            ),
+          ],
+        )  
+      ),    
+    );
+  }
+
+  Widget _showRegister(FinancialEntryRegister r){
+    return Container(
+      color: const Color.fromARGB(255, 195, 212, 220),
+      height: 81,
+      padding: const EdgeInsets.fromLTRB(10,10,10,0),
+      child: Center(
+        child: Column(
+          children: [
+            Row(
+              verticalDirection: VerticalDirection.up,
+              children: [
+                formats.standard(convert.DatetimeToDateBr(r.date)),
+                const SizedBox(width: 20,),
+                Expanded(
+                  child: formats.standard(r.description),              
+                ), 
+                const SizedBox(width: 20,),
+                formats.standard(convert.doubleToCurrencyBR(r.value))
+              ],
+            ),   
+            Transform.scale(
+              alignment: Alignment.centerRight,
+              scale: 0.5,
+              child:Row(
+                verticalDirection: VerticalDirection.up,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    child: const Icon(Icons.edit),                                
+                    onPressed: () {
+                      
+                    },
+                  ),
+                  const SizedBox(width: 10,),
+                  FloatingActionButton(
+                    child: const Icon(Icons.delete),
+                    onPressed: () {
+                      
+                    },
+                  ),
+                ],
+              ),
+            ),
+            /*Expanded(
+              child: Container(
+                height: 10,
+                width: 1000,
+                color:Colors.black12,
+              ),
+            ),*/
+          ],
+        )  
+      ),    
+    );
+  }
+}
+
+// ignore: camel_case_types
+class _tempRowRegister{
+  late List<_tempCellRegister> register = <_tempCellRegister>[];
+  late AccountRegister account;
+
+  _tempRowRegister(this.account,int col){
+    for(int i=0;i<col;i++){
+      _tempCellRegister c = _tempCellRegister();
+      register.add(c);
+    }
+  }
+
+  include(FinancialEntryRegister f,int positionArray){
+    register[positionArray].include(f);
+  }
+
+}
+
+// ignore: camel_case_types
+class _tempCellRegister{
+  late double sum = 0;
+  late List<FinancialEntryRegister> cellRegister = <FinancialEntryRegister>[];
+
+  bool include(FinancialEntryRegister f){
+    sum += f.value;
+    cellRegister.add(f);
+    return true;
   }
 
 }

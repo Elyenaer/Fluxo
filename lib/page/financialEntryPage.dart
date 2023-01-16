@@ -13,8 +13,6 @@ import 'package:flutter/services.dart';
 import '../Help/currencyPtBrInputFormatter.dart';
 import '../Register/financialEntryRegister.dart';
 
-
-
 class FinancialEntryPage extends StatefulWidget {
   const FinancialEntryPage({Key? key}) : super(key: key);
 
@@ -98,9 +96,8 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       }else{
         register.accountId = AccountRegister.getID(_account_debit!,typeValue);
       }      
-      register.credit = _isCredit;
       register.description = _tdcDescription.text;
-      register.date = _tdcDate.text;
+      register.date = convert.StringToDatetime(_tdcDate.text);
       register.value = convert.currencyToDouble(_tdcValue.text);
       register.setData();
 
