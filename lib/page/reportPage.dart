@@ -1,5 +1,6 @@
 
 import 'package:firebase_write/help/convert.dart';
+import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/register/accountRegister.dart';
 import 'package:firebase_write/register/financialEntryRegister.dart';
 import 'package:firebase_write/settings/formats.dart';
@@ -426,25 +427,28 @@ class reportPage extends StatefulWidget{
       containerRegisters.add(_showRegister(r.cellRegister[i]));      
     }
 
-    return showDialog<void>(
+    return showDialog<void>(      
       context: context,
       builder: (BuildContext context) {
-        return Column(
-          children: [
-            _showRegisterTittle('Titulo'),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(8),
-                children: containerRegisters,
+        return Material(
+        type: MaterialType.transparency,
+          child: Column(
+            children: [
+              _showRegisterTittle(_columnTitle[r.position]),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(8),
+                  children: containerRegisters,
+                ),
               ),
-            ),
-          ],    
+            ],   
+          ), 
         );        
       }
     );
   }
 
-  Widget _showRegisterTittle(String title){
+  Widget _showRegisterTittle(Widget title){
     return Container(
       color: const Color.fromARGB(255, 195, 212, 220),
       height: 60,
@@ -466,7 +470,7 @@ class reportPage extends StatefulWidget{
             ),
             Expanded(
               child:Center(
-                child: formats.standard(title)
+                child: title
               ), 
             ),   
             Transform.scale(
@@ -475,7 +479,12 @@ class reportPage extends StatefulWidget{
               child: FloatingActionButton(
                 child: const Icon(Icons.addchart_outlined),                                
                 onPressed: () {
-                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => 
+                      const FinancialEntryPage()),
+                  );                   
                 },
               ),
             ),
@@ -487,9 +496,13 @@ class reportPage extends StatefulWidget{
 
   Widget _showRegister(FinancialEntryRegister r){
     return Container(
-      color: const Color.fromARGB(255, 195, 212, 220),
-      height: 81,
+      height: 85,
       padding: const EdgeInsets.fromLTRB(10,10,10,0),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 225, 210, 210),
+        border: Border.all(width: 2, color: Colors.blueGrey),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ), 
       child: Center(
         child: Column(
           children: [
@@ -515,14 +528,19 @@ class reportPage extends StatefulWidget{
                   FloatingActionButton(
                     child: const Icon(Icons.edit),                                
                     onPressed: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => 
+                          FinancialEntryPage(register: r,)),
+                      );              
                     },
                   ),
                   const SizedBox(width: 10,),
                   FloatingActionButton(
                     child: const Icon(Icons.delete),
                     onPressed: () {
-                      
+                                            
                     },
                   ),
                 ],
@@ -540,6 +558,7 @@ class reportPage extends StatefulWidget{
       ),    
     );
   }
+
 }
 
 // ignore: camel_case_types
@@ -549,7 +568,7 @@ class _tempRowRegister{
 
   _tempRowRegister(this.account,int col){
     for(int i=0;i<col;i++){
-      _tempCellRegister c = _tempCellRegister();
+      _tempCellRegister c = _tempCellRegister(i);
       register.add(c);
     }
   }
@@ -563,7 +582,10 @@ class _tempRowRegister{
 // ignore: camel_case_types
 class _tempCellRegister{
   late double sum = 0;
+  late int position;
   late List<FinancialEntryRegister> cellRegister = <FinancialEntryRegister>[];
+
+  _tempCellRegister(this.position);
 
   bool include(FinancialEntryRegister f){
     sum += f.value;

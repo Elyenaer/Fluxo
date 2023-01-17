@@ -23,8 +23,11 @@ class FinancialEntryPage extends StatefulWidget {
 
 class _MyHomePageState extends State<FinancialEntryPage> {
   late FinancialEntryRegister register;
+  bool isLoading = true;
 
+  // ignore: non_constant_identifier_names
   late List<AccountRegister>? _account_credit;
+  // ignore: non_constant_identifier_names
   late List<AccountRegister>? _account_debit;
 
   late List<String> typeList = <String>[' '];
@@ -45,31 +48,16 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       _btUpdate = false,
       _btClear = false;
 
-  _MyHomePageState() {
-    // ignore: unnecessary_null_comparison
-    /*if(widget.register!=null){
-      register = widget.register!;
-    }else{
-      _btInclude = true;
-      _btClear = true;
-      setNextId();
-      setType(); 
-    }     */
-  }
-  bool isLoading = true;
-
   @override
   void initState() {
     setIsloading(true);
 
     if (widget.register != null) {
       register = widget.register!;
-      setIsloading(false);
+      _startScreen(true);
     } else {
-      _btInclude = true;
-      _btClear = true;
       register = FinancialEntryRegister();
-      testFuture();
+      _startScreen(false);      
     }
 
     super.initState();
@@ -81,10 +69,18 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     });
   }
 
-  void testFuture() async {
-    await setNextId();
+  //if there is a register r = true
+  void _startScreen(bool r) async {
     await setType();
-
+    if(r){
+      _btDelete = true;
+      _btUpdate = true;      
+      await _setDataScreen();
+    }else{
+      _btInclude = true;
+      _btClear = true;      
+      await setNextId();
+    }   
     setIsloading(false);
   }
 
@@ -115,6 +111,22 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   void save() async {
     try {
+      //register
+      if(_getDataScreen()==false){
+        return;
+      }
+      register.setData();
+
+      message.simple(context, "", "LANÇAMENTO CADASTRADO COM SUCESSO!");
+
+      clean();
+    } catch (e) {
+      message.simple(context, "", "ERRO: $e");
+    }
+  }
+
+  bool _getDataScreen(){
+    try{
       //check fields
       String errorRegister = '';
       if (_tdcDescription.text == '') {
@@ -128,10 +140,8 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       }
       if (errorRegister != '') {
         message.simple(context, '', errorRegister);
-        return;
+        return false;
       }
-
-      //register
       register = FinancialEntryRegister();
       register.id = int.parse(_tdcId.text);
       if (_isCredit) {
@@ -142,13 +152,48 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       register.description = _tdcDescription.text;
       register.date = convert.StringToDatetime(_tdcDate.text);
       register.value = convert.currencyToDouble(_tdcValue.text);
-      register.setData();
+      return true;
+    }catch(e){
+      print('ERRO GETDATA -> $e');     
+      return false;
+    }    
+  }
 
-      message.simple(context, "", "LANÇAMENTO CADASTRADO COM SUCESSO!");
+  Future<void> _setDataScreen() async{
+    try{
+      _tdcId.text = register.id.toString();
 
-      clean();
-    } catch (e) {
-      message.simple(context, "", "ERRO: $e");
+      //check account ref register
+      List<AccountRegister>? a = _account_debit?.where((i) => i.id == register.accountId).toList();
+      if(a!.isEmpty){
+         a = _account_credit?.where((i) => i.id == register.accountId).toList();
+      }
+
+      _isCredit = a![0].credit;
+
+       print(_isCredit);
+      print(typeList);
+
+      //await changeType();
+
+     
+
+      try{
+        //typeValue = a[0].description;
+      }catch(e){
+        print(e);
+      }
+
+      
+
+
+
+      //type
+      _tdcDescription.text = register.description;
+      _tdcDate.text = convert.DatetimeToDateBr(register.date);
+      _tdcValue.text = convert.doubleToCurrencyBR(register.value);
+    }catch(e){
+      print("ERRO _SETDATASCREEN -> $e");
     }
   }
 
@@ -160,7 +205,27 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     setNextId();
   }
 
-  void changeType() async {
+  void _delete() async{
+    bool confirm = await message.confirm(context,"CONFIRMA EXCLUSÃO?",
+      register.date.toString() + " " 
+      + register.description + " "
+      + register.value.toString()
+    );
+    if(confirm){
+      register.delete();
+      clean();
+    }
+  }
+
+  void _update(){
+    if(_getDataScreen()==false){
+        return;
+    }
+    register.update();
+    message.simple(context, "", "LANÇAMENTO ATUALIZADO COM SUCESSO!");
+  }
+
+  Future<void> changeType() async {
     try {
       typeList.clear();
       if (_isCredit) {
@@ -186,7 +251,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
         title: const Text("LANÇAMENTO FINANCEIRO"),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(30.0),
               child: Column(
@@ -307,6 +372,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     }
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: buttons,
     );
   }
@@ -322,22 +388,28 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonUpdate() {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () {
+        _update();
+      },
       child: const Icon(Icons.update),
     );
   }
 
   Widget _buttonDelete() {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () {
+        _delete();
+      },
       child: const Icon(Icons.delete),
     );
   }
 
   Widget _buttonClean() {
     return FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(Icons.clear_all),
+      onPressed: () {
+        clean();
+      },
+      child: const Icon(Icons.cleaning_services),
     );
   }
 

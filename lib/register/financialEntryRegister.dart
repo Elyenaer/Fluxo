@@ -54,6 +54,19 @@ Future<void> setData() async {
     => debugPrint("Failed to add user: $error"));
 }
 
+Future<void> update() async {
+  collectionRef.doc('$id').update(_convertData()).catchError((error)
+    => debugPrint("Failed to add user: $error"));
+}
+
+Future<void> delete() async {
+  try{
+    collectionRef.doc('$id').delete;
+  }catch(e){
+     debugPrint("Failed to add user: $e");
+  }
+}
+
 Future<String> getNextId() async {
   try{
     // ignore: prefer_typing_uninitialized_variables
