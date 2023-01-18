@@ -1,9 +1,8 @@
 
 import 'package:firebase_write/help/convert.dart';
-import 'package:firebase_write/page/financialEntryPage.dart';
+import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/register/accountRegister.dart';
 import 'package:firebase_write/register/financialEntryRegister.dart';
-import 'package:firebase_write/settings/formats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
@@ -39,11 +38,13 @@ class reportPage extends StatefulWidget{
     static const List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
     String periodValue = periodList.first;
 
-  _MyHomePageState(){    
+  @override
+  void initState(){
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
     _getColumnTitle();
-    _getAccount();    
+    _getAccount(); 
+    super.initState();
   }
 
   _getAccount() async{
@@ -408,7 +409,27 @@ class reportPage extends StatefulWidget{
           child: TextButton(
             child: Text(convert.doubleToCurrencyBR(r.register[i].sum)),
             onPressed: () {
-              _showRegisters(context, r.register[i]);
+              final changed = Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => 
+                  ListFinancialRegisterPage(
+                    title: _columnTitle[i+1],
+                    registers: r.register[i].cellRegister,
+                  )
+                ),
+              );
+
+
+
+
+              String d = changed.toString();
+
+              
+
+              print("10 -------> $d");
+
+
             },              
           ),
         ),
@@ -417,149 +438,7 @@ class reportPage extends StatefulWidget{
     return rows;
   }
 
-  Future<void> _showRegisters(BuildContext context,_tempCellRegister r) {
-    
-    List<Widget> containerRegisters = <Widget>[];
-    for(int i=0;i<r.cellRegister.length;i++){
-      if(i>0){
-        containerRegisters.add(const SizedBox(height: 10,));
-      }
-      containerRegisters.add(_showRegister(r.cellRegister[i]));      
-    }
-
-    return showDialog<void>(      
-      context: context,
-      builder: (BuildContext context) {
-        return Material(
-        type: MaterialType.transparency,
-          child: Column(
-            children: [
-              _showRegisterTittle(_columnTitle[r.position]),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(8),
-                  children: containerRegisters,
-                ),
-              ),
-            ],   
-          ), 
-        );        
-      }
-    );
   }
-
-  Widget _showRegisterTittle(Widget title){
-    return Container(
-      color: const Color.fromARGB(255, 195, 212, 220),
-      height: 60,
-      padding: const EdgeInsets.fromLTRB(10,10,10,0),
-      child: Center(
-        child: Row(
-          verticalDirection: VerticalDirection.up,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Transform.scale(
-              alignment: Alignment.centerLeft,
-              scale: 0.5,
-              child: FloatingActionButton(
-                child: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-            Expanded(
-              child:Center(
-                child: title
-              ), 
-            ),   
-            Transform.scale(
-              alignment: Alignment.centerRight,
-              scale: 0.5,
-              child: FloatingActionButton(
-                child: const Icon(Icons.addchart_outlined),                                
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => 
-                      const FinancialEntryPage()),
-                  );                   
-                },
-              ),
-            ),
-          ],
-        )  
-      ),    
-    );
-  }
-
-  Widget _showRegister(FinancialEntryRegister r){
-    return Container(
-      height: 85,
-      padding: const EdgeInsets.fromLTRB(10,10,10,0),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 225, 210, 210),
-        border: Border.all(width: 2, color: Colors.blueGrey),
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      ), 
-      child: Center(
-        child: Column(
-          children: [
-            Row(
-              verticalDirection: VerticalDirection.up,
-              children: [
-                formats.standard(convert.DatetimeToDateBr(r.date)),
-                const SizedBox(width: 20,),
-                Expanded(
-                  child: formats.standard(r.description),              
-                ), 
-                const SizedBox(width: 20,),
-                formats.standard(convert.doubleToCurrencyBR(r.value))
-              ],
-            ),   
-            Transform.scale(
-              alignment: Alignment.centerRight,
-              scale: 0.5,
-              child:Row(
-                verticalDirection: VerticalDirection.up,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    child: const Icon(Icons.edit),                                
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => 
-                          FinancialEntryPage(register: r,)),
-                      );              
-                    },
-                  ),
-                  const SizedBox(width: 10,),
-                  FloatingActionButton(
-                    child: const Icon(Icons.delete),
-                    onPressed: () {
-                                            
-                    },
-                  ),
-                ],
-              ),
-            ),
-            /*Expanded(
-              child: Container(
-                height: 10,
-                width: 1000,
-                color:Colors.black12,
-              ),
-            ),*/
-          ],
-        )  
-      ),    
-    );
-  }
-
-}
 
 // ignore: camel_case_types
 class _tempRowRegister{

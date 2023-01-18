@@ -61,7 +61,7 @@ Future<void> update() async {
 
 Future<void> delete() async {
   try{
-    collectionRef.doc('$id').delete;
+    collectionRef.doc(id.toString()).delete();
   }catch(e){
      debugPrint("Failed to add user: $e");
   }

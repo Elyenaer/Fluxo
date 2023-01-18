@@ -171,24 +171,9 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
       _isCredit = a![0].credit;
 
-       print(_isCredit);
-      print(typeList);
+      await changeType();
 
-      //await changeType();
-
-     
-
-      try{
-        //typeValue = a[0].description;
-      }catch(e){
-        print(e);
-      }
-
-      
-
-
-
-      //type
+      typeValue = a[0].description;
       _tdcDescription.text = register.description;
       _tdcDate.text = convert.DatetimeToDateBr(register.date);
       _tdcValue.text = convert.doubleToCurrencyBR(register.value);
@@ -206,10 +191,12 @@ class _MyHomePageState extends State<FinancialEntryPage> {
   }
 
   void _delete() async{
-    bool confirm = await message.confirm(context,"CONFIRMA EXCLUSÃO?",
-      register.date.toString() + " " 
-      + register.description + " "
-      + register.value.toString()
+      bool confirm = await message.confirm(context,"CONFIRMA EXCLUSÃO?",
+      "ID: " + register.id.toString() +
+      "DATA: " + convert.DatetimeToDateBr(register.date) + "\n" 
+      + register.description.toUpperCase()
+      + "\nVALOR: "
+      + convert.doubleToCurrencyBR(register.value)
     );
     if(confirm){
       register.delete();

@@ -37,7 +37,8 @@ class AccountRegister {
       AccountRegister reg = AccountRegister();
 
       reg.id = int.parse(data['id']);
-      if(data['credit'] == 'C'){
+
+      if(data['type'] == "C"){
         reg.credit = true;
       }else{
         reg.credit = false;
