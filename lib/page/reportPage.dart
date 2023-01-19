@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/register/accountRegister.dart';
@@ -372,14 +374,14 @@ class reportPage extends StatefulWidget{
   }
 
   Widget _rowTitle(BuildContext context, int index) {
-    return Container(
+    return Container(       
       child: Text(
-          registers[index].account.description,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          )
-        ),
+        registers[index].account.description,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        )
+      ),
       color: Colors.grey,
       height: _rowHeight,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -391,45 +393,53 @@ class reportPage extends StatefulWidget{
     return Row(
       children: <Widget>[
         SizedBox(
-          height: _rowHeight,
-          child: Row(            
-            children: _getRowsPanel(registers[index]),
-          )
-        )
+          height: _rowHeight,          
+            child: Row(            
+              children: _getRowsPanel(registers[index]),
+            ),
+          ),
       ],
     );
   }
 
   List<Widget> _getRowsPanel(_tempRowRegister r){
+
+    Color foregroundColor = Colors.red;
+    if(r.account.credit){
+      foregroundColor = Colors.blue;
+    }
+
     List<Widget> rows = <Widget>[];
     for(int i=0;i<r.register.length;i++){
       rows.add(
         SizedBox(
           width: _columnWidth,
-          child: TextButton(
-            child: Text(convert.doubleToCurrencyBR(r.register[i].sum)),
+          child: TextButton(          
+            child: Text(
+              convert.doubleToCurrencyBR(r.register[i].sum),
+              style: TextStyle(
+                color: foregroundColor
+              ),
+            ),
             onPressed: () {
-              final changed = Navigator.push(
+              final updateCheck = Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => 
                   ListFinancialRegisterPage(
+                    idAccount: r.account.id,
+                    start: start,
+                    end: end,
                     title: _columnTitle[i+1],
                     registers: r.register[i].cellRegister,
                   )
                 ),
               );
-
-
-
-
-              String d = changed.toString();
-
-              
-
-              print("10 -------> $d");
-
-
+              updateCheck.then((value) {
+                if(value=="update"){
+                  setState(() { });
+                }
+              });
             },              
           ),
         ),

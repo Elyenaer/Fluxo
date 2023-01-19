@@ -124,4 +124,26 @@ Future<List<FinancialEntryRegister>?> getDataGapDate(DateTime start,DateTime end
     }
   }
 
+  Future<List<FinancialEntryRegister>?> getDataGapDateIdAccount(int idAccount,DateTime start,DateTime end) async {
+    try {
+      List<FinancialEntryRegister> registers = [];
+      
+      // to get data from all documents sequentially      
+      await collectionRef
+      .where('date', isGreaterThanOrEqualTo: convert.DatetimeToDatabase(start))
+      .where('date', isLessThanOrEqualTo: convert.DatetimeToDatabase(end))  
+      .where('account_id', isEqualTo: idAccount.toString()) 
+      .orderBy('date', descending: false)    
+      .get().then((querySnapshot) {
+        for (var result in querySnapshot.docs) {
+          registers.add(_convertRegister(result.data() as Map<String,dynamic>) as FinancialEntryRegister);
+        }
+      });
+      return registers;
+    }catch(e){
+      debugPrint("ERRO GETDATAGAPDATEIDACCOUNT -> $e");
+      return null;
+    }
+  }
+
 }

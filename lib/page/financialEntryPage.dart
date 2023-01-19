@@ -105,7 +105,6 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     _tdcDescription.dispose();
     _tdcDate.dispose();
     _tdcValue.dispose();
-
     super.dispose();
   }
 
@@ -234,6 +233,12 @@ class _MyHomePageState extends State<FinancialEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: FloatingActionButton(
+          elevation: 0,
+          child: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop("update");          
+        },),
         centerTitle: true,
         title: const Text("LANÇAMENTO FINANCEIRO"),
       ),
@@ -366,6 +371,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonInclude() {
     return FloatingActionButton(
+      heroTag: UniqueKey(),
       onPressed: () {
         save();
       },
@@ -375,6 +381,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonUpdate() {
     return FloatingActionButton(
+      heroTag: UniqueKey(),
       onPressed: () {
         _update();
       },
@@ -384,6 +391,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonDelete() {
     return FloatingActionButton(
+      heroTag: UniqueKey(),
       onPressed: () {
         _delete();
       },
@@ -393,6 +401,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonClean() {
     return FloatingActionButton(
+      heroTag: UniqueKey(),
       onPressed: () {
         clean();
       },
@@ -475,6 +484,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Widget _buttonIncludeType() {
     return FloatingActionButton(
+      heroTag: UniqueKey(),
       onPressed: () {},
       child: const Icon(Icons.add),
     );

@@ -1,5 +1,6 @@
 
 import 'package:firebase_write/page/financialEntryPage.dart';
+import 'package:firebase_write/page/reportPage.dart';
 import 'package:firebase_write/register/financialEntryRegister.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/message.dart';
@@ -10,12 +11,19 @@ import 'package:firebase_write/settings/formats.dart';
 class ListFinancialRegisterPage extends StatefulWidget{
     ListFinancialRegisterPage({
       Key? key,
+      required this.idAccount,
       this.registers,
+      required this.start,
+      required this.end,
       required this.title
     }) : super(key: key);
 
     BuildContext? context;
+    int idAccount;
     List<FinancialEntryRegister>? registers;
+    DateTime start;
+    DateTime end;
+    reportPage? report;
     Widget title;
 
    @override
@@ -38,17 +46,20 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
   @override
   void dispose() {
-    print(" 5 ---------> $context");
-    Navigator.pop(context,"Devoldo");
     super.dispose();
   }
-
 
   // ignore: unused_element
   void _isLoading(bool loading){
     setState(() {
       isLoading = loading;      
     });    
+  }
+
+  Future<void> _getRegisters() async {
+    _isLoading(true);
+    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.idAccount,widget.start,widget.end);
+    _isLoading(false);
   }
 
   void _deleteFinancialRegister(FinancialEntryRegister r) async{  
@@ -113,9 +124,10 @@ class ListFinancialRegisterPage extends StatefulWidget{
               alignment: Alignment.centerLeft,
               scale: 0.5,
               child: FloatingActionButton(
+                heroTag: UniqueKey(),
                 child: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
+                onPressed: () {                  
+                  Navigator.of(context).pop("update");
                 },
               ),
             ),
@@ -128,15 +140,23 @@ class ListFinancialRegisterPage extends StatefulWidget{
               alignment: Alignment.centerRight,
               scale: 0.5,
               child: FloatingActionButton(
+                heroTag: UniqueKey(),
                 child: const Icon(Icons.addchart_outlined),                                
                 onPressed: () {
-                  Navigator.push(
+                  final updateCheck = Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => 
                       const FinancialEntryPage()),
-                  );                   
-                },
+                  );   
+                  updateCheck.then((value) {
+                    if(value=="update"){
+                      setState(() {
+                        _getRegisters();
+                      });
+                    }   
+                  });    
+                }
               ),
             ),
           ],
@@ -177,20 +197,28 @@ class ListFinancialRegisterPage extends StatefulWidget{
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton(
+                    heroTag: UniqueKey(),
                     child: const Icon(Icons.edit),                                
                     onPressed: () {
-                      setState(() {
-                        Navigator.push(
+                      final updateCheck = Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => 
-                            FinancialEntryPage(register: r,)),
+                            FinancialEntryPage(
+                              register: r,)),
                         ); 
-                      });                                   
+                        updateCheck.then((value) {
+                          if(value=="update"){
+                            setState(() {
+                              _getRegisters();
+                             });
+                          }
+                        });
                     },
                   ),
                   const SizedBox(width: 10,),
                   FloatingActionButton(
+                    heroTag: UniqueKey(),
                     child: const Icon(Icons.delete),
                     onPressed: () {
                       _deleteFinancialRegister(r);                                   
