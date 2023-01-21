@@ -1,7 +1,7 @@
 
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/reportPage.dart';
-import 'package:firebase_write/register/financialEntryRegister.dart';
+import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/help/convert.dart';

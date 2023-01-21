@@ -1,24 +1,33 @@
 
-import 'package:firebase_write/Test/t.dart';
-import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/reportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import '../settings/theme.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  ThemeData themeMain = await theme().current();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MyApp(themeMain: themeMain));
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({
+    Key? key,
+    required this.themeMain,
+  }) : super(key: key);
 
+  ThemeData themeMain;
+  
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: themeMain,
       debugShowCheckedModeBanner: false,
-      home: reportPage(),
+      home: reportPage(context: context,),
+      
     );
   }
 }

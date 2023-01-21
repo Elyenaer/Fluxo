@@ -2,9 +2,11 @@
 import 'dart:io';
 
 import 'package:firebase_write/help/convert.dart';
+import 'package:firebase_write/help/funcDate.dart';
+import 'package:firebase_write/main.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
-import 'package:firebase_write/register/accountRegister.dart';
-import 'package:firebase_write/register/financialEntryRegister.dart';
+import 'package:firebase_write/database.dart/register/accountRegister.dart';
+import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
@@ -12,10 +14,16 @@ import 'package:intl/intl.dart';
 
 import '../help/mask.dart';
 import '../help/valid.dart';
+import '../settings/theme.dart';
 
-// ignore: camel_case_types
+// ignore: camel_case_types, must_be_immutable
 class reportPage extends StatefulWidget{
-  const reportPage({Key? key}) : super(key: key);
+  reportPage({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+
+    BuildContext context;
 
    @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -24,6 +32,8 @@ class reportPage extends StatefulWidget{
   // ignore: non_constant_identifier_names
   class _MyHomePageState extends State<reportPage> {
     late List<_tempRowRegister> registers = <_tempRowRegister>[];
+    
+    late BuildContext context;
 
     late final List<Widget> _columnTitle = <Widget>[];
     static const double _columnWidth = 100;
@@ -33,6 +43,7 @@ class reportPage extends StatefulWidget{
     final TextEditingController _tecDateStart = TextEditingController(text: '');
     final TextEditingController _tecDateEnd = TextEditingController(text: '');
     late DateTime start,end;
+    late double _currentSliderValue = 1.0;
 
     String? _errorDateStart;
     String? _errorDateEnd;
@@ -40,13 +51,21 @@ class reportPage extends StatefulWidget{
     static const List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
     String periodValue = periodList.first;
 
+    bool _isLoading = true;
+
   @override
   void initState(){
+    context = widget.context;
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
-    _getColumnTitle();
-    _getAccount(); 
+    _getRegister();
     super.initState();
+  }
+
+  void _setLoading(bool isLoading){
+    setState(() {
+      _isLoading = isLoading;      
+    });    
   }
 
   _getAccount() async{
@@ -77,50 +96,60 @@ class reportPage extends StatefulWidget{
       }
     }
     else if(periodValue=="Semanal"){
-      start = convert.getWeekday(
-        convert.StringToDatetime(_tecDateStart.text),false,5);
-      end = convert.getWeekday(
-        convert.StringToDatetime(_tecDateEnd.text),true,5);    
+      start = funcDate.getWeekday(
+        convert.StringToDatetime(_tecDateStart.text),false,6);
+      end = funcDate.getWeekday(
+        convert.StringToDatetime(_tecDateEnd.text),true,6);    
       d = start;
       while(!d.isAfter(end)){
         _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
         d = d.add(const Duration(days: 7));              
       }
     }else if(periodValue=="Mensal"){
-      start = convert.getMonth(
+      start = funcDate.getMonth(
         convert.StringToDatetime(_tecDateStart.text),true);
-      end = convert.getMonth(
-        convert.StringToDatetime(_tecDateEnd.text),true);
+      end = funcDate.getMonth(
+        convert.StringToDatetime(_tecDateEnd.text),false);
       d = start;
       while(!d.isAfter(end)){
         _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
-        d = DateTime(d.year+1);     
+        d = funcDate.addMonth(d);  
+      }
+    }else{
+      start = funcDate.getYear(
+        convert.StringToDatetime(_tecDateStart.text),true);
+      end = funcDate.getYear(
+        convert.StringToDatetime(_tecDateEnd.text),false);
+      d = start;
+      while(!d.isAfter(end)){
+        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        d = funcDate.addYear(d);  
       }
     }
-
   }
 
   // ignore: non_constant_identifier_names
-  _titleItem(String label) {
-    return Container(
+  _titleItem(String label) {    
+    return Container(     
+      color: Theme.of(widget.context).scaffoldBackgroundColor,
       child: Text(
         label, 
         textAlign: TextAlign.center,
         style: const TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           )
         ),
-      color: Colors.black,
       width: _columnWidth,
       height: 56,
       alignment: Alignment.center,
+      //color: Theme.of(context).appBarTheme.backgroundColor,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
     );
   }
   
-  Future<String> _getRegister() async {
+  _getRegister() async {
     try{
+      _setLoading(true);
       _getColumnTitle();
       _getAccount();
       FinancialEntryRegister r = FinancialEntryRegister();
@@ -130,15 +159,14 @@ class reportPage extends StatefulWidget{
       DateTime d2; //interval from d to d2
 
       while(!d.isAfter(end)){
-
         if(periodValue=="Diário"){
           d2 = d;
         }else if(periodValue=="Semanal"){
           d2 = d.add(const Duration(days: 6));
         }else if(periodValue=="Mensal"){
-          d2 = convert.getMonth(d,false);
+          d2 = funcDate.getMonth(d,false);
         }else{
-          d2 = convert.getYear(d,false);
+          d2 = funcDate.getYear(d,false);
         }
 
         for(int i=0;i<reg!.length;i++){
@@ -159,14 +187,14 @@ class reportPage extends StatefulWidget{
         }else if(periodValue=="Semanal"){
           d = d.add(const Duration(days: 7));
         }else if(periodValue=="Mensal"){
-          d = convert.addMonth(d);
+          d = funcDate.addMonth(d);
         }else{
           d = DateTime(d.year+1,1,1);
         }    
 
         positionArray++;
       }
-      return '';
+      _setLoading(false);
     }catch(e){
       print('ERRO _GETREGISTER -> $e');
       return '';
@@ -196,20 +224,23 @@ class reportPage extends StatefulWidget{
                   const SizedBox(width: 30,),
                   _dateStart(),
                   const SizedBox(width: 30,),
-                  _dateEnd()                  
+                  _dateEnd()                 
                 ]
               ),
             ),  
             const SizedBox(height: 20,), 
             Expanded(
-              child: Row(
+              child: _isLoading
+              ?  const Center(child: CircularProgressIndicator())
+              :Row(
                 children: [
                   Expanded(
                     child: _panel(context),
                   ),
                 ]
               )
-            )         
+            ),
+            _sliderScale()       
           ],
         ),
       ),
@@ -238,9 +269,8 @@ class reportPage extends StatefulWidget{
             firstDate: DateTime(2000), 
             lastDate: DateTime(2100));
             if (pickeddate != null){
-              setState(() {
-                _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-              });
+              _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
+              _getRegister();
             }
           },
         onChanged: (value) {
@@ -274,16 +304,15 @@ class reportPage extends StatefulWidget{
             firstDate: DateTime(2000), 
             lastDate: DateTime(2100));
           if (pickeddate != null){
-            setState(() {
-              _tecDateEnd.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-              });
-            }
-          },
-          
+            _tecDateEnd.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
+            _getRegister();
+          }
+        },          
         onChanged: (value) {
-          setState(() {
-            _errorDateEnd = valid.checkDate(_tecDateEnd.text);
-          });
+          _errorDateEnd = valid.checkDate(_tecDateEnd.text);
+          if(_errorDateEnd==null){
+            _getRegister();
+          }
         },
       ),
     );
@@ -294,16 +323,13 @@ class reportPage extends StatefulWidget{
       value: periodValue,
       icon: const Icon(Icons.arrow_downward),
       elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
       underline: Container(
         height: 2,
-        color: Colors.deepPurpleAccent,
+        color: Colors.grey,
       ),
       onChanged: (String? value) {
-        // This is called when the user selects an item.
-        setState(() {
-          periodValue = value!;
-        });
+        periodValue = value!;
+        _getRegister();
       },
       items: periodList.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
@@ -314,63 +340,26 @@ class reportPage extends StatefulWidget{
     );
   }
 
-  FutureBuilder<String> _panel(BuildContext context){
-    return FutureBuilder<String>(
-    future: _getRegister(), // a previously-obtained Future<String> or null
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        List<Widget> children;
-        if (snapshot.hasData) {
-          children = <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent)
-                ),
-              child: HorizontalDataTable(
-                leftHandSideColumnWidth: 100,
-                rightHandSideColumnWidth: _columnWidth*(_columnTitle.length-1),
-                isFixedHeader: true,
-                headerWidgets: _columnTitle,
-                leftSideItemBuilder: _rowTitle,
-                rightSideItemBuilder: _rowPanel,
-                itemCount: registers.length,
-                rowSeparatorWidget: const Divider(
-                  color: Colors.black54,
-                  height: 1.0,
-                  thickness: 0.0,
-                ),
-              ),
-              height: MediaQuery.of(context).size.height-200,
-            ),     
-          ];
-        } else if (snapshot.hasError) {
-          children = <Widget>[
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text('Error: ${snapshot.error}'),
-            ),
-          ];
-        } else {
-          children = const <Widget>[
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(),
-            ),
-          ];
-        }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: children,
+  Widget _panel(BuildContext context){
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.blueAccent),
           ),
-        );
-      },
-    );
+        height: MediaQuery.of(context).size.height-200,        
+        child: HorizontalDataTable(
+          leftHandSideColumnWidth: 100,
+          rightHandSideColumnWidth: _columnWidth*(_columnTitle.length-1),
+          isFixedHeader: true,
+          headerWidgets: _columnTitle,
+          leftSideItemBuilder:  _rowTitle,
+          rightSideItemBuilder: _rowPanel,
+          itemCount: registers.length,
+          rowSeparatorWidget: const Divider(
+            height: 1.0,
+            thickness: 0.0,
+          ),
+        ),     
+      );
   }
 
   Widget _rowTitle(BuildContext context, int index) {
@@ -379,10 +368,8 @@ class reportPage extends StatefulWidget{
         registers[index].account.description,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.black,
         )
       ),
-      color: Colors.grey,
       height: _rowHeight,
       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
       alignment: Alignment.centerLeft,
@@ -446,6 +433,20 @@ class reportPage extends StatefulWidget{
       );
     }    
     return rows;
+  }
+
+  Widget _sliderScale(){
+    return Slider(
+      value: _currentSliderValue,
+      max: 3.0,
+      min: 0.3,
+      label: _currentSliderValue.round().toString(),
+      onChanged: (double value) {
+        setState(() {
+          _currentSliderValue = value;
+        });
+      },
+    );
   }
 
   }

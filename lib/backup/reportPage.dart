@@ -1,37 +1,38 @@
 
-/*import 'package:firebase_write/help/convert.dart';
+/*import 'dart:io';
+
+import 'package:firebase_write/help/convert.dart';
+import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/register/accountRegister.dart';
 import 'package:firebase_write/register/financialEntryRegister.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
-import 'package:scrollable_table_view/scrollable_table_view.dart';
 
 import '../help/mask.dart';
 import '../help/valid.dart';
 
 // ignore: camel_case_types
-class reportPageBackup extends StatefulWidget{
-  const reportPageBackup({Key? key}) : super(key: key);
+class reportPage extends StatefulWidget{
+  const reportPage({Key? key}) : super(key: key);
 
    @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
   // ignore: non_constant_identifier_names
-  class _MyHomePageState extends State<reportPageBackup> {
+  class _MyHomePageState extends State<reportPage> {
     late List<_tempRowRegister> registers = <_tempRowRegister>[];
 
-    final Future<String> _calculation = Future<String>.delayed(
-    const Duration(seconds: 10),
-    () => 'Data Loaded',
-  );
-
-    List<String> periodTitle = <String>[];
+    late final List<Widget> _columnTitle = <Widget>[];
+    static const double _columnWidth = 100;
+    static const double _rowHeight = 50;
+    
 
     final TextEditingController _tecDateStart = TextEditingController(text: '');
     final TextEditingController _tecDateEnd = TextEditingController(text: '');
-    late PaginationController _paginationController;
+    late DateTime start,end;
 
     String? _errorDateStart;
     String? _errorDateEnd;
@@ -39,11 +40,19 @@ class reportPageBackup extends StatefulWidget{
     static const List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
     String periodValue = periodList.first;
 
-  _MyHomePageState(){    
+    bool _isLoading = true;
+
+  @override
+  void initState(){
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
-    _periodTitle();
-    _getAccount();    
+    _getColumnTitle();
+    _getAccount(); 
+    super.initState();
+  }
+
+  void setLoading(bool isLoading){
+    _isLoading = isLoading;
   }
 
   _getAccount() async{
@@ -52,78 +61,124 @@ class reportPageBackup extends StatefulWidget{
    
     registers.clear();
     for(int i=0;i<account!.length;i++){
-      _tempRowRegister temp = _tempRowRegister(account[i],periodTitle.length);
+      _tempRowRegister temp = _tempRowRegister(account[i],_columnTitle.length-1);
       registers.add(temp);
     }
   }
 
-  _periodTitle(){    
-    periodTitle.clear();
+  _getColumnTitle(){    
+    _columnTitle.clear();
+    _columnTitle.add(_titleItem(""));
+    DateTime d;
     if(periodValue=="Diário"){
-      DateTime d = convert.StringToDatetime(_tecDateStart.text);
-      int periodLenght = convert.StringToDatetime(_tecDateEnd.text)
-      .difference(d).inDays;
+      start = convert.StringToDatetime(_tecDateStart.text);
+      end = convert.StringToDatetime(_tecDateEnd.text);
+      d = start;
+      int periodLenght = end.difference(d).inDays;
       for(int i=0;i<periodLenght+1;i++){
-        periodTitle.add(d.year.toString() +
+        _columnTitle.add(_titleItem(d.year.toString() +
          "\n" + convert.DatetimeMonthBr(d.month) + 
-         "\n" + d.day.toString());
+         "\n" + d.day.toString()));
         d = d.add(const Duration(days: 1));        
       }
     }
+    else if(periodValue=="Semanal"){
+      start = convert.getWeekday(
+        convert.StringToDatetime(_tecDateStart.text),false,6);
+      end = convert.getWeekday(
+        convert.StringToDatetime(_tecDateEnd.text),true,6);    
+      d = start;
+      while(!d.isAfter(end)){
+        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        d = d.add(const Duration(days: 7));              
+      }
+    }else if(periodValue=="Mensal"){
+      start = convert.getMonth(
+        convert.StringToDatetime(_tecDateStart.text),true);
+      end = convert.getMonth(
+        convert.StringToDatetime(_tecDateEnd.text),false);
+      d = start;
+      while(!d.isAfter(end)){
+        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        d = DateTime(d.year+1);     
+      }
+    }
+
+
+    print(convert.DatetimeToDateBr(start) + " - "
+     + convert.DatetimeToDateBr(end));
+
+
+
+  }
+
+  // ignore: non_constant_identifier_names
+  _titleItem(String label) {
+    return Container(
+      child: Text(
+        label, 
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          )
+        ),
+      color: Colors.black,
+      width: _columnWidth,
+      height: 56,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+    );
   }
   
-  _typeTitle(){
-    List<String> periodList = <String>[];
-    if(periodValue=="Diário"){
-      DateTime d = convert.StringToDatetime(_tecDateStart.text);
-      int periodLenght = convert.StringToDatetime(_tecDateEnd.text)
-      .difference(d).inDays;
-      for(int i=0;i<periodLenght+1;i++){
-        periodList.add(d.year.toString() +
-         "\n" + convert.DatetimeMonthBr(d.month) + 
-         "\n" + d.day.toString());
-        d = d.add(const Duration(days: 1));        
-      }
-    }
-    return periodList;
-  }
-
   Future<String> _getRegister() async {
     try{
-      _periodTitle();
+      _getColumnTitle();
       _getAccount();
       FinancialEntryRegister r = FinancialEntryRegister();
-      List<FinancialEntryRegister>? reg = await r.getDataGapDate(_tecDateStart.text,_tecDateEnd.text);
+      List<FinancialEntryRegister>? reg = await r.getDataGapDate(start,end);
       int positionArray = 0;
+      DateTime d = start;
+      DateTime d2; //interval from d to d2
 
-      if(periodValue=="Diário"){
-        DateTime start = convert.StringToDatetime(_tecDateStart.text);
-        DateTime end = convert.StringToDatetime(_tecDateEnd.text);
+      while(!d.isAfter(end)){
 
-        while(!start.isAfter(end)){
-          for(int i=0;i<reg!.length;i++){
-            if(reg[i].date.isAfter(start)){
-              break;
-            }else if(reg[i].date.isBefore(start)){
-              continue;
-            }
-            for(int j=0;j<registers.length;j++){
-              if(reg[i].accountId==registers[j].account.id){
-                registers[j].include(reg[i],positionArray);
-              }
+        if(periodValue=="Diário"){
+          d2 = d;
+        }else if(periodValue=="Semanal"){
+          d2 = d.add(const Duration(days: 6));
+        }else if(periodValue=="Mensal"){
+          d2 = convert.getMonth(d,false);
+        }else{
+          d2 = convert.getYear(d,false);
+        }
+
+        for(int i=0;i<reg!.length;i++){
+          if(reg[i].date.isAfter(d2)){
+            break;
+          }else if(reg[i].date.isBefore(d)){
+            continue;
+          }
+          for(int j=0;j<registers.length;j++){
+            if(reg[i].accountId==registers[j].account.id){
+              registers[j].include(reg[i],positionArray);
             }
           }
-
-          start = start.add(const Duration(days: 1));
-          positionArray++;
         }
+
+        if(periodValue=="Diário"){
+          d = d.add(const Duration(days: 1));
+        }else if(periodValue=="Semanal"){
+          d = d.add(const Duration(days: 7));
+        }else if(periodValue=="Mensal"){
+          d = convert.addMonth(d);
+        }else{
+          d = DateTime(d.year+1,1,1);
+        }    
+
+        positionArray++;
       }
-
-      _paginationController = PaginationController(
-        rowCount: registers.length,
-        rowsPerPage: 10,
-      );
-
+      setLoading(false);
       return '';
     }catch(e){
       print('ERRO _GETREGISTER -> $e');
@@ -195,10 +250,10 @@ class reportPageBackup extends StatefulWidget{
             initialDate: DateTime.now(),
             firstDate: DateTime(2000), 
             lastDate: DateTime(2100));
-          if (pickeddate != null){
-            setState(() {
-              _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-            });
+            if (pickeddate != null){
+              setState(() {
+                _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
+              });
             }
           },
         onChanged: (value) {
@@ -237,6 +292,7 @@ class reportPageBackup extends StatefulWidget{
               });
             }
           },
+          
         onChanged: (value) {
           setState(() {
             _errorDateEnd = valid.checkDate(_tecDateEnd.text);
@@ -259,6 +315,7 @@ class reportPageBackup extends StatefulWidget{
       onChanged: (String? value) {
         // This is called when the user selects an item.
         setState(() {
+          setLoading(true);          
           periodValue = value!;
         });
       },
@@ -276,15 +333,28 @@ class reportPageBackup extends StatefulWidget{
     future: _getRegister(), // a previously-obtained Future<String> or null
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         List<Widget> children;
-        if (snapshot.hasData) {
+        if (!_isLoading) {
           children = <Widget>[
-            Flexible(
-              child: ScrollableTableView(
-                paginationController: _paginationController,
-                columns: _columnPanel(),
-                rows: _rowsPanel(),
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)
+                ),
+              child: HorizontalDataTable(
+                leftHandSideColumnWidth: 100,
+                rightHandSideColumnWidth: _columnWidth*(_columnTitle.length-1),
+                isFixedHeader: true,
+                headerWidgets: _columnTitle,
+                leftSideItemBuilder: _rowTitle,
+                rightSideItemBuilder: _rowPanel,
+                itemCount: registers.length,
+                rowSeparatorWidget: const Divider(
+                  color: Colors.black54,
+                  height: 1.0,
+                  thickness: 0.0,
+                ),
               ),
-            ),
+              height: MediaQuery.of(context).size.height-200,
+            ),     
           ];
         } else if (snapshot.hasError) {
           children = <Widget>[
@@ -317,49 +387,82 @@ class reportPageBackup extends StatefulWidget{
     );
   }
 
-  List<TableViewColumn> _columnPanel(){
-    List<TableViewColumn> columns = <TableViewColumn>[];
-
-    for(int i=0;i<periodTitle.length;i++){
-      columns.add(
-        TableViewColumn(
-          width: 80,     
-          labelFontSize: 11.5,
-          label: periodTitle[i],
+  Widget _rowTitle(BuildContext context, int index) {
+    return Container(       
+      child: Text(
+        registers[index].account.description,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         )
-      );
-    }
-
-    return columns;
+      ),
+      color: Colors.grey,
+      height: _rowHeight,
+      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      alignment: Alignment.centerLeft,
+    );
   }
 
-  List<TableViewRow> _rowsPanel(){
-    List<TableViewRow> rows = <TableViewRow>[];   
+  Widget _rowPanel(BuildContext context, int index) {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          height: _rowHeight,          
+            child: Row(            
+              children: _getRowsPanel(registers[index]),
+            ),
+          ),
+      ],
+    );
+  }
 
-    for(int i=0;i<registers.length;i++){
-      List<TableViewCell> cell = <TableViewCell>[]; 
-      for(int j=0;j<registers[i].register.length;j++){
-        cell.add(
-          TableViewCell(
-            child: TextButton(
-                child: Text(registers[i].register[j].sum.toString()),
-                onPressed: () {},              
-              ),
-          )
-        );
-      }
-      rows.add(
-        TableViewRow(
-          height: 50,
-          cells: cell,
-          
-        )
-      );
+  List<Widget> _getRowsPanel(_tempRowRegister r){
+
+    Color foregroundColor = Colors.red;
+    if(r.account.credit){
+      foregroundColor = Colors.blue;
     }
+
+    List<Widget> rows = <Widget>[];
+    for(int i=0;i<r.register.length;i++){
+      rows.add(
+        SizedBox(
+          width: _columnWidth,
+          child: TextButton(          
+            child: Text(
+              convert.doubleToCurrencyBR(r.register[i].sum),
+              style: TextStyle(
+                color: foregroundColor
+              ),
+            ),
+            onPressed: () {
+              final updateCheck = Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => 
+                  ListFinancialRegisterPage(
+                    idAccount: r.account.id,
+                    start: start,
+                    end: end,
+                    title: _columnTitle[i+1],
+                    registers: r.register[i].cellRegister,
+                  )
+                ),
+              );
+              updateCheck.then((value) {
+                if(value=="update"){
+                  setState(() { });
+                }
+              });
+            },              
+          ),
+        ),
+      );
+    }    
     return rows;
   }
 
-}
+  }
 
 // ignore: camel_case_types
 class _tempRowRegister{
@@ -368,7 +471,7 @@ class _tempRowRegister{
 
   _tempRowRegister(this.account,int col){
     for(int i=0;i<col;i++){
-      _tempCellRegister c = _tempCellRegister();
+      _tempCellRegister c = _tempCellRegister(i);
       register.add(c);
     }
   }
@@ -382,7 +485,10 @@ class _tempRowRegister{
 // ignore: camel_case_types
 class _tempCellRegister{
   late double sum = 0;
+  late int position;
   late List<FinancialEntryRegister> cellRegister = <FinancialEntryRegister>[];
+
+  _tempCellRegister(this.position);
 
   bool include(FinancialEntryRegister f){
     sum += f.value;
