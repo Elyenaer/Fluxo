@@ -1,9 +1,9 @@
 
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
-import 'package:firebase_write/main.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
@@ -14,7 +14,6 @@ import 'package:intl/intl.dart';
 
 import '../help/mask.dart';
 import '../help/valid.dart';
-import '../settings/theme.dart';
 
 // ignore: camel_case_types, must_be_immutable
 class reportPage extends StatefulWidget{
@@ -33,9 +32,10 @@ class reportPage extends StatefulWidget{
   class _MyHomePageState extends State<reportPage> {
     late List<_tempRowRegister> registers = <_tempRowRegister>[];
     
-    late BuildContext context;
+    @override
+    //late BuildContext context;
 
-    late final List<Widget> _columnTitle = <Widget>[];
+    late final List<String> _columnTitle = <String>[];
     static const double _columnWidth = 100;
     static const double _rowHeight = 50;
     
@@ -43,7 +43,7 @@ class reportPage extends StatefulWidget{
     final TextEditingController _tecDateStart = TextEditingController(text: '');
     final TextEditingController _tecDateEnd = TextEditingController(text: '');
     late DateTime start,end;
-    late double _currentSliderValue = 1.0;
+    late double _scalePanel = 1.0;
 
     String? _errorDateStart;
     String? _errorDateEnd;
@@ -55,7 +55,7 @@ class reportPage extends StatefulWidget{
 
   @override
   void initState(){
-    context = widget.context;
+    //context = widget.context;
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
     _getRegister();
@@ -81,7 +81,6 @@ class reportPage extends StatefulWidget{
 
   _getColumnTitle(){    
     _columnTitle.clear();
-    _columnTitle.add(_titleItem(""));
     DateTime d;
     if(periodValue=="Diário"){
       start = convert.StringToDatetime(_tecDateStart.text);
@@ -89,9 +88,9 @@ class reportPage extends StatefulWidget{
       d = start;
       int periodLenght = end.difference(d).inDays;
       for(int i=0;i<periodLenght+1;i++){
-        _columnTitle.add(_titleItem(d.year.toString() +
-         "\n" + convert.DatetimeMonthBr(d.month) + 
-         "\n" + d.day.toString()));
+        _columnTitle.add(d.year.toString() +
+         "\n" + convert.DatetimeMonthBr(d.month,true) + 
+         "\n" + d.day.toString());
         d = d.add(const Duration(days: 1));        
       }
     }
@@ -102,7 +101,7 @@ class reportPage extends StatefulWidget{
         convert.StringToDatetime(_tecDateEnd.text),true,6);    
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        _columnTitle.add(convert.DatePeriod(d, periodValue));    
         d = d.add(const Duration(days: 7));              
       }
     }else if(periodValue=="Mensal"){
@@ -112,7 +111,7 @@ class reportPage extends StatefulWidget{
         convert.StringToDatetime(_tecDateEnd.text),false);
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        _columnTitle.add(convert.DatePeriod(d, periodValue));    
         d = funcDate.addMonth(d);  
       }
     }else{
@@ -122,29 +121,10 @@ class reportPage extends StatefulWidget{
         convert.StringToDatetime(_tecDateEnd.text),false);
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(_titleItem(convert.DatePeriod(d, periodValue)));    
+        _columnTitle.add(convert.DatePeriod(d, periodValue));    
         d = funcDate.addYear(d);  
       }
     }
-  }
-
-  // ignore: non_constant_identifier_names
-  _titleItem(String label) {    
-    return Container(     
-      color: Theme.of(widget.context).scaffoldBackgroundColor,
-      child: Text(
-        label, 
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          )
-        ),
-      width: _columnWidth,
-      height: 56,
-      alignment: Alignment.center,
-      //color: Theme.of(context).appBarTheme.backgroundColor,
-      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-    );
   }
   
   _getRegister() async {
@@ -235,7 +215,7 @@ class reportPage extends StatefulWidget{
               :Row(
                 children: [
                   Expanded(
-                    child: _panel(context),
+                    child: _panel(),
                   ),
                 ]
               )
@@ -340,17 +320,20 @@ class reportPage extends StatefulWidget{
     );
   }
 
-  Widget _panel(BuildContext context){
+  Widget _panel(){
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.blueAccent),
+            border: Border.all(
+              color: Theme.of(context).primaryColor,
+              width: 1.5,
+            ),
           ),
         height: MediaQuery.of(context).size.height-200,        
         child: HorizontalDataTable(
-          leftHandSideColumnWidth: 100,
-          rightHandSideColumnWidth: _columnWidth*(_columnTitle.length-1),
+          leftHandSideColumnWidth: (_columnWidth+20)*_scalePanel,
+          rightHandSideColumnWidth: _columnWidth*(_columnTitle.length)*_scalePanel,
           isFixedHeader: true,
-          headerWidgets: _columnTitle,
+          headerWidgets: _titleItem(),
           leftSideItemBuilder:  _rowTitle,
           rightSideItemBuilder: _rowPanel,
           itemCount: registers.length,
@@ -362,17 +345,75 @@ class reportPage extends StatefulWidget{
       );
   }
 
-  Widget _rowTitle(BuildContext context, int index) {
-    return Container(       
-      child: Text(
-        registers[index].account.description,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
+  // ignore: non_constant_identifier_names
+  List<Widget> _titleItem() {    
+
+    List<Widget> title = <Widget>[];
+
+    title.add(Container(     
+      color: Theme.of(context).scaffoldBackgroundColor,
+      width: (_columnWidth+20) * _scalePanel,
+      height: _rowHeight * _scalePanel,
+      child: Transform.scale(
+        scale: _scalePanel,
+        child: FloatingActionButton(          
+          elevation: 0.0,        
+          onPressed: () {
+
+          },      
+          child: Icon(
+            Icons.schema_outlined,
+            color: Theme.of(context).primaryColor,
+            ),
+          backgroundColor: Colors.transparent,
         )
+      )
+    ));
+    
+    for(int i=0;i<_columnTitle.length;i++){
+      title.add(
+        Container(     
+          color: Theme.of(context).appBarTheme.backgroundColor,
+            child: AutoSizeText(
+              _columnTitle[i], 
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              minFontSize: 1,
+              style: TextStyle(
+                color: Theme.of(context).appBarTheme.foregroundColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0 * _scalePanel
+              )
+          ),
+          width: _columnWidth * _scalePanel,
+          height: _rowHeight * _scalePanel,
+          alignment: Alignment.center,
+          //color: Theme.of(context).appBarTheme.backgroundColor,
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        )
+      );
+    }
+
+    return title;
+  }
+
+  Widget _rowTitle(BuildContext context, int index) {
+    return Center(
+      child: Container(       
+            child: AutoSizeText(
+              registers[index].account.description,
+              maxLines: 2,
+              minFontSize: 1,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0 * _scalePanel,
+              )
+            ),
+        height: _rowHeight * _scalePanel,
+        width: _columnWidth * _scalePanel,
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        alignment: Alignment.centerLeft,
       ),
-      height: _rowHeight,
-      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-      alignment: Alignment.centerLeft,
     );
   }
 
@@ -380,7 +421,7 @@ class reportPage extends StatefulWidget{
     return Row(
       children: <Widget>[
         SizedBox(
-          height: _rowHeight,          
+          height: _rowHeight * _scalePanel,          
             child: Row(            
               children: _getRowsPanel(registers[index]),
             ),
@@ -396,16 +437,41 @@ class reportPage extends StatefulWidget{
       foregroundColor = Colors.blue;
     }
 
+    bool color1 = true;
+
     List<Widget> rows = <Widget>[];
     for(int i=0;i<r.register.length;i++){
+
+      Color backgroundColor;
+      if(r.account.credit){
+        if(!color1){
+          backgroundColor = const Color(0xFFFFB4B4);
+        // ignore: dead_code
+        }else{
+          backgroundColor = const Color(0xFFFFD2D2);
+        }
+      }else{
+        if(color1){
+          backgroundColor = const Color(0xFFB4B4FF);
+        // ignore: dead_code
+        }else{
+          backgroundColor = const Color(0xFFD2D2FF);
+        }
+      }
+      color1 = !color1;
+
       rows.add(
-        SizedBox(
-          width: _columnWidth,
-          child: TextButton(          
-            child: Text(
+        Container(
+          width: _columnWidth *_scalePanel,
+          color: backgroundColor,
+          child: TextButton(       
+            child: AutoSizeText(                            
               convert.doubleToCurrencyBR(r.register[i].sum),
+              minFontSize: 1,
+              maxLines: 1,
               style: TextStyle(
-                color: foregroundColor
+                color: foregroundColor,
+                fontSize: 15.0 * _scalePanel            
               ),
             ),
             onPressed: () {
@@ -414,10 +480,10 @@ class reportPage extends StatefulWidget{
                 MaterialPageRoute(
                   builder: (context) => 
                   ListFinancialRegisterPage(
+                    title: _columnTitle[i],
                     idAccount: r.account.id,
                     start: start,
                     end: end,
-                    title: _columnTitle[i+1],
                     registers: r.register[i].cellRegister,
                   )
                 ),
@@ -437,13 +503,14 @@ class reportPage extends StatefulWidget{
 
   Widget _sliderScale(){
     return Slider(
-      value: _currentSliderValue,
+      value: _scalePanel,
       max: 3.0,
-      min: 0.3,
-      label: _currentSliderValue.round().toString(),
+      min: 0.1,
+      divisions: 29,
+      label: convert.percent(_scalePanel,1.0,0),
       onChanged: (double value) {
         setState(() {
-          _currentSliderValue = value;
+          _scalePanel = value;
         });
       },
     );

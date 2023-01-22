@@ -1,24 +1,18 @@
-2023/01/20-19:33:02.998 1390 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.1c373b2d\flutter_tools_chrome_device.46226e49\Default\Asset Store\assets.db/MANIFEST-000001
-2023/01/20-19:33:03.011 1390 Recovering log #23
-2023/01/20-19:33:03.023 1390 Level-0 table #25: started
-2023/01/20-19:33:10.118 1390 Level-0 table #25: 259530 bytes OK
-2023/01/20-19:33:10.157 1390 Delete type=2 #3
-2023/01/20-19:33:10.157 1390 Delete type=0 #3
-2023/01/20-19:33:10.157 1390 Delete type=0 #4
-2023/01/20-19:33:10.157 1390 Delete type=2 #6
-2023/01/20-19:33:10.158 1390 Delete type=0 #7
-2023/01/20-19:33:10.158 1390 Delete type=2 #9
-2023/01/20-19:33:10.158 1390 Delete type=0 #10
-2023/01/20-19:33:10.158 1390 Delete type=0 #13
-2023/01/20-19:33:10.158 1390 Delete type=0 #17
-2023/01/20-19:33:10.159 1390 Delete type=0 #20
-2023/01/20-19:33:10.159 1390 Delete type=0 #23
-2023/01/20-19:33:10.231 381c Compacting 4@0 + 1@1 files
-2023/01/20-19:33:10.555 381c Generated table #27@0: 18 keys, 310678 bytes
-2023/01/20-19:33:10.556 381c Compacted 4@0 + 1@1 files => 310678 bytes
-2023/01/20-19:33:10.557 381c compacted to: files[ 0 1 0 0 0 0 0 ]
-2023/01/20-19:33:10.566 381c Delete type=2 #14
-2023/01/20-19:33:10.567 381c Delete type=2 #16
-2023/01/20-19:33:10.567 381c Delete type=2 #19
-2023/01/20-19:33:10.567 381c Delete type=2 #22
-2023/01/20-19:33:10.567 381c Delete type=2 #25
+2023/01/21-17:48:39.974 2f18 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.1821a9b3\flutter_tools_chrome_device.431c4305\Default\Asset Store\assets.db/MANIFEST-000001
+2023/01/21-17:48:39.977 2f18 Recovering log #26
+2023/01/21-17:48:39.978 2f18 Reusing old log C:\Users\Home\AppData\Local\Temp\flutter_tools.1821a9b3\flutter_tools_chrome_device.431c4305\Default\Asset Store\assets.db/000026.log 
+2023/01/21-17:48:39.980 2f18 Delete type=2 #3
+2023/01/21-17:48:39.980 2f18 Delete type=0 #3
+2023/01/21-17:48:39.980 2f18 Delete type=0 #4
+2023/01/21-17:48:39.980 2f18 Delete type=2 #6
+2023/01/21-17:48:39.980 2f18 Delete type=0 #7
+2023/01/21-17:48:39.980 2f18 Delete type=2 #9
+2023/01/21-17:48:39.981 2f18 Delete type=0 #10
+2023/01/21-17:48:39.981 2f18 Delete type=0 #13
+2023/01/21-17:48:40.005 2f18 Delete type=2 #14
+2023/01/21-17:48:40.005 2f18 Delete type=2 #16
+2023/01/21-17:48:40.005 2f18 Delete type=0 #17
+2023/01/21-17:48:40.005 2f18 Delete type=2 #19
+2023/01/21-17:48:40.005 2f18 Delete type=0 #20
+2023/01/21-17:48:40.005 2f18 Delete type=2 #22
+2023/01/21-17:48:40.005 2f18 Delete type=0 #23

@@ -21,12 +21,30 @@ class theme{
     try{
       await _getTheme();
       return ThemeData(
+
         appBarTheme: AppBarTheme(
           backgroundColor: register.backgroundTitle,
           foregroundColor: register.foregroundTitle
         ),
+
+        buttonTheme: ButtonThemeData(
+          buttonColor: register.widgetPrimaryColor, 
+          textTheme: ButtonTextTheme.primary, 
+        ),
+
+        sliderTheme: SliderThemeData(
+          thumbColor: register.widgetPrimaryColor,
+          overlayColor: register.widgetSecondaryColor,
+          valueIndicatorColor: register.widgetSecondaryColor,
+          inactiveTrackColor: register.widgetSecondaryColor,
+          inactiveTickMarkColor: register.widgetSecondaryColor,
+          activeTrackColor: register.widgetPrimaryColor,
+          activeTickMarkColor: register.widgetPrimaryColor,
+
+        ),
+
         scaffoldBackgroundColor: register.backgroundMain,
-        primaryColor: Colors.black,
+        primaryColor: register.backgroundTitle,
       );
     }catch(e){
       print("ERRO CURRENT -> $e");

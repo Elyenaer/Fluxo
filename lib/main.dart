@@ -22,12 +22,11 @@ class MyApp extends StatelessWidget {
   ThemeData themeMain;
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return MaterialApp(
       theme: themeMain,
       debugShowCheckedModeBanner: false,
-      home: reportPage(context: context,),
-      
+      home: reportPage(context: context,),      
     );
   }
 }

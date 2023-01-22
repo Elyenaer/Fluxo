@@ -203,11 +203,11 @@
          "enabled": true,
          "fre_notification": {
             "enabled": false,
-            "header": "We have automatically opened games for an enhanced contextual experience.",
-            "text": "We have automatically opened games for an enhanced contextual experience."
+            "header": "Abrir este painel foi útil para você?",
+            "text": "Abrir este painel foi útil para você?"
          },
-         "settings_description": "Allows links from different Windows OS surfaces to open Casual Games in the sidepane when Microsoft Edge is launched",
-         "settings_title": "Automatically open Casual Games in the side pane"
+         "settings_description": "Permite que links de diferentes superfícies do sistema operacional Windows abram o Casual Games no painel lateral quando o Microsoft Edge é iniciado.",
+         "settings_title": "Abrir o Casual Games no painel lateral automaticamente"
       },
       "capabilities": {
          "resize_disabled": true
@@ -233,9 +233,9 @@
       "description": "Jogue jogos populares gratuitamente",
       "icon": {
          "raster_icon": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_games_dark-2x.png/1.5.10/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_games_hc-2x.png/1.5.10/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_games_light-2x.png/1.5.10/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_games_dark-2x.png/1.6.10/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_games_hc-2x.png/1.6.10/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_games_light-2x.png/1.6.10/asset"
          }
       },
       "id": "96defd79-4015-4a32-bd09-794ff72183ef",
@@ -259,17 +259,17 @@
          "url|flight:msEdgeHubAppGameSearchEnabled": "https://www.msn.com/widgets/fullpage/gaming/widget?experiences=CasualGamesHub&sharedHeader=1&playInSidebar=1&gameSearchEnabled=1",
          "url|flight:msEdgeHubAppPlayGamesInSidebar": "https://www.msn.com/widgets/fullpage/gaming/widget?experiences=CasualGamesHub&sharedHeader=1&playInSidebar=1"
       },
-      "version": "1.5.10"
+      "version": "1.6.10"
    }, {
       "auto_show": {
          "enabled": true,
          "fre_notification": {
             "enabled": false,
-            "header": "We have automatically opened Microsoft Office for an enhanced contextual experience.",
-            "text": "We have automatically opened Microsoft Office for an enhanced contextual experience."
+            "header": "Abrir este painel foi útil para você?",
+            "text": "Abrir este painel foi útil para você?"
          },
-         "settings_description": "Allows links from different Windows OS surfaces to open Office in the sidepane when Microsoft Edge is launched",
-         "settings_title": "Automatically open Office in the side pane"
+         "settings_description": "Permite que links de diferentes superfícies do sistema operacional Windows abram o Office no painel lateral quando Microsoft Edge é iniciado.",
+         "settings_title": "Abrir o Office no painel lateral automaticamente"
       },
       "custom_actions": [ {
          "action": {
@@ -279,7 +279,7 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_word.png/1.5.21/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_word.png/1.6.22/asset"
             }
          },
          "location": "hovercard",
@@ -292,7 +292,7 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_excel.png/1.5.21/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_excel.png/1.6.22/asset"
             }
          },
          "location": "hovercard",
@@ -305,11 +305,11 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_power_point.png/1.5.21/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_power_point.png/1.6.22/asset"
             }
          },
          "location": "hovercard",
-         "name": "Criar nova Apresentação"
+         "name": "Criar nova apresentação"
       }, {
          "action": {
             "target": "sidepane",
@@ -324,17 +324,17 @@
       } ],
       "default_locale": "en",
       "description": "Acesse aplicativos do Microsoft Office gratuitamente",
-      "description|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "Access Microsoft 365 apps for free",
+      "description|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "Acesse o Microsoft 365 Apps gratuitamente",
       "icon": {
          "raster_icon": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.5.21/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_office_hc.png/1.5.21/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.5.21/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.6.22/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_office_hc.png/1.6.22/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.6.22/asset"
          },
          "raster_icon|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_dark.png/1.5.21/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_hc_dark.png/1.5.21/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_light.png/1.5.21/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_dark.png/1.6.22/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_hc_dark.png/1.6.22/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_light.png/1.6.22/asset"
          }
       },
       "id": "64be4f9b-3b81-4b6e-b354-0ba00d6ba485",
@@ -348,7 +348,7 @@
             "bubble_notifications": {
                "domains": [ "www.office.com", "www.microsoft365.com" ],
                "text": "Use o Microsoft Office gratuitamente!",
-               "text|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "Office is now Microsoft 365. Use for free!"
+               "text|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "O Office agora é Microsoft 365. Use gratuitamente!"
             }
          },
          "enabled": true
@@ -359,7 +359,7 @@
          "url": "edge://free-office/?sharedHeader=1",
          "url|flight:msEdgeHubAppOfficeCom": "https://www.office.com"
       },
-      "version": "1.5.21"
+      "version": "1.6.22"
    }, {
       "auto_show": {
          "enabled": true,
@@ -1418,11 +1418,11 @@
       "flights": [ "msEdgeHubAppTikTok" ],
       "icon": {
          "raster_icon": {
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_tik_tok.png/1.0.0/asset"
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_tik_tok.png/1.0.1/asset"
          }
       },
       "id": "add60331-bd63-40db-bd63-5d2125e0779b",
-      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArm0iDXTxPXZAvb3g3SU1iquBQfKNLFdJEpis9FNmSzqHmWW3rO4yyqKxDY4VezYGaC7Rrg56kRv8yiLWySlUCQMuwHSXlArvbUw9edHMCTFoO0Of8tLgCzWsorDrTub1d8FoMDm4CEdhJWvjdvm2b2ARR5YLoxlRRVo0xTTXgZj3ngF5uBHBPc4c5NxnSYB86KzI1rvEiUCBsWUOmfH4/4BCGpOPE2exwlJ9oYylDaoCPmeCQPcmzs2khtOUgyReit4G730lrl7NrAhiVAPylWE2Svl8Xdc/Bu6ycwZGvuGFaoIiNvl75stx11WxAHYO0i7E8I6TmxGxwPcGeFAFwIDAQAB",
+      "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAujo1z7cnsItcOyq89WfsvL7tTHpN5kMSpSCSebOxSO1cdtxtO7aRkB0mqlx7e5qGXFPcFtPc1N/J2dTsDgHVPI0r5Glk/PRN3hIKrpMraNMYGi425+08/Y0PpQ3xS9kPDDmpzIDsQaHCFj7W4YYJGUNo4Ruew2+7xh+/x+60gHv02+vh/0YUDXo+jERNjjOysVffLjwVa6MeWWlKtbQEUxPiUKFOLb251R4Krep3GszOstgkcsYe9b4i9oEpY0AOvuEgm1+c/QtDYXcSUFgm3KZmdEPl6wBwA3uBcI24wduVRC0f0Mn3Vj67HPIP/+gPZDACc6wOV+hu8ebSXnbOaQIDAQAB",
       "locales": [ "en" ],
       "manifest_version": 3,
       "name": "TikTok",
@@ -1430,7 +1430,7 @@
       "target": {
          "url": "https://www.tiktok.com/"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
    }, {
       "default_locale": "en",
       "description": "Earn valuable Microsoft Rewards just by searching, shopping, and gaming with Microsoft",

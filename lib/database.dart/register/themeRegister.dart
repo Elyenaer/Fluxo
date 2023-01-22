@@ -14,6 +14,9 @@ class ThemeRegister{
   late Color foregroundMain;
   late Color foregroundTitle;
 
+  late Color widgetPrimaryColor;
+  late Color widgetSecondaryColor;
+  late Color widgetForeground;
 
   setBackgrounMain(String hex){
     backgroundMain = funcColor.getHex(hex);
@@ -29,6 +32,18 @@ class ThemeRegister{
 
   setForegroundTitle(String hex){
     foregroundTitle = funcColor.getHex(hex);
+  }
+
+  setWidgetPrimaryColor(String hex){
+    widgetPrimaryColor = funcColor.getHex(hex);
+  }
+
+  setWidgetSecondaryColor(String hex){
+    widgetSecondaryColor = funcColor.getHex(hex);
+  }
+
+  setWidgetForeground(String hex){
+    widgetForeground = funcColor.getHex(hex);
   }
 
 }

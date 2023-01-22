@@ -31,6 +31,10 @@ class ThemeConnect {
       reg.setForegroundMain(data['foregroundMain']);
       reg.setForegroundTitle(data['foregroundTitle']);
 
+      reg.setWidgetPrimaryColor(data['widgetPrimaryColor']);
+      reg.setWidgetSecondaryColor(data['widgetSecondaryColor']);
+      reg.setWidgetForeground(data['widgetForeground']);
+
       return reg;
     }catch(e){
       print("ERRO _CONVERTREGISTER $e");

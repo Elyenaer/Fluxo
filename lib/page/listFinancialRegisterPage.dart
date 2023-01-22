@@ -24,7 +24,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
     DateTime start;
     DateTime end;
     reportPage? report;
-    Widget title;
+    String title;
 
    @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -34,7 +34,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
   // ignore: non_constant_identifier_names
   class _MyHomePageState extends State<ListFinancialRegisterPage> {
   List<FinancialEntryRegister>? registers;
-  late Widget title;
+  late String title;
   bool isLoading = false;
 
   @override
@@ -133,7 +133,9 @@ class ListFinancialRegisterPage extends StatefulWidget{
             ),
             Expanded(
               child:Center(
-                child: title
+                child: Text(
+                  title
+                )
               ), 
             ),   
             Transform.scale(
