@@ -1,4 +1,5 @@
 
+import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/reportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: themeMain,
       debugShowCheckedModeBanner: false,
-      home: reportPage(context: context,),      
+      home: const FinancialEntryPage(),      
     );
   }
 }

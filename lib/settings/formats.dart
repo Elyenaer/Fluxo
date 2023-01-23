@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 // ignore: camel_case_types
 class formats{
 
-  static Text standard(String text){
+  static Text standard(String text,Color foreground){
     return Text(
       text,
-      style: const TextStyle(
-        color: Colors.black,
+      style: TextStyle(
+        color: foreground,
         height: 1, 
         fontSize: 15,      
       ),

@@ -1,7 +1,9 @@
 
+import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/reportPage.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
+import 'package:firebase_write/settings/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/help/convert.dart';
@@ -11,19 +13,21 @@ import 'package:firebase_write/settings/formats.dart';
 class ListFinancialRegisterPage extends StatefulWidget{
     ListFinancialRegisterPage({
       Key? key,
-      required this.idAccount,
+      required this.account,
       this.registers,
       required this.start,
       required this.end,
+      required this.backgroundTitle,
       required this.title
     }) : super(key: key);
 
     BuildContext? context;
-    int idAccount;
+    AccountRegister account;
     List<FinancialEntryRegister>? registers;
     DateTime start;
     DateTime end;
     reportPage? report;
+    Color backgroundTitle;
     String title;
 
    @override
@@ -58,7 +62,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
   Future<void> _getRegisters() async {
     _isLoading(true);
-    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.idAccount,widget.start,widget.end);
+    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.account.id,widget.start,widget.end);
     _isLoading(false);
   }
 
@@ -83,9 +87,9 @@ class ListFinancialRegisterPage extends StatefulWidget{
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
-        child: isLoading
-          ? const Center(child: CircularProgressIndicator()):          
-        Column(
+      child: isLoading
+        ? const Center(child: CircularProgressIndicator()):          
+      Column(
         children: [
           _title(),
           Expanded(
@@ -112,7 +116,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
   Widget _title(){
     return Container(
-      color: const Color.fromARGB(255, 195, 212, 220),
+      color: widget.backgroundTitle,
       height: 60,
       padding: const EdgeInsets.fromLTRB(10,10,10,0),
       child: Center(
@@ -124,6 +128,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
               alignment: Alignment.centerLeft,
               scale: 0.5,
               child: FloatingActionButton(
+                backgroundColor: widget.backgroundTitle,
                 heroTag: UniqueKey(),
                 child: const Icon(Icons.arrow_back),
                 onPressed: () {                  
@@ -133,15 +138,21 @@ class ListFinancialRegisterPage extends StatefulWidget{
             ),
             Expanded(
               child:Center(
-                child: Text(
-                  title
+                child: Text(                  
+                  widget.account.description.toUpperCase() + "\n" + title.replaceAll('\n'," "),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold                    
+                  ),
                 )
               ), 
             ),   
             Transform.scale(
               alignment: Alignment.centerRight,
               scale: 0.5,
-              child: FloatingActionButton(
+              child: FloatingActionButton(     
+                backgroundColor: widget.backgroundTitle,           
                 heroTag: UniqueKey(),
                 child: const Icon(Icons.addchart_outlined),                                
                 onPressed: () {
@@ -168,12 +179,23 @@ class ListFinancialRegisterPage extends StatefulWidget{
   }
 
   Widget _showRegister(FinancialEntryRegister r){
+
+    Color backgroundEntryColor = theme.backgroundEntryDebt1;
+    Color foregroundEntryColor = theme.backgroundTitleDebt2;
+    Color backgroundButton = theme.backgroundTitleDebt1;
+
+    if(widget.account.credit){
+      backgroundEntryColor = theme.backgroundEntryCredit1;
+      foregroundEntryColor = theme.backgroundTitleCredit2;
+      backgroundButton = theme.backgroundTitleCredit1;
+    }
+
     return Container(
       height: 85,
       padding: const EdgeInsets.fromLTRB(10,10,10,0),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 225, 210, 210),
-        border: Border.all(width: 2, color: Colors.blueGrey),
+        color: backgroundEntryColor,
+        border: Border.all(width: 2, color: foregroundEntryColor),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ), 
       child: Center(
@@ -182,13 +204,13 @@ class ListFinancialRegisterPage extends StatefulWidget{
             Row(
               verticalDirection: VerticalDirection.up,
               children: [
-                formats.standard(convert.DatetimeToDateBr(r.date)),
+                formats.standard(convert.DatetimeToDateBr(r.date),foregroundEntryColor),
                 const SizedBox(width: 20,),
                 Expanded(
-                  child: formats.standard(r.description),              
+                  child: formats.standard(r.description,foregroundEntryColor),              
                 ), 
                 const SizedBox(width: 20,),
-                formats.standard(convert.doubleToCurrencyBR(r.value))
+                formats.standard(convert.doubleToCurrencyBR(r.value),foregroundEntryColor)
               ],
             ),   
             Transform.scale(
@@ -199,6 +221,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   FloatingActionButton(
+                    backgroundColor: backgroundButton,
                     heroTag: UniqueKey(),
                     child: const Icon(Icons.edit),                                
                     onPressed: () {
@@ -220,6 +243,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
                   ),
                   const SizedBox(width: 10,),
                   FloatingActionButton(
+                    backgroundColor: backgroundButton,
                     heroTag: UniqueKey(),
                     child: const Icon(Icons.delete),
                     onPressed: () {

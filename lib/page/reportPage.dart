@@ -7,6 +7,7 @@ import 'package:firebase_write/help/funcDate.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
+import 'package:firebase_write/settings/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
@@ -17,12 +18,9 @@ import '../help/valid.dart';
 
 // ignore: camel_case_types, must_be_immutable
 class reportPage extends StatefulWidget{
-  reportPage({
+  const reportPage({
     Key? key,
-    required this.context,
   }) : super(key: key);
-
-    BuildContext context;
 
    @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -35,6 +33,7 @@ class reportPage extends StatefulWidget{
     @override
     //late BuildContext context;
 
+    // ignore: override_on_non_overriding_member
     late final List<String> _columnTitle = <String>[];
     static const double _columnWidth = 100;
     static const double _rowHeight = 50;
@@ -74,7 +73,7 @@ class reportPage extends StatefulWidget{
    
     registers.clear();
     for(int i=0;i<account!.length;i++){
-      _tempRowRegister temp = _tempRowRegister(account[i],_columnTitle.length-1);
+      _tempRowRegister temp = _tempRowRegister(account[i],_columnTitle.length);
       registers.add(temp);
     }
   }
@@ -398,19 +397,21 @@ class reportPage extends StatefulWidget{
   }
 
   Widget _rowTitle(BuildContext context, int index) {
+
     return Center(
-      child: Container(       
-            child: AutoSizeText(
-              registers[index].account.description,
-              maxLines: 2,
-              minFontSize: 1,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0 * _scalePanel,
-              )
-            ),
+      child: Container(     
+        color: _getBackgroundRowTitle(index,registers[index].account.credit),  
+        child: AutoSizeText(
+          registers[index].account.description,
+          maxLines: 2,
+          minFontSize: 1,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0 * _scalePanel,
+            color: Colors.white
+          )
+        ),
         height: _rowHeight * _scalePanel,
-        width: _columnWidth * _scalePanel,
         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
         alignment: Alignment.centerLeft,
       ),
@@ -418,51 +419,50 @@ class reportPage extends StatefulWidget{
   }
 
   Widget _rowPanel(BuildContext context, int index) {
+
+    Color backgroundColor;
+    if(registers[index].account.credit){
+      if(index % 2 == 0){
+        backgroundColor = theme.backgroundEntryCredit1;
+      // ignore: dead_code
+      }else{
+        backgroundColor = theme.backgroundEntryCredit2;
+      }
+    }else{
+      if(index % 2 == 0){
+        backgroundColor = theme.backgroundEntryDebt1;
+      // ignore: dead_code
+      }else{
+        backgroundColor = theme.backgroundEntryDebt2;
+      }
+    }
+
     return Row(
       children: <Widget>[
         SizedBox(
           height: _rowHeight * _scalePanel,          
             child: Row(            
-              children: _getRowsPanel(registers[index]),
+              children: _getRowsPanel(registers[index],backgroundColor),
             ),
           ),
       ],
     );
   }
 
-  List<Widget> _getRowsPanel(_tempRowRegister r){
+  List<Widget> _getRowsPanel(_tempRowRegister r,Color backgroundColor){
 
-    Color foregroundColor = Colors.red;
+    Color foregroundColor = theme.foregroundEntryDebt;
     if(r.account.credit){
-      foregroundColor = Colors.blue;
+      foregroundColor = theme.foregroundEntryCredit;
     }
 
-    bool color1 = true;
-
     List<Widget> rows = <Widget>[];
-    for(int i=0;i<r.register.length;i++){
-
-      Color backgroundColor;
-      if(r.account.credit){
-        if(!color1){
-          backgroundColor = const Color(0xFFFFB4B4);
-        // ignore: dead_code
-        }else{
-          backgroundColor = const Color(0xFFFFD2D2);
-        }
-      }else{
-        if(color1){
-          backgroundColor = const Color(0xFFB4B4FF);
-        // ignore: dead_code
-        }else{
-          backgroundColor = const Color(0xFFD2D2FF);
-        }
-      }
-      color1 = !color1;
+    for(int i=0;i<r.register.length;i++){      
 
       rows.add(
         Container(
           width: _columnWidth *_scalePanel,
+          height: _rowHeight * _scalePanel,
           color: backgroundColor,
           child: TextButton(       
             child: AutoSizeText(                            
@@ -480,8 +480,9 @@ class reportPage extends StatefulWidget{
                 MaterialPageRoute(
                   builder: (context) => 
                   ListFinancialRegisterPage(
+                    backgroundTitle: _getBackgroundRowTitle(i,r.account.credit),
+                    account: r.account,
                     title: _columnTitle[i],
-                    idAccount: r.account.id,
                     start: start,
                     end: end,
                     registers: r.register[i].cellRegister,
@@ -514,6 +515,24 @@ class reportPage extends StatefulWidget{
         });
       },
     );
+  }
+
+  Color _getBackgroundRowTitle(int i,bool credit){
+    if(!credit){
+      if(i % 2 == 0){
+        return theme.backgroundTitleDebt1;
+      // ignore: dead_code
+      }else{
+        return theme.backgroundTitleDebt2;
+      }
+    }else{
+      if(i == 0){
+        return theme.backgroundTitleCredit1;
+      // ignore: dead_code
+      }else{
+        return theme.backgroundTitleCredit2;
+      }
+    }
   }
 
   }

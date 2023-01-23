@@ -1,20 +1,19 @@
-2023/01/21-19:25:36.656 3114 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.1939881d\flutter_tools_chrome_device.504b3ce4\Default\Asset Store\assets.db/MANIFEST-000001
-2023/01/21-19:25:36.662 3114 Recovering log #26
-2023/01/21-19:25:36.667 3114 Level-0 table #29: started
-2023/01/21-19:25:36.753 3114 Level-0 table #29: 348793 bytes OK
-2023/01/21-19:25:36.758 3114 Delete type=2 #3
-2023/01/21-19:25:36.758 3114 Delete type=0 #3
-2023/01/21-19:25:36.758 3114 Delete type=0 #4
-2023/01/21-19:25:36.758 3114 Delete type=2 #6
-2023/01/21-19:25:36.759 3114 Delete type=0 #7
-2023/01/21-19:25:36.760 3114 Delete type=2 #9
-2023/01/21-19:25:36.760 3114 Delete type=0 #10
-2023/01/21-19:25:36.760 3114 Delete type=0 #13
-2023/01/21-19:25:36.760 3114 Delete type=2 #14
-2023/01/21-19:25:36.764 3114 Delete type=2 #16
-2023/01/21-19:25:36.764 3114 Delete type=0 #17
-2023/01/21-19:25:36.765 3114 Delete type=2 #19
-2023/01/21-19:25:36.765 3114 Delete type=0 #20
-2023/01/21-19:25:36.765 3114 Delete type=2 #22
-2023/01/21-19:25:36.765 3114 Delete type=0 #23
-2023/01/21-19:25:36.765 3114 Delete type=0 #26
+2023/01/22-21:00:50.784 273c Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.94057384\flutter_tools_chrome_device.c29c241d\Default\Asset Store\assets.db/MANIFEST-000001
+2023/01/22-21:00:50.810 273c Recovering log #30
+2023/01/22-21:00:50.813 273c Reusing old log C:\Users\Home\AppData\Local\Temp\flutter_tools.94057384\flutter_tools_chrome_device.c29c241d\Default\Asset Store\assets.db/000030.log 
+2023/01/22-21:00:50.826 273c Delete type=2 #3
+2023/01/22-21:00:50.827 273c Delete type=0 #3
+2023/01/22-21:00:50.828 273c Delete type=0 #4
+2023/01/22-21:00:50.828 273c Delete type=2 #6
+2023/01/22-21:00:50.828 273c Delete type=0 #7
+2023/01/22-21:00:50.828 273c Delete type=2 #9
+2023/01/22-21:00:50.829 273c Delete type=0 #10
+2023/01/22-21:00:50.829 273c Delete type=0 #13
+2023/01/22-21:00:50.830 273c Delete type=2 #14
+2023/01/22-21:00:50.830 273c Delete type=2 #16
+2023/01/22-21:00:50.831 273c Delete type=0 #17
+2023/01/22-21:00:50.831 273c Delete type=2 #19
+2023/01/22-21:00:50.831 273c Delete type=0 #20
+2023/01/22-21:00:50.831 273c Delete type=2 #22
+2023/01/22-21:00:50.832 273c Delete type=0 #23
+2023/01/22-21:00:50.832 273c Delete type=0 #26

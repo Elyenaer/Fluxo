@@ -7,8 +7,21 @@ import 'package:flutter/material.dart';
 // ignore: camel_case_types
 class theme{
 
- late ThemeRegister register;
+  late ThemeRegister register;
 
+  static Color backgroundTitleDebt1 = const Color.fromARGB(255, 130, 0, 0);
+  static Color backgroundTitleDebt2 = const Color.fromARGB(255, 100, 0, 0);
+  static Color backgroundTitleCredit1 = const Color.fromARGB(255, 0, 0,130);
+  static Color backgroundTitleCredit2 = const Color.fromARGB(255, 0, 0, 100);
+
+  static Color backgroundEntryDebt1 = const Color.fromARGB(255, 255, 242, 242);
+  static Color backgroundEntryDebt2 = const Color.fromARGB(255, 255, 220, 220);
+  static Color backgroundEntryCredit1 = const Color.fromARGB(255, 242, 242, 255);
+  static Color backgroundEntryCredit2 = const Color.fromARGB(255, 220, 220, 255);
+
+  static Color foregroundEntryCredit = Colors.blue;
+  static Color foregroundEntryDebt = Colors.red;
+      
  _getTheme() async {
     try{
       register = (await ThemeConnect().getId(1))!;
@@ -27,9 +40,9 @@ class theme{
           foregroundColor: register.foregroundTitle
         ),
 
-        buttonTheme: ButtonThemeData(
-          buttonColor: register.widgetPrimaryColor, 
-          textTheme: ButtonTextTheme.primary, 
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: register.widgetPrimaryColor, 
+          foregroundColor: register.foregroundTitle,
         ),
 
         sliderTheme: SliderThemeData(
@@ -42,6 +55,25 @@ class theme{
           activeTickMarkColor: register.widgetPrimaryColor,
 
         ),
+
+        inputDecorationTheme: InputDecorationTheme(
+          iconColor: register.widgetSecondaryColor,
+          labelStyle: TextStyle(
+            color: register.widgetPrimaryColor,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: register.widgetSecondaryColor            
+            )
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: register.widgetPrimaryColor              
+            )
+          ),
+        ),
+
 
         scaffoldBackgroundColor: register.backgroundMain,
         primaryColor: register.backgroundTitle,
