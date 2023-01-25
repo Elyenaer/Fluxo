@@ -1,15 +1,13 @@
+import 'package:firebase_write/custom/widgets/customCurrencyTextField.dart';
+import 'package:firebase_write/custom/widgets/customDateTextField.dart';
+import 'package:firebase_write/custom/widgets/customDropDown.dart';
+import 'package:firebase_write/custom/widgets/customTextField.dart';
 import 'package:firebase_write/help/convert.dart';
-import 'package:firebase_write/help/mask.dart';
 import 'package:firebase_write/help/message.dart';
-import 'package:firebase_write/help/valid.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
-
-import '../Help/currencyPtBrInputFormatter.dart';
 
 // ignore: must_be_immutable
 class FinancialEntryPage extends StatefulWidget {
@@ -118,7 +116,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
       message.simple(context, "", "LANÇAMENTO CADASTRADO COM SUCESSO!");
 
-      clean();
+      _clean();
     } catch (e) {
       message.simple(context, "", "ERRO: $e");
     }
@@ -181,7 +179,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     }
   }
 
-  void clean() {
+  void _clean() {
     _tdcDate.text = '';
     _tdcDescription.text = '';
     _tdcValue.text = '';
@@ -199,7 +197,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     );
     if(confirm){
       register.delete();
-      clean();
+      _clean();
     }
   }
 
@@ -235,10 +233,12 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       appBar: AppBar(
         leading: FloatingActionButton(
           elevation: 0,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           child: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop("update");          
-        },),
+          },
+        ),
         centerTitle: true,
         title: const Text("LANÇAMENTO FINANCEIRO"),
       ),
@@ -254,50 +254,45 @@ class _MyHomePageState extends State<FinancialEntryPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          _id(),
+                          Flexible(
+                            child: CustomTextField(
+                              controller: _tdcId,
+                              icon: Icons.article_rounded,
+                              enabled: false,
+                              label: "Id",
+                            ),
+                          ),
                           const SizedBox(
                             width: 50,
                           ),
                           _credit(),
-                        ]),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Icon(
-                            Icons.account_balance,
-                            size: 25,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          _type(),
-                          const SizedBox(
-                            width: 50,
-                          ),
-                          _buttonIncludeType(),
-                        ]),
-                    _description(),
-                    _date(),
-                    _value(),
+                        ]),                       
+                    CustomDropDown(
+                      list: typeList,
+                      selected: typeValue,
+                      icon: Icons.account_balance,
+                      add: () {
+                      },                    
+                      change: (value) {
+                        setState(() {
+                          typeValue=value;                          
+                        });
+                      },
+                    ),
+                    CustomTextField(
+                      controller: _tdcDescription,
+                      label: 'Descrição',
+                    ),
+                    CustomDateTextField(
+                      controller: _tdcDate,
+                    ),
+                    CustomCurrencytextField(
+                      controller: _tdcValue, 
+                      errorText: _errorValue,
+                    ),
                     _buttonRow(),
                   ]),
             ),
-    );
-  }
-
-  Widget _id() {
-    return Flexible(
-      child: TextField(
-        enabled: false,
-        controller: _tdcId,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          icon: Icon(Icons.article_rounded),
-          labelText: 'Id',
-        ),
-      ),
     );
   }
 
@@ -321,30 +316,6 @@ class _MyHomePageState extends State<FinancialEntryPage> {
           changeType();
         });
       },
-    );
-  }
-
-  Widget _type() {
-    return Flexible(
-      child: DropdownButton<String>(
-        value: typeValue,
-        icon: const Icon(Icons.arrow_drop_down),
-        isExpanded: true,
-        style: const TextStyle(color: Colors.deepPurple),
-        underline: Container(
-          height: 2,
-          color: Colors.deepPurpleAccent,
-        ),
-        onChanged: (String? value) {
-          typeValue = value!;
-        },
-        items: typeList.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
     );
   }
 
@@ -403,90 +374,10 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     return FloatingActionButton(
       heroTag: UniqueKey(),
       onPressed: () {
-        clean();
+        _clean();
       },
       child: const Icon(Icons.cleaning_services),
     );
   }
 
-  Widget _description() {
-    return TextField(
-      controller: _tdcDescription,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        icon: Icon(Icons.text_fields),
-        labelText: 'Descrição',
-      ),
-    );
-  }
-
-  Widget _date() {
-    return TextField(
-      controller: _tdcDate,
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        mask.maskDate,
-      ],
-      decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          icon: const Icon(Icons.calendar_today_rounded),
-          errorText: _errorDate,
-          labelText: "Data"),
-      onTap: () async {
-        DateTime? pickeddate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100));
-        if (pickeddate != null) {
-          setState(() {
-            _tdcDate.text = DateFormat('dd/MM/yyyy').format(pickeddate);
-          });
-        }
-      },
-      onChanged: (value) {
-        _errorDate = valid.checkDate(_tdcDate.text);
-      },
-    );
-  }
-
-  Widget _value() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 60),
-      child: TextField(
-        controller: _tdcValue,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          icon: const Icon(Icons.monetization_on),
-          labelText: 'Valor',
-          errorText: _errorValue,
-        ),
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          CurrencyPtBrInputFormatter()
-        ],
-        onChanged: (value) {
-          try {
-            if (convert.currencyToDouble(value) == 0) {
-              _errorValue = 'Valor Inválido';
-            } else {
-              _errorValue = null;
-            }
-          } catch (e) {
-            _errorValue = 'Valor Inválido';
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buttonIncludeType() {
-    return FloatingActionButton(
-      heroTag: UniqueKey(),
-      onPressed: () {},
-      child: const Icon(Icons.add),
-    );
-  }
 }

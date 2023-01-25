@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_write/custom/widgets/customDateTextField.dart';
+import 'package:firebase_write/custom/widgets/customDropDown.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
@@ -9,16 +11,12 @@ import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:firebase_write/settings/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
 
-import '../help/mask.dart';
-import '../help/valid.dart';
-
 // ignore: camel_case_types, must_be_immutable
-class reportPage extends StatefulWidget{
-  const reportPage({
+class ReportPage extends StatefulWidget{
+  const ReportPage({
     Key? key,
   }) : super(key: key);
 
@@ -27,7 +25,7 @@ class reportPage extends StatefulWidget{
 }
 
   // ignore: non_constant_identifier_names
-  class _MyHomePageState extends State<reportPage> {
+  class _MyHomePageState extends State<ReportPage> {
     late List<_tempRowRegister> registers = <_tempRowRegister>[];
     
     @override
@@ -44,17 +42,13 @@ class reportPage extends StatefulWidget{
     late DateTime start,end;
     late double _scalePanel = 1.0;
 
-    String? _errorDateStart;
-    String? _errorDateEnd;
-
-    static const List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
-    String periodValue = periodList.first;
+    static const List<String> _periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
+    String _periodValue = _periodList.first;
 
     bool _isLoading = true;
 
   @override
   void initState(){
-    //context = widget.context;
     _tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     _tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
     _getRegister();
@@ -81,7 +75,7 @@ class reportPage extends StatefulWidget{
   _getColumnTitle(){    
     _columnTitle.clear();
     DateTime d;
-    if(periodValue=="Diário"){
+    if(_periodValue=="Diário"){
       start = convert.StringToDatetime(_tecDateStart.text);
       end = convert.StringToDatetime(_tecDateEnd.text);
       d = start;
@@ -93,24 +87,24 @@ class reportPage extends StatefulWidget{
         d = d.add(const Duration(days: 1));        
       }
     }
-    else if(periodValue=="Semanal"){
+    else if(_periodValue=="Semanal"){
       start = funcDate.getWeekday(
         convert.StringToDatetime(_tecDateStart.text),false,6);
       end = funcDate.getWeekday(
         convert.StringToDatetime(_tecDateEnd.text),true,6);    
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(convert.DatePeriod(d, periodValue));    
+        _columnTitle.add(convert.DatePeriod(d, _periodValue));    
         d = d.add(const Duration(days: 7));              
       }
-    }else if(periodValue=="Mensal"){
+    }else if(_periodValue=="Mensal"){
       start = funcDate.getMonth(
         convert.StringToDatetime(_tecDateStart.text),true);
       end = funcDate.getMonth(
         convert.StringToDatetime(_tecDateEnd.text),false);
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(convert.DatePeriod(d, periodValue));    
+        _columnTitle.add(convert.DatePeriod(d, _periodValue));    
         d = funcDate.addMonth(d);  
       }
     }else{
@@ -120,7 +114,7 @@ class reportPage extends StatefulWidget{
         convert.StringToDatetime(_tecDateEnd.text),false);
       d = start;
       while(!d.isAfter(end)){
-        _columnTitle.add(convert.DatePeriod(d, periodValue));    
+        _columnTitle.add(convert.DatePeriod(d, _periodValue));    
         d = funcDate.addYear(d);  
       }
     }
@@ -138,11 +132,11 @@ class reportPage extends StatefulWidget{
       DateTime d2; //interval from d to d2
 
       while(!d.isAfter(end)){
-        if(periodValue=="Diário"){
+        if(_periodValue=="Diário"){
           d2 = d;
-        }else if(periodValue=="Semanal"){
+        }else if(_periodValue=="Semanal"){
           d2 = d.add(const Duration(days: 6));
-        }else if(periodValue=="Mensal"){
+        }else if(_periodValue=="Mensal"){
           d2 = funcDate.getMonth(d,false);
         }else{
           d2 = funcDate.getYear(d,false);
@@ -161,11 +155,11 @@ class reportPage extends StatefulWidget{
           }
         }
 
-        if(periodValue=="Diário"){
+        if(_periodValue=="Diário"){
           d = d.add(const Duration(days: 1));
-        }else if(periodValue=="Semanal"){
+        }else if(_periodValue=="Semanal"){
           d = d.add(const Duration(days: 7));
-        }else if(periodValue=="Mensal"){
+        }else if(_periodValue=="Mensal"){
           d = funcDate.addMonth(d);
         }else{
           d = DateTime(d.year+1,1,1);
@@ -192,23 +186,40 @@ class reportPage extends StatefulWidget{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[            
-            Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Row(
+          children: <Widget>[    
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget> [
-                  _period(),
-                  const SizedBox(width: 30,),
-                  _dateStart(),
-                  const SizedBox(width: 30,),
-                  _dateEnd()                 
+                  FloatingActionButton(onPressed: (){}),
+                  /*CustomDropDown(
+                    list: _periodList, 
+                    selected: _periodValue, 
+                    change: (value){
+                      _periodValue = value;
+                      _getRegister();
+                    }
+                  ),*/
+                  //const SizedBox(width: 30,),
+                  CustomDateTextField(
+                    controller: _tecDateStart,
+                    label: 'Data Inicial',
+                    function: () {
+                      _getRegister();                      
+                    }
+                  ),
+                  //const SizedBox(width: 30,),
+                  /*CustomDateTextField(
+                    controller: _tecDateEnd,
+                    label: 'Data Final',
+                    function: () {
+                      _getRegister();                      
+                    }
+                  ),   */           
                 ]
-              ),
             ),  
             const SizedBox(height: 20,), 
-            Expanded(
+            /*Expanded(
               child: _isLoading
               ?  const Center(child: CircularProgressIndicator())
               :Row(
@@ -218,104 +229,11 @@ class reportPage extends StatefulWidget{
                   ),
                 ]
               )
-            ),
-            _sliderScale()       
+            ),*/
+            _sliderScale(),     
           ],
         ),
       ),
-    );
-  }
-
-  Widget _dateStart(){    
-    return Flexible(
-      child: TextField(
-        controller: _tecDateStart,
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            mask.maskDate,
-          ],
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            icon: const Icon(Icons.calendar_today_rounded),
-            errorText: _errorDateStart,
-            labelText: "Data Inicial"
-        ),
-        onTap: () async {
-          DateTime? pickeddate = await showDatePicker(
-            context: context, 
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000), 
-            lastDate: DateTime(2100));
-            if (pickeddate != null){
-              _tecDateStart.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-              _getRegister();
-            }
-          },
-        onChanged: (value) {
-          setState(() {
-            _errorDateStart = valid.checkDate(_tecDateStart.text);
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _dateEnd(){    
-    return Flexible(
-      child: TextField(
-        controller: _tecDateEnd,
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            mask.maskDate,
-          ],
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            icon: const Icon(Icons.calendar_today_rounded),
-            errorText: _errorDateEnd,
-            labelText: "Data Final"
-        ),
-        onTap: () async {
-          DateTime? pickeddate = await showDatePicker(
-            context: context, 
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000), 
-            lastDate: DateTime(2100));
-          if (pickeddate != null){
-            _tecDateEnd.text =  DateFormat('dd/MM/yyyy').format(pickeddate);
-            _getRegister();
-          }
-        },          
-        onChanged: (value) {
-          _errorDateEnd = valid.checkDate(_tecDateEnd.text);
-          if(_errorDateEnd==null){
-            _getRegister();
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _period() {
-    return DropdownButton<String>(
-      value: periodValue,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      underline: Container(
-        height: 2,
-        color: Colors.grey,
-      ),
-      onChanged: (String? value) {
-        periodValue = value!;
-        _getRegister();
-      },
-      items: periodList.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
   }
 
@@ -490,8 +408,10 @@ class reportPage extends StatefulWidget{
                 ),
               );
               updateCheck.then((value) {
-                if(value=="update"){
-                  setState(() { });
+                if(value.toString()=="update"){
+                  setState(() { 
+                    _getRegister();
+                  });
                 }
               });
             },              

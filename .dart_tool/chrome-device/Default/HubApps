@@ -145,16 +145,17 @@
       "version": "0.1.2"
    }, {
       "capabilities": {
-         "deprecated_hide_header": true
+         "deprecated_hide_header": true,
+         "deprecated_hide_header|flight:msEdgeShoppingShorelineHeader": false
       },
       "default_locale": "en",
       "description": "Cupons, compare as economias e economize dinheiro enquanto faz compras",
       "flights": [ "msEdgeHubAppShopping", "msEdgeShoppingUI", "msEdgeShoppingHub", "msEdgeOpenShoppingHubPinned" ],
       "icon": {
          "raster_icon": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_dark.png/1.3.7/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_hc.png/1.3.7/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_light.png/1.3.7/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_dark.png/1.3.8/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_hc.png/1.3.8/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_maximal_shopping_light.png/1.3.8/asset"
          }
       },
       "id": "523b5ef3-0b10-4154-8b62-10b2ebd00921",
@@ -170,7 +171,7 @@
       "target": {
          "url": "edge://shopping"
       },
-      "version": "1.3.7"
+      "version": "1.3.8"
    }, {
       "capabilities": {
          "deprecated_hide_header": true

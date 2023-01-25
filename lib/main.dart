@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: themeMain,
       debugShowCheckedModeBanner: false,
-      home: const FinancialEntryPage(),      
+      home: const ReportPage(),      
     );
   }
 }

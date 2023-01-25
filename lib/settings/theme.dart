@@ -74,13 +74,53 @@ class theme{
           ),
         ),
 
+        colorScheme: ColorScheme(
+            primary: register.widgetPrimaryColor,
+            onPrimary: register.widgetForeground, 
+            onSurface: register.widgetTextColor,
+
+            /*
+            primaryContainer: Colors.yellow,
+            secondaryContainer: Colors.yellow,
+            onSecondaryContainer: Colors.yellow,
+            onSurfaceVariant: Colors.yellow,
+            onPrimaryContainer: Colors.yellow,
+            surfaceTint: Colors.yellow,
+            surfaceVariant: Colors.yellow,
+            inverseSurface: Colors.yellow,
+            inversePrimary: Colors.yellow,
+            onInverseSurface: Colors.yellow,
+            onTertiary: Colors.yellow,
+            tertiaryContainer: Colors.yellow,
+            onTertiaryContainer: Colors.yellow,
+            tertiary: Colors.yellow,
+            outline: Colors.yellow,
+            shadow: Colors.yellow,
+            errorContainer: Colors.yellow,
+            onErrorContainer: Colors.yellow,*/            
+
+            background: Colors.yellow, 
+            brightness: Brightness.light, 
+            error: Colors.yellow, 
+            onBackground: Colors.yellow,
+            onError: Colors.yellow,
+            onSecondary: Colors.yellow,
+            surface: Colors.yellow,
+            secondary: Colors.yellow,
+        ),
+
+        textTheme: TextTheme(
+          subtitle1: TextStyle(
+            color: register.widgetTextColor,
+          )
+        ),
 
         scaffoldBackgroundColor: register.backgroundMain,
-        primaryColor: register.backgroundTitle,
+        primaryColor: register.widgetPrimaryColor,
       );
     }catch(e){
       print("ERRO CURRENT -> $e");
-      return ThemeData.dark();
+      return ThemeData.light();
     }
   }
 

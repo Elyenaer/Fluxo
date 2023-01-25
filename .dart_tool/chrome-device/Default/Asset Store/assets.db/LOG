@@ -1,19 +1,21 @@
-2023/01/22-21:00:50.784 273c Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.94057384\flutter_tools_chrome_device.c29c241d\Default\Asset Store\assets.db/MANIFEST-000001
-2023/01/22-21:00:50.810 273c Recovering log #30
-2023/01/22-21:00:50.813 273c Reusing old log C:\Users\Home\AppData\Local\Temp\flutter_tools.94057384\flutter_tools_chrome_device.c29c241d\Default\Asset Store\assets.db/000030.log 
-2023/01/22-21:00:50.826 273c Delete type=2 #3
-2023/01/22-21:00:50.827 273c Delete type=0 #3
-2023/01/22-21:00:50.828 273c Delete type=0 #4
-2023/01/22-21:00:50.828 273c Delete type=2 #6
-2023/01/22-21:00:50.828 273c Delete type=0 #7
-2023/01/22-21:00:50.828 273c Delete type=2 #9
-2023/01/22-21:00:50.829 273c Delete type=0 #10
-2023/01/22-21:00:50.829 273c Delete type=0 #13
-2023/01/22-21:00:50.830 273c Delete type=2 #14
-2023/01/22-21:00:50.830 273c Delete type=2 #16
-2023/01/22-21:00:50.831 273c Delete type=0 #17
-2023/01/22-21:00:50.831 273c Delete type=2 #19
-2023/01/22-21:00:50.831 273c Delete type=0 #20
-2023/01/22-21:00:50.831 273c Delete type=2 #22
-2023/01/22-21:00:50.832 273c Delete type=0 #23
-2023/01/22-21:00:50.832 273c Delete type=0 #26
+2023/01/24-15:14:48.938 2a64 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.c4a440b0\flutter_tools_chrome_device.aa184f73\Default\Asset Store\assets.db/MANIFEST-000001
+2023/01/24-15:14:48.968 2a64 Recovering log #30
+2023/01/24-15:14:48.985 2a64 Level-0 table #32: started
+2023/01/24-15:14:49.329 2a64 Level-0 table #32: 301253 bytes OK
+2023/01/24-15:14:49.350 2a64 Delete type=2 #3
+2023/01/24-15:14:49.350 2a64 Delete type=0 #3
+2023/01/24-15:14:49.350 2a64 Delete type=0 #4
+2023/01/24-15:14:49.350 2a64 Delete type=2 #6
+2023/01/24-15:14:49.351 2a64 Delete type=0 #7
+2023/01/24-15:14:49.351 2a64 Delete type=2 #9
+2023/01/24-15:14:49.351 2a64 Delete type=0 #10
+2023/01/24-15:14:49.351 2a64 Delete type=0 #13
+2023/01/24-15:14:49.351 2a64 Delete type=2 #14
+2023/01/24-15:14:49.352 2a64 Delete type=2 #16
+2023/01/24-15:14:49.353 2a64 Delete type=0 #17
+2023/01/24-15:14:49.353 2a64 Delete type=2 #19
+2023/01/24-15:14:49.353 2a64 Delete type=0 #20
+2023/01/24-15:14:49.354 2a64 Delete type=2 #22
+2023/01/24-15:14:49.354 2a64 Delete type=0 #23
+2023/01/24-15:14:49.354 2a64 Delete type=0 #26
+2023/01/24-15:14:49.355 2a64 Delete type=0 #30

@@ -1,7 +1,6 @@
 
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
-import 'package:firebase_write/page/reportPage.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:firebase_write/settings/theme.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +20,10 @@ class ListFinancialRegisterPage extends StatefulWidget{
       required this.title
     }) : super(key: key);
 
-    BuildContext? context;
     AccountRegister account;
     List<FinancialEntryRegister>? registers;
     DateTime start;
     DateTime end;
-    reportPage? report;
     Color backgroundTitle;
     String title;
 

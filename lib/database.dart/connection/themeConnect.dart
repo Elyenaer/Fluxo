@@ -34,6 +34,7 @@ class ThemeConnect {
       reg.setWidgetPrimaryColor(data['widgetPrimaryColor']);
       reg.setWidgetSecondaryColor(data['widgetSecondaryColor']);
       reg.setWidgetForeground(data['widgetForeground']);
+      reg.setWidgetTextColor(data['widgetTextColor']);
 
       return reg;
     }catch(e){
