@@ -21,6 +21,7 @@ class AccountGroupConnect {
 
       reg.id = int.parse(data['id']);
       reg.description = data['description'].toString();
+      reg.sequence = int.parse(data['sequence']);
 
       return reg;
     }catch(e){

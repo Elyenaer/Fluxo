@@ -11,23 +11,24 @@ class ThemeConnect {
 
   ThemeRegister? _convertRegister(Map<String, dynamic> data){
     try{
-      ThemeRegister reg = ThemeRegister();
+      ThemeRegister register = ThemeRegister();
 
-      reg.id = int.parse(data['id']);
-      reg.name = data['name'];
+      register.id = int.parse(data['id']);
+      register.name = data['name'];
 
-      reg.setBackgrounMain(data['backgroundMain']);
-      reg.setBackgrounTitle(data['backgroundTitle']);
+      register.setBackgrounMain(data['backgroundMain']);
+      register.setBackgrounTitle(data['backgroundTitle']);
 
-      reg.setForegroundMain(data['foregroundMain']);
-      reg.setForegroundTitle(data['foregroundTitle']);
+      register.setForegroundMain(data['foregroundMain']);
+      register.setForegroundTitle(data['foregroundTitle']);
 
-      reg.setWidgetPrimaryColor(data['widgetPrimaryColor']);
-      reg.setWidgetSecondaryColor(data['widgetSecondaryColor']);
-      reg.setWidgetForeground(data['widgetForeground']);
-      reg.setWidgetTextColor(data['widgetTextColor']);
+      register.setWidgetPrimaryColor(data['widgetPrimaryColor']);
+      register.setWidgetSecondaryColor(data['widgetSecondaryColor']);
+      register.setWidgetForeground(data['widgetForeground']);
+      register.setWidgetTextColor(data['widgetTextColor']);
+      register.setWidgetContainer(data['widgetContainer']);
 
-      return reg;
+      return register;
     }catch(e){
       print("ERRO _CONVERTREGISTER $e");
       return null;
