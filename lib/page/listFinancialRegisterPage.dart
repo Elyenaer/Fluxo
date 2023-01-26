@@ -59,7 +59,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
   Future<void> _getRegisters() async {
     _isLoading(true);
-    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.account.id,widget.start,widget.end);
+    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.account.id!,widget.start,widget.end);
     _isLoading(false);
   }
 
@@ -136,7 +136,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
             Expanded(
               child:Center(
                 child: Text(                  
-                  widget.account.description.toUpperCase() + "\n" + title.replaceAll('\n'," "),
+                  widget.account.description!.toUpperCase() + "\n" + title.replaceAll('\n'," "),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -181,7 +181,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
     Color foregroundEntryColor = theme.backgroundTitleDebt2;
     Color backgroundButton = theme.backgroundTitleDebt1;
 
-    if(widget.account.credit){
+    if(widget.account.credit!){
       backgroundEntryColor = theme.backgroundEntryCredit1;
       foregroundEntryColor = theme.backgroundTitleCredit2;
       backgroundButton = theme.backgroundTitleCredit1;

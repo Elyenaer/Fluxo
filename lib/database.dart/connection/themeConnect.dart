@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/animation.dart';
+import 'package:firebase_write/help/funcNumber.dart';
 
 import '../register/themeRegister.dart';
 
@@ -8,15 +8,6 @@ import '../register/themeRegister.dart';
 class ThemeConnect {
 
   late CollectionReference collectionRef = FirebaseFirestore.instance.collection("theme");
-
-  String _helpId(int id){
-    var helpId = '';
-    for(var i=0;i<(4-id.toString().length);i++){
-      helpId = helpId + '0';
-    }
-    helpId = helpId + id.toString();
-    return helpId;
-  }
 
   ThemeRegister? _convertRegister(Map<String, dynamic> data){
     try{
@@ -49,7 +40,7 @@ class ThemeConnect {
 
       // to get data from all documents sequentially      
       await collectionRef
-      .where('id', isEqualTo: _helpId(id))    
+      .where('id', isEqualTo: funcNumber.includeZero(id,4))    
       .get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           register = _convertRegister(result.data() as Map<String,dynamic>) as ThemeRegister;

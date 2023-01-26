@@ -28,10 +28,10 @@ class CustomDropDown extends StatefulWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Row(
-        children: _Components(),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: _Components(),
     );
   }
 
@@ -57,7 +57,7 @@ class CustomDropDown extends StatefulWidget{
     if(widget.add!=null){
       l.add(
         const SizedBox(
-            width: 50,
+            width: 10,
         ),
       );
       l.add(_buttonIncludeType());
@@ -68,34 +68,38 @@ class CustomDropDown extends StatefulWidget{
 
   // ignore: non_constant_identifier_names
   Widget _List(){
-    return DropdownButton<String>(
-      value: widget.selected,
-      icon: const Icon(Icons.arrow_drop_down),
-      isExpanded: true,
-      underline: Container(
-        height: 2,
-        color: Theme.of(context).primaryColor,
+    return Expanded(
+      child: DropdownButton<String>(
+        value: widget.selected,
+        icon: const Icon(Icons.arrow_drop_down),
+        isExpanded: true,
+        underline: Container(
+          height: 2,
+          color: Theme.of(context).primaryColor,
+        ),
+        onChanged: (String? value) {            
+          value !=null ? widget.change(value) : null;
+        },
+        items: widget.list.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
       ),
-      onChanged: (String? value) {            
-        value !=null ? widget.change(value) : null;
-      },
-      items: widget.list.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
   }
 
-  Widget _buttonIncludeType() {
-    return FloatingActionButton(
-      heroTag: UniqueKey(),
-      onPressed: () {
-        widget.add!();
-      },
-      child: const Icon(Icons.add),
-    );
+    Widget _buttonIncludeType() {
+      return Flexible(
+        child: FloatingActionButton(
+          heroTag: UniqueKey(),
+          onPressed: () {
+            widget.add!();
+          },
+          child: const Icon(Icons.add),
+        ),
+      );
   }
 
 }

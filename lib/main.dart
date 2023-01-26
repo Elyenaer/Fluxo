@@ -1,4 +1,5 @@
 
+import 'package:firebase_write/Test/Draggable.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/reportPage.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: themeMain,
       debugShowCheckedModeBanner: false,
-      home: const ReportPage(),      
+      home: MainPage(),      
     );
   }
 }

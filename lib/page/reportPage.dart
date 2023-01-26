@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_write/custom/widgets/customDateTextField.dart';
 import 'package:firebase_write/custom/widgets/customDropDown.dart';
+import 'package:firebase_write/database.dart/connection/accountConnect.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
@@ -62,8 +63,7 @@ class ReportPage extends StatefulWidget{
   }
 
   _getAccount() async{
-    AccountRegister a = AccountRegister();
-    List<AccountRegister>? account = await a.getData();
+    List<AccountRegister>? account = await AccountConnect().getData();
    
     registers.clear();
     for(int i=0;i<account!.length;i++){
@@ -191,35 +191,40 @@ class ReportPage extends StatefulWidget{
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget> [
-                  FloatingActionButton(onPressed: (){}),
-                  /*CustomDropDown(
-                    list: _periodList, 
-                    selected: _periodValue, 
-                    change: (value){
-                      _periodValue = value;
-                      _getRegister();
-                    }
-                  ),*/
-                  //const SizedBox(width: 30,),
-                  CustomDateTextField(
-                    controller: _tecDateStart,
-                    label: 'Data Inicial',
-                    function: () {
-                      _getRegister();                      
-                    }
+                  Flexible(
+                    child: CustomDropDown(
+                      list: _periodList, 
+                      selected: _periodValue, 
+                      change: (value){
+                        _periodValue = value;
+                        _getRegister();
+                      }
+                    ),
                   ),
-                  //const SizedBox(width: 30,),
-                  /*CustomDateTextField(
-                    controller: _tecDateEnd,
-                    label: 'Data Final',
-                    function: () {
-                      _getRegister();                      
-                    }
-                  ),   */           
+                  const SizedBox(width: 30,),
+                  Flexible(
+                    child: CustomDateTextField(
+                      controller: _tecDateStart,
+                      label: 'Data Inicial',
+                      function: () {
+                        _getRegister();                      
+                      }
+                    ),
+                  ),
+                  const SizedBox(width: 30,),
+                  Flexible(
+                    child: CustomDateTextField(
+                      controller: _tecDateEnd,
+                      label: 'Data Final',
+                      function: () {
+                        _getRegister();                      
+                      }
+                    ),
+                  ),          
                 ]
             ),  
-            const SizedBox(height: 20,), 
-            /*Expanded(
+            const SizedBox(height: 20,),
+            Expanded(
               child: _isLoading
               ?  const Center(child: CircularProgressIndicator())
               :Row(
@@ -229,7 +234,7 @@ class ReportPage extends StatefulWidget{
                   ),
                 ]
               )
-            ),*/
+            ),
             _sliderScale(),     
           ],
         ),
@@ -318,9 +323,9 @@ class ReportPage extends StatefulWidget{
 
     return Center(
       child: Container(     
-        color: _getBackgroundRowTitle(index,registers[index].account.credit),  
+        color: _getBackgroundRowTitle(index,registers[index].account.credit!),  
         child: AutoSizeText(
-          registers[index].account.description,
+          registers[index].account.description!,
           maxLines: 2,
           minFontSize: 1,
           style: TextStyle(
@@ -339,7 +344,7 @@ class ReportPage extends StatefulWidget{
   Widget _rowPanel(BuildContext context, int index) {
 
     Color backgroundColor;
-    if(registers[index].account.credit){
+    if(registers[index].account.credit!){
       if(index % 2 == 0){
         backgroundColor = theme.backgroundEntryCredit1;
       // ignore: dead_code
@@ -370,7 +375,7 @@ class ReportPage extends StatefulWidget{
   List<Widget> _getRowsPanel(_tempRowRegister r,Color backgroundColor){
 
     Color foregroundColor = theme.foregroundEntryDebt;
-    if(r.account.credit){
+    if(r.account.credit!){
       foregroundColor = theme.foregroundEntryCredit;
     }
 
@@ -398,7 +403,7 @@ class ReportPage extends StatefulWidget{
                 MaterialPageRoute(
                   builder: (context) => 
                   ListFinancialRegisterPage(
-                    backgroundTitle: _getBackgroundRowTitle(i,r.account.credit),
+                    backgroundTitle: _getBackgroundRowTitle(i,r.account.credit!),
                     account: r.account,
                     title: _columnTitle[i],
                     start: start,

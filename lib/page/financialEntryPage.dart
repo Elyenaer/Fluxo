@@ -2,6 +2,7 @@ import 'package:firebase_write/custom/widgets/customCurrencyTextField.dart';
 import 'package:firebase_write/custom/widgets/customDateTextField.dart';
 import 'package:firebase_write/custom/widgets/customDropDown.dart';
 import 'package:firebase_write/custom/widgets/customTextField.dart';
+import 'package:firebase_write/database.dart/connection/accountConnect.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
@@ -84,7 +85,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
 
   Future<void> setType() async {
     try {
-      AccountRegister _account = AccountRegister();
+      AccountConnect _account = AccountConnect();
       _account_credit = await _account.getDataType('C');
       _account_debit = await _account.getDataType('D');
       changeType();
@@ -142,9 +143,9 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       register = FinancialEntryRegister();
       register.id = int.parse(_tdcId.text);
       if (_isCredit) {
-        register.accountId = AccountRegister.getID(_account_credit!, typeValue);
+        register.accountId = AccountConnect.getID(_account_credit!, typeValue);
       } else {
-        register.accountId = AccountRegister.getID(_account_debit!, typeValue);
+        register.accountId = AccountConnect.getID(_account_debit!, typeValue);
       }
       register.description = _tdcDescription.text;
       register.date = convert.StringToDatetime(_tdcDate.text);
@@ -166,11 +167,11 @@ class _MyHomePageState extends State<FinancialEntryPage> {
          a = _account_credit?.where((i) => i.id == register.accountId).toList();
       }
 
-      _isCredit = a![0].credit;
+      _isCredit = a![0].credit!;
 
       await changeType();
 
-      typeValue = a[0].description;
+      typeValue = a[0].description!;
       _tdcDescription.text = register.description;
       _tdcDate.text = convert.DatetimeToDateBr(register.date);
       _tdcValue.text = convert.doubleToCurrencyBR(register.value);
@@ -214,10 +215,10 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       typeList.clear();
       if (_isCredit) {
         typeList =
-            _account_credit!.map((element) => element.description).toList();
+            _account_credit!.map((element) => element.description!).toList();
       } else {
         typeList =
-            _account_debit!.map((element) => element.description).toList();
+            _account_debit!.map((element) => element.description!).toList();
       }
       setState(() {
         typeValue = typeList.first;

@@ -40,13 +40,16 @@ dependencies:
   intl: ^0.18.0
   horizontal_data_table: ^4.1.4
   auto_size_text: ^3.0.0
+  drag_and_drop_lists: ^0.3.1
 
   #scrollable_table_view: ^1.0.0  
   #string_validator: ^0.3.0
+  #flutter_linear_datepicker: ^2.0.3
+  #syncfusion_flutter_datepicker: ^20.4.43
 
   # teste
-  flutter_linear_datepicker: ^2.0.3
-  syncfusion_flutter_datepicker: ^20.4.43
+  font_awesome_flutter: ^10.3.0
+  
 
 dev_dependencies:
   flutter_test:
