@@ -49,4 +49,23 @@ class AccountGroupConnect {
     }
   }
 
+  Future<String> getNextId() async {
+  try{
+    // ignore: prefer_typing_uninitialized_variables
+    var i;
+    await collectionRef
+    .orderBy("id", descending: true)
+    .limit(1)
+    .get()
+    .then(
+      // ignore: avoid_function_literals_in_foreach_calls
+      (value) => value.docs.forEach((document) {
+        i = document.reference.id.toString();
+      }));
+    return (int.parse(i)+1).toString();
+  }catch(e){
+    return '1';
+  }
+}
+
 }

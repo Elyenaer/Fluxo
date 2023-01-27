@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_write/custom/widgets/customDateTextField.dart';
 import 'package:firebase_write/custom/widgets/customDropDown.dart';
 import 'package:firebase_write/database.dart/connection/accountConnect.dart';
+import 'package:firebase_write/database.dart/connection/financialEntryConnect.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
@@ -125,8 +126,7 @@ class ReportPage extends StatefulWidget{
       _setLoading(true);
       _getColumnTitle();
       _getAccount();
-      FinancialEntryRegister r = FinancialEntryRegister();
-      List<FinancialEntryRegister>? reg = await r.getDataGapDate(start,end);
+      List<FinancialEntryRegister>? reg = await FinancialEntryConnect().getDataGapDate(start,end);
       int positionArray = 0;
       DateTime d = start;
       DateTime d2; //interval from d to d2

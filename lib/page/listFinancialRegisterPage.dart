@@ -1,4 +1,5 @@
 
+import 'package:firebase_write/database.dart/connection/financialEntryConnect.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
@@ -59,7 +60,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
   Future<void> _getRegisters() async {
     _isLoading(true);
-    registers = await FinancialEntryRegister().getDataGapDateIdAccount(widget.account.id!,widget.start,widget.end);
+    registers = await FinancialEntryConnect().getDataGapDateIdAccount(widget.account.id!,widget.start,widget.end);
     _isLoading(false);
   }
 
@@ -74,7 +75,7 @@ class ListFinancialRegisterPage extends StatefulWidget{
 
     if(confirm){   
       _isLoading(true);       
-      await r.delete();  
+      await FinancialEntryConnect().delete(r);  
       registers?.remove(r);   
       _isLoading(false);         
     }    

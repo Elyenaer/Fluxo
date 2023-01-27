@@ -1,5 +1,6 @@
 
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:firebase_write/custom/widgets/customCreditDebt.dart';
 import 'package:firebase_write/custom/widgets/customTextButton.dart';
 import 'package:firebase_write/custom/widgets/customTextField.dart';
 import 'package:firebase_write/database.dart/connection/accountConnect.dart';
@@ -31,8 +32,11 @@ class _MainPage extends State<AccountManagerPage> {
   }
 
   _getAccount() async {
+    setIsloading(true);
     List<AccountGroupRegister>? group = await AccountGroupConnect().getData();
     List<AccountRegister>? account = await AccountConnect().getData();
+
+    _allLists.clear();
 
     for(int i=0;i<group!.length;i++){
       List<AccountRegister> _items = <AccountRegister> [];
@@ -57,7 +61,6 @@ class _MainPage extends State<AccountManagerPage> {
     lists = _allLists.map(_groupPanel).toList();
   }
 
-
   void setIsloading(bool isLoading) {
     setState(() {
       _isLoading = isLoading;
@@ -81,7 +84,7 @@ class _MainPage extends State<AccountManagerPage> {
             children: [
               Flexible(
                 child: DragAndDropLists(                  
-                  lastItemTargetHeight: 0,
+                  lastItemTargetHeight: 5,
                   listPadding: const EdgeInsets.all(16),
                   listInnerDecoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onBackground,
@@ -165,7 +168,7 @@ class _MainPage extends State<AccountManagerPage> {
             group.group.description 
               = await message.changeText(context,'',group.group.description!);
             setState(() { 
-              _updateList();
+              _getAccount();
             });
           },
         ),
@@ -187,19 +190,15 @@ class _MainPage extends State<AccountManagerPage> {
         ),
         iconSize: 25,
         onPressed: () async { 
-          group.group.description 
-              = await _accountRegister(context,'',group.group.description!);
+          group.group.description = await _accountRegister(
+            context,null,group.group.id,group.nextSequence);
             setState(() { 
-              //_updateList();
-            });
-          
+              _getAccount();
+            }
+          );          
         },
       ),
     );
-
-
-    //print(group.group.description.toString() + " -> " + group.accounts.length.toString());
-
 
     if(group.accounts.isEmpty){
       b.add(
@@ -229,8 +228,14 @@ class _MainPage extends State<AccountManagerPage> {
         ), 
         title: CustomTextButton(
           text: register.description!,
-          onPressed: () {  
-
+          onPressed: ()async  {   
+            final result = await _accountRegister(context,register,null,null);
+           
+            if(result == 'update'){
+              setState(() {
+                _updateList();
+              });
+            }
           },
           foregroundColor: theme.foregroundEntryCredit,
         ),
@@ -243,8 +248,13 @@ class _MainPage extends State<AccountManagerPage> {
         ), 
         title: CustomTextButton(
           text: register.description!,
-          onPressed: () {  
-
+          onPressed: ()async  {   
+            String result = await _accountRegister(context,register,null,null);
+            if(result == 'update'){
+              setState(() {
+                _updateList();
+              });
+            }
           },
           foregroundColor: theme.foregroundEntryDebt,
         ),
@@ -264,7 +274,26 @@ class _MainPage extends State<AccountManagerPage> {
       final newListItems = lists[newListIndex].children;
 
       final movedItem = oldListItems.removeAt(oldItemIndex);
-      newListItems.insert(newItemIndex, movedItem);
+      newListItems.insert(newItemIndex, movedItem);  
+
+
+
+
+
+      print("oldItem -> $oldItemIndex \noldList -> $oldListIndex \nnewItem -> $newItemIndex \nnewList -> $newListIndex");
+
+
+
+
+      if(oldListIndex==newListIndex){
+        _allLists[oldListIndex].replace(oldItemIndex,newItemIndex);      
+      }else{
+        _allLists[newListIndex].add(_allLists[oldListIndex].accounts[oldItemIndex]);
+        _allLists[oldListIndex].remove(oldItemIndex);
+
+        
+      }
+
     });
   }
 
@@ -272,7 +301,7 @@ class _MainPage extends State<AccountManagerPage> {
     int oldListIndex,
     int newListIndex,
   ) {
-    setState(() {
+    setState(() {       
       final movedList = lists.removeAt(oldListIndex);
       lists.insert(newListIndex, movedList);
     });
@@ -283,51 +312,179 @@ class _MainPage extends State<AccountManagerPage> {
 class _Group {
   AccountGroupRegister group;
   List<AccountRegister> accounts;
+  int nextSequence = 0;
 
   _Group({
     required this.group,
     required this.accounts,
   });
 
+  replace(int oldIndex,int newindex){
+    AccountConnect connect = AccountConnect();
+    accounts[oldIndex].groupSequence = newindex;
+    connect.update(accounts[oldIndex]);
+    if(oldIndex<newindex){      
+      for(int i=newindex;i>oldIndex;i--){
+        accounts[i].groupSequence = i-1;
+        connect.update(accounts[i]);
+      }      
+    }else{
+      for(int i=newindex;i<oldIndex;i++){
+        accounts[i].groupSequence = i+1;
+        connect.update(accounts[i]);
+      } 
+    }        
+  }
+
+  remove(int index){
+    accounts.remove(accounts[index]);
+  }
+
+  add(AccountRegister register){
+    register.idGroup = group.id;
+    register.groupSequence = accounts.length;
+    accounts.add(register);
+  }
+
   sort(){
     // ignore: prefer_function_declarations_over_variables
     Comparator<AccountRegister> sortById = (a, b) => a.groupSequence!.compareTo(b.groupSequence!);
     accounts.sort(sortById);
+    nextSequence = accounts.length;
   }
 
 }
 
-_accountRegister(BuildContext context,String title,String text) async { 
+Future<String> _accountRegister(BuildContext context,AccountRegister? account,int? idGroup,int? sequence) async { 
 
-  TextEditingController _tecId = TextEditingController(text: text);
-  TextEditingController _tecDescription = TextEditingController(text: text);
+  String result = '';
+  AccountConnect connect = AccountConnect();
+  AccountRegister register;
+  String id;
+  String description;
+  if(account!=null){
+    register = account;
+    id = account.id.toString();
+    description = account.description.toString();    
+  }else{
+    register = AccountRegister();
+    id = await connect.getNextId();
+    description = '';
+  }  
 
-
-  Widget okButton = FloatingActionButton(
-    child: const Text("OK"),
-    onPressed: () { 
-       Navigator.of(context).pop(_tecDescription.text);
-    },
-  );
+  TextEditingController _tecId = TextEditingController(text: id);
+  TextEditingController _tecDescription = TextEditingController(text: description);
+  bool _isCredit = true;
   
-  Widget textField = Column(
-    children: [
-      Row(
-        children: [
-          CustomTextField(controller: _tecId),
-          
-        ],
+  List<Widget> buttons = <Widget>[];
+  buttons.add(FloatingActionButton(
+    child: const Icon(
+      Icons.arrow_back,
+    ),
+    onPressed: () { 
+      Navigator.of(context).pop();
+    },
+    ),
+  );
+  if(account!=null){
+    buttons.add(FloatingActionButton(
+      child: const Icon(
+        Icons.delete,
       ),
-      CustomTextField(controller: _tecDescription)
-    ],
+      onPressed: () async { 
+        if(await AccountConnect().delete(register)){
+          if(await message.confirm(context,'CONFIRME EXCLUSÃO',
+          'VOCÊ TEM CERTEZA QUE DESEJA EXCLUIR ESSA CONTA?')){
+            result = 'update';
+            Navigator.of(context).pop('update');
+            message.simple(context,'','CONTA EXCLUÍDA COM SUCESSO!');
+          }else{
+            return;
+          }          
+        }else{
+          message.simple(context, 'NEGADO!',
+          'EXISTEM REGISTROS FINANCEIROS NA CONTA'
+          ' QUE VOCÊ ESTÁ TENTANDO EXCLUIR');
+        }        
+      },
+      )
+    );
+    buttons.add(FloatingActionButton(
+      child: const Icon(
+        Icons.update,
+      ),
+      onPressed: () async { 
+        result = 'update';
+
+        register.description = _tecDescription.text;
+        register.credit = _isCredit;
+        await AccountConnect().update(register);
+        
+        Navigator.of(context).pop('update');
+        message.simple(context,"","CONTA ATUALIZADA COM SUCESSO!");
+      },
+      )
+    );
+  }else{
+    buttons.add(FloatingActionButton(
+      child: const Icon(
+        Icons.add,
+      ),
+      onPressed: () async { 
+        result = 'update';
+
+        register.id = int.parse(_tecId.text);
+        register.description = _tecDescription.text;
+        register.idGroup = idGroup;
+        register.credit = _isCredit;
+        register.groupSequence = sequence;
+        await AccountConnect().setData(register);
+        
+        Navigator.of(context).pop('update');
+        message.simple(context,"","CONTA CADASTRADA COM SUCESSO!");
+      },
+      )
+    );
+  }
+  
+  Widget build = Center(
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                icon: Icons.article_rounded,
+                label: 'ID',
+                enabled: false,
+                controller: _tecId
+              ),
+            ),
+            const SizedBox(width: 20),
+            CustomCreditDebt(
+              isCredit: _isCredit, 
+              onToggle: (value) {
+                _isCredit = value;              
+              }
+            )          
+          ],
+        ),
+        const SizedBox(height: 20),
+        CustomTextField(
+          label: 'Descrição',
+          controller: _tecDescription
+        )
+      ],
+    )
   );
 
   AlertDialog m = AlertDialog(
-    title: Text(title),
-    content: textField,
-    actions: [
-      okButton,
-    ],
+    title: const Center(
+      child: Text('CADASTRO DE CONTAS'),
+    ),
+    content: build,
+    actionsAlignment: MainAxisAlignment.center,
+    actions: buttons,
   );
 
   await showDialog(
@@ -337,5 +494,5 @@ _accountRegister(BuildContext context,String title,String text) async {
     },
   );
 
-  return _tecDescription.text;
+  return result;
 }

@@ -4,6 +4,5 @@ class AccountRegister {
   bool? credit;
   String? description;
   int? idGroup;
-  int? groupSequence;
-  
+  int? groupSequence;  
 }

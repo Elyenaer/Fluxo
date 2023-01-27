@@ -1,8 +1,10 @@
+import 'package:firebase_write/custom/widgets/customCreditDebt.dart';
 import 'package:firebase_write/custom/widgets/customCurrencyTextField.dart';
 import 'package:firebase_write/custom/widgets/customDateTextField.dart';
 import 'package:firebase_write/custom/widgets/customDropDown.dart';
 import 'package:firebase_write/custom/widgets/customTextField.dart';
 import 'package:firebase_write/database.dart/connection/accountConnect.dart';
+import 'package:firebase_write/database.dart/connection/financialEntryConnect.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/database.dart/register/accountRegister.dart';
@@ -95,7 +97,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
   }
 
   Future<void> setNextId() async {
-    _tdcId.text = await register.getNextId();
+    _tdcId.text = await FinancialEntryConnect().getNextId();
   }
 
   @override
@@ -113,7 +115,8 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       if(_getDataScreen()==false){
         return;
       }
-      register.setData();
+
+      FinancialEntryConnect().setData(register);
 
       message.simple(context, "", "LANÇAMENTO CADASTRADO COM SUCESSO!");
 
@@ -197,7 +200,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
       + convert.doubleToCurrencyBR(register.value)
     );
     if(confirm){
-      register.delete();
+      FinancialEntryConnect().delete(register);
       _clean();
     }
   }
@@ -206,7 +209,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
     if(_getDataScreen()==false){
         return;
     }
-    register.update();
+    FinancialEntryConnect().update(register);
     message.simple(context, "", "LANÇAMENTO ATUALIZADO COM SUCESSO!");
   }
 
@@ -266,7 +269,15 @@ class _MyHomePageState extends State<FinancialEntryPage> {
                           const SizedBox(
                             width: 50,
                           ),
-                          _credit(),
+                          CustomCreditDebt(
+                            isCredit: _isCredit, 
+                            onToggle: (value) {
+                              setState(() {
+                                _isCredit = value;
+                                changeType();
+                              });                              
+                            },
+                          ),
                         ]),                       
                     CustomDropDown(
                       list: typeList,
@@ -294,29 +305,6 @@ class _MyHomePageState extends State<FinancialEntryPage> {
                     _buttonRow(),
                   ]),
             ),
-    );
-  }
-
-  Widget _credit() {
-    return FlutterSwitch(
-      width: 180.0,
-      height: 50.0,
-      valueFontSize: 25.0,
-      toggleSize: 45.0,
-      value: _isCredit,
-      borderRadius: 30.0,
-      padding: 8.0,
-      activeText: "Crédito",
-      inactiveText: "Débito",
-      activeColor: Colors.green,
-      inactiveColor: Colors.red,
-      showOnOff: true,
-      onToggle: (val) {
-        setState(() {
-          _isCredit = val;
-          changeType();
-        });
-      },
     );
   }
 
