@@ -50,8 +50,8 @@ class AccountConnect {
 }
 
   Future<void> setData(AccountRegister register) async {
-  collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
-    => print("Failed to add user: $error"));
+    collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
+      => print("Failed to add user: $error"));
 }
 
   Future<List<AccountRegister>?> getData() async {
@@ -74,23 +74,23 @@ class AccountConnect {
   }
 
   Future<bool> delete(AccountRegister register) async {
-  try{
-    //check if there are registers in account
-    if(await FinancialEntryConnect().checkAccount(register.id!)){
+    try{
+      //check if there are registers in account
+      if(await FinancialEntryConnect().checkAccount(register.id!)){
+        return false;
+      }
+      collectionRef.doc(register.id.toString()).delete();
+      return true;
+    }catch(e){
+      print("Failed to add user: $e");
       return false;
     }
-    collectionRef.doc(register.id.toString()).delete();
-    return true;
-  }catch(e){
-     print("Failed to add user: $e");
-     return false;
   }
-}
 
   Future<void> update(AccountRegister register) async {
-  collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
-    => print("Failed to add user: $error"));
-}
+    collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
+      => print("Failed to add user: $error"));
+  }
 
   Future<List<AccountRegister>?> getDataType(String type) async {
     try {

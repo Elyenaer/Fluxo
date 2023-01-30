@@ -12,6 +12,7 @@ class AccountGroupConnect {
     return <String, String>{
       'id': funcNumber.includeZero(reg.id!,3),
       'description': reg.description!,    
+      'sequence': funcNumber.includeZero(reg.sequence!,0),
     };
 }
 
@@ -28,6 +29,26 @@ class AccountGroupConnect {
       print("ERRO _CONVERTREGISTER $e");
       return null;
     }
+}
+
+  Future<void> setData(AccountGroupRegister register) async {
+    collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
+      => print("Failed to add user: $error"));
+  }
+
+Future<void> update(AccountGroupRegister register) async {
+  collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
+    => print("Failed to add user: $error"));
+}
+
+Future<bool> delete(AccountGroupRegister register) async {
+  try{
+    collectionRef.doc(register.id.toString()).delete();
+    return true;
+  }catch(e){
+    print("Failed to add user: $e");
+    return false;
+  }
 }
 
   Future<List<AccountGroupRegister>?> getData() async {

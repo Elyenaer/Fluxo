@@ -37,7 +37,6 @@ class _MainPage extends State<AccountManagerPage> {
     List<AccountRegister>? account = await AccountConnect().getData();
 
     _allLists.clear();
-
     for(int i=0;i<group!.length;i++){
       List<AccountRegister> _items = <AccountRegister> [];
       for(int j=0;j<account!.length;j++){
@@ -47,7 +46,7 @@ class _MainPage extends State<AccountManagerPage> {
       }
       _allLists.add(_Group(
         group: group[i], 
-        accounts: _items
+        accounts: _items,
       ));
     }    
     _updateList();
@@ -59,6 +58,16 @@ class _MainPage extends State<AccountManagerPage> {
     Comparator<_Group> sortbyId = (a, b) => a.group.sequence!.compareTo(b.group.sequence!);   
     _allLists.sort(sortbyId);
     lists = _allLists.map(_groupPanel).toList();
+  }
+
+  _deleteGroup(_Group group) async {
+    if(await message.confirm(context,"CONFIRMA A EXCLUSÃO?","VOCÊ TEM CERTEZA QUE DESEJA EXCLUIR O GRUPO?")==false){
+      return;
+    }
+    await AccountGroupConnect().delete(group.group);
+    message.simple(context,'',"GRUPO EXCLUÍDO COM SUCESSO!");
+    _allLists.remove(group);
+    _getAccount();
   }
 
   void setIsloading(bool isLoading) {
@@ -111,24 +120,13 @@ class _MainPage extends State<AccountManagerPage> {
                   onListReorder: onReorderList,
                 )
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      
-                    }, 
-                    child: const Text("+ GRUPO")
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      
-                    }, 
-                    child: const Text("SALVAR ALTERAÇÕES")
-                  ),
-                ],
-              )
-              
+              ElevatedButton(
+                onPressed: () async {
+                  await _accountGroupRegister(context,_allLists.length);     
+                  _getAccount();             
+                }, 
+                child: const Text("+ GRUPO")
+              ),              
             ]
           )
         )
@@ -161,7 +159,7 @@ class _MainPage extends State<AccountManagerPage> {
       header: Container(
         padding: const EdgeInsets.all(8),
         child: CustomTextButton(
-          text: group.group.description!,
+          text: group.group.description! + " - " + group.group.sequence.toString(),
           foregroundColor: Theme.of(context).colorScheme.onSurface,
           fontWeight: FontWeight.bold,
           onPressed: () async {
@@ -191,7 +189,7 @@ class _MainPage extends State<AccountManagerPage> {
         iconSize: 25,
         onPressed: () async { 
           group.group.description = await _accountRegister(
-            context,null,group.group.id,group.nextSequence);
+            context,null,group.group.id,group.accounts.length);
             setState(() { 
               _getAccount();
             }
@@ -209,7 +207,7 @@ class _MainPage extends State<AccountManagerPage> {
           ),
           iconSize: 25,
           onPressed: () { 
-
+            _deleteGroup(group);            
           },
         ),
       );
@@ -227,7 +225,7 @@ class _MainPage extends State<AccountManagerPage> {
           color: theme.foregroundEntryCredit,
         ), 
         title: CustomTextButton(
-          text: register.description!,
+          text: register.description! + " - " + register.groupSequence.toString(),
           onPressed: ()async  {   
             final result = await _accountRegister(context,register,null,null);
            
@@ -247,7 +245,7 @@ class _MainPage extends State<AccountManagerPage> {
           color: theme.foregroundEntryDebt,
         ), 
         title: CustomTextButton(
-          text: register.description!,
+          text: register.description! + " - " + register.groupSequence.toString(),
           onPressed: ()async  {   
             String result = await _accountRegister(context,register,null,null);
             if(result == 'update'){
@@ -263,12 +261,12 @@ class _MainPage extends State<AccountManagerPage> {
     );
   }
 
-  void onReorderListItem(
+  void onReorderListItem (
     int oldItemIndex,
     int oldListIndex,
     int newItemIndex,
     int newListIndex,
-  ) {
+  ) async {
     setState(() {
       final oldListItems = lists[oldListIndex].children;
       final newListItems = lists[newListIndex].children;
@@ -276,24 +274,14 @@ class _MainPage extends State<AccountManagerPage> {
       final movedItem = oldListItems.removeAt(oldItemIndex);
       newListItems.insert(newItemIndex, movedItem);  
 
-
-
-
-
-      print("oldItem -> $oldItemIndex \noldList -> $oldListIndex \nnewItem -> $newItemIndex \nnewList -> $newListIndex");
-
-
-
-
       if(oldListIndex==newListIndex){
         _allLists[oldListIndex].replace(oldItemIndex,newItemIndex);      
       }else{
-        _allLists[newListIndex].add(_allLists[oldListIndex].accounts[oldItemIndex]);
-        _allLists[oldListIndex].remove(oldItemIndex);
-
-        
+        _allLists[newListIndex].add(_allLists[oldListIndex].accounts[oldItemIndex],newItemIndex);
+        _allLists[oldListIndex].remove(oldItemIndex);        
       }
 
+      _getAccount();
     });
   }
 
@@ -304,6 +292,24 @@ class _MainPage extends State<AccountManagerPage> {
     setState(() {       
       final movedList = lists.removeAt(oldListIndex);
       lists.insert(newListIndex, movedList);
+
+      _allLists[oldListIndex].group.sequence = newListIndex;
+      AccountGroupConnect().update(_allLists[oldListIndex].group);
+
+      if(oldListIndex<=newListIndex){
+        for(int i=newListIndex;i>oldListIndex;i--){
+          _allLists[i].group.sequence = i-1;   
+          AccountGroupConnect().update(_allLists[i].group);       
+        }        
+      }else{
+        for(int i=newListIndex;i<oldListIndex;i++){
+          _allLists[i].group.sequence = i+1;
+          AccountGroupConnect().update(_allLists[i].group);
+        }
+      }
+
+      _getAccount();
+
     });
   }
 
@@ -312,15 +318,14 @@ class _MainPage extends State<AccountManagerPage> {
 class _Group {
   AccountGroupRegister group;
   List<AccountRegister> accounts;
-  int nextSequence = 0;
+  AccountConnect connect = AccountConnect();
 
   _Group({
     required this.group,
     required this.accounts,
   });
 
-  replace(int oldIndex,int newindex){
-    AccountConnect connect = AccountConnect();
+  replace(int oldIndex,int newindex){    
     accounts[oldIndex].groupSequence = newindex;
     connect.update(accounts[oldIndex]);
     if(oldIndex<newindex){      
@@ -336,21 +341,45 @@ class _Group {
     }        
   }
 
-  remove(int index){
-    accounts.remove(accounts[index]);
+  remove(int oldIndex){
+    accounts.remove(accounts[oldIndex]);
+    for(int i = 0;i<accounts.length;i++){
+      accounts[i].groupSequence = i;
+      connect.update(accounts[i]);
+    }
   }
 
-  add(AccountRegister register){
-    register.idGroup = group.id;
-    register.groupSequence = accounts.length;
-    accounts.add(register);
+  add(AccountRegister register,int newIndex){
+
+    register.idGroup = group.id;  
+    register.groupSequence = newIndex;
+    if(newIndex==accounts.length){
+      accounts.add(register);
+      connect.update(register);
+      return;
+    }
+
+    List<AccountRegister> list = <AccountRegister>[];  
+    for(int i = 0;i<accounts.length;i++){
+      if(i<newIndex){
+        list.add(accounts[i]);
+      }else{
+        if(i==newIndex){
+          list.add(register);
+          connect.update(register);
+        }
+        accounts[i].groupSequence = i+1;
+        list.add(accounts[i]);
+        connect.update(accounts[i]);
+      }      
+    }    
+    accounts = list;
   }
 
   sort(){
     // ignore: prefer_function_declarations_over_variables
     Comparator<AccountRegister> sortById = (a, b) => a.groupSequence!.compareTo(b.groupSequence!);
     accounts.sort(sortById);
-    nextSequence = accounts.length;
   }
 
 }
@@ -481,6 +510,81 @@ Future<String> _accountRegister(BuildContext context,AccountRegister? account,in
   AlertDialog m = AlertDialog(
     title: const Center(
       child: Text('CADASTRO DE CONTAS'),
+    ),
+    content: build,
+    actionsAlignment: MainAxisAlignment.center,
+    actions: buttons,
+  );
+
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return m;
+    },
+  );
+
+  return result;
+}
+
+Future<String> _accountGroupRegister(BuildContext context,int sequence) async { 
+
+  String result = '';
+
+  AccountGroupConnect connect = AccountGroupConnect();
+  AccountGroupRegister register = AccountGroupRegister();
+
+  TextEditingController _tecId = TextEditingController(text: await connect.getNextId());
+  TextEditingController _tecDescription = TextEditingController(text: '');
+
+  List<Widget> buttons = <Widget>[];
+  buttons.add(FloatingActionButton(
+    child: const Icon(
+      Icons.arrow_back,
+    ),
+    onPressed: () { 
+      Navigator.of(context).pop();
+    },
+    ),
+  );
+  buttons.add(FloatingActionButton(
+    child: const Icon(
+      Icons.add,
+    ),
+    onPressed: () async { 
+      result = 'update';
+
+      register.id = int.parse(_tecId.text);
+      register.description = _tecDescription.text;
+      register.sequence = sequence;
+      await connect.setData(register);
+      
+      Navigator.of(context).pop('update');
+      message.simple(context,"","GRUPO CADASTRADO COM SUCESSO!");
+    },
+    )
+  );
+  
+  Widget build = Center(
+    child: Column(
+      children: [
+        CustomTextField(
+          icon: Icons.article_rounded,
+          label: 'ID',
+          enabled: false,
+          controller: _tecId
+        ),
+        const SizedBox(height: 20,),
+        CustomTextField(
+          label: 'Descrição',
+          controller: _tecDescription
+        )
+      ],
+    )
+  );
+
+  AlertDialog m = AlertDialog(
+    title: const Center(
+      child: Text('CADASTRO DE GRUPOS'),
     ),
     content: build,
     actionsAlignment: MainAxisAlignment.center,
