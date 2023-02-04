@@ -1,6 +1,5 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcNumber.dart';
@@ -32,7 +31,7 @@ FinancialEntryRegister? _convertRegister(Map<String, dynamic> data){
 
     return reg;
   }catch(e){
-    print("ERRO _CONVERTREGISTER $e");
+    print("FINANCIAL ENTRY ERRO _CONVERTREGISTER $e");
     return null;
   }
 }

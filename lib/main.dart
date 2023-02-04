@@ -1,9 +1,10 @@
 
-import 'package:firebase_write/page/accountManagerPage.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
-import 'package:firebase_write/page/reportPage.dart';
+import 'package:firebase_write/page/report/report_controller.dart';
+import 'package:firebase_write/page/report/report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import '../settings/theme.dart';
 
 
@@ -25,10 +26,17 @@ class MyApp extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {    
-    return MaterialApp(
-      theme: themeMain,
-      debugShowCheckedModeBanner: false,
-      home: AccountManagerPage(),      
-    );
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => ReportController(),
+        ),
+      ],
+      child: MaterialApp(
+        theme: themeMain,
+        debugShowCheckedModeBanner: false,
+        home: const ReportPage(),      
+      ),      
+    );  
   }
 }

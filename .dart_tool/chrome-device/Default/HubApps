@@ -280,7 +280,7 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_word.png/1.6.22/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_word.png/1.6.24/asset"
             }
          },
          "location": "hovercard",
@@ -293,7 +293,7 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_excel.png/1.6.22/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_excel.png/1.6.24/asset"
             }
          },
          "location": "hovercard",
@@ -306,7 +306,7 @@
          },
          "icon": {
             "raster_icon": {
-               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_power_point.png/1.6.22/asset"
+               "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_power_point.png/1.6.24/asset"
             }
          },
          "location": "hovercard",
@@ -324,32 +324,26 @@
          "name": "Pesquisar"
       } ],
       "default_locale": "en",
-      "description": "Acesse aplicativos do Microsoft Office gratuitamente",
-      "description|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "Acesse o Microsoft 365 Apps gratuitamente",
+      "description": "Acesse o Microsoft 365 Apps gratuitamente",
+      "description|flight:msRemoveStringFromChromiumCode": "Acesse aplicativos do Microsoft Office gratuitamente",
       "icon": {
          "raster_icon": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.6.22/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_office_hc.png/1.6.22/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_office.png/1.6.22/asset"
-         },
-         "raster_icon|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_dark.png/1.6.22/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_hc_dark.png/1.6.22/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_light.png/1.6.22/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_dark.png/1.6.24/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_hc_light.png/1.6.24/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_M365_light.png/1.6.24/asset"
          }
       },
       "id": "64be4f9b-3b81-4b6e-b354-0ba00d6ba485",
       "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxAd1wVwxRvofGvfNkLNw5uPwUK2+GEM2l046td7lUEX8TN6wvHeiPXgnyILTCa2zpP66VpLkDuu+2NH7Ks8Z7Xzfy7S8dqm6GciANl3bLZn36KOvIS1GWK/yyFxkmsA826soFl+BK8v6s3VQB8zUE+Typ2IZJn3AKAG7+LGVZs932N41BfzZDKFquVKsZElhAeGMtQZl98SgK0mARy4ZpY1ska5QwBACWwsZtjdMSX8goZR3CKUfrG1jinA9dMFS+Xe4xiJBtohYi4l6bDUjshIhc0ugGfU/TEZkP2/vHRKbEGOjI5j8qctRnJnUm4SUQa1EM/zO0l/FwjfX7TyojQIDAQAB",
       "locales": [ "af", "am", "ar", "as", "az", "bg", "bn_IN", "bs", "ca", "ca_Es_VALENCIA", "cs", "cy", "da", "de", "el", "en", "en_GB", "es", "es_MX", "et", "eu", "fa", "fi", "fil", "fil", "fr", "fr_CA", "ga", "gd", "gl", "gu", "he", "hi", "hr", "hu", "hy", "id", "is", "it", "ja", "ka", "kk", "km", "kn", "ko", "kok", "kok", "lb", "lo", "lt", "lv", "mi", "mk", "ml", "mr", "ms", "mt", "nb", "ne", "nl", "nn", "or", "pa", "pl", "pt_BR", "pt_PT", "quz", "ro", "ru", "sk", "sl", "sq", "sr_Cyrl_BA", "sr_Cyrl_RS", "sr_Latn_RS", "sv", "ta", "te", "th", "tr", "tt", "ug", "uk", "ur", "uz", "vi", "zh_CN", "zh_TW" ],
       "manifest_version": 3,
-      "name": "Microsoft 365 (Office)",
-      "name|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "Microsoft 365",
+      "name": "Microsoft 365",
       "notifications": {
          "awareness_prompts|flight:msEdgeHubAppOfficeAwarenessPrompts": {
             "bubble_notifications": {
                "domains": [ "www.office.com", "www.microsoft365.com" ],
-               "text": "Use o Microsoft Office gratuitamente!",
-               "text|flight:msEdgeFreeOfficeShowRebrandingPhaseThreeFeature": "O Office agora é Microsoft 365. Use gratuitamente!"
+               "text": "O Office agora é Microsoft 365. Use gratuitamente!",
+               "text|flight:msRemoveStringFromChromiumCode": "Use o Microsoft Office gratuitamente!"
             }
          },
          "enabled": true
@@ -360,7 +354,7 @@
          "url": "edge://free-office/?sharedHeader=1",
          "url|flight:msEdgeHubAppOfficeCom": "https://www.office.com"
       },
-      "version": "1.6.22"
+      "version": "1.6.24"
    }, {
       "auto_show": {
          "enabled": true,
@@ -371,7 +365,7 @@
          "fre_notification": {
             "enabled": true,
             "header": "Abrir este painel foi útil para você?",
-            "show_count": 4,
+            "show_count": 3,
             "text": "Abrir este painel foi útil para você?"
          },
          "remember_context": {
@@ -414,9 +408,9 @@
       "description": "Verifique o email enquanto permanece no seu fluxo",
       "icon": {
          "raster_icon": {
-            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_outlook.png/1.7.2/asset",
-            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_outlook_hc.png/1.7.2/asset",
-            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_outlook.png/1.7.2/asset"
+            "dark_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_outlook.png/1.7.3/asset",
+            "high_contrast": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_fluent_outlook_hc.png/1.7.3/asset",
+            "light_mode": "https://edgeassetservice.azureedge.net/assets/edge_hub_apps_outlook.png/1.7.3/asset"
          }
       },
       "id": "8682d0fa-50b3-4ece-aa5b-e0b33f9919e2",
@@ -444,7 +438,7 @@
       },
       "trusted_domains": [ "live.com", "office.com", "microsoftonline.com", "microsoft.com", "office365.com" ],
       "trusted_types": [ "default", "dompurify" ],
-      "version": "1.7.2"
+      "version": "1.7.3"
    }, {
       "default_locale": "en",
       "description": "Empower people to express themselves creatively",

@@ -3,14 +3,13 @@ import 'package:firebase_write/custom/widgets/customCurrencyTextField.dart';
 import 'package:firebase_write/custom/widgets/customDateTextField.dart';
 import 'package:firebase_write/custom/widgets/customDropDown.dart';
 import 'package:firebase_write/custom/widgets/customTextField.dart';
-import 'package:firebase_write/database.dart/connection/accountConnect.dart';
+import 'package:firebase_write/models/account/accountConnect.dart';
 import 'package:firebase_write/database.dart/connection/financialEntryConnect.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/message.dart';
-import 'package:firebase_write/database.dart/register/accountRegister.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
+import 'package:firebase_write/models/account/accountRegister.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_switch/flutter_switch.dart';
 
 // ignore: must_be_immutable
 class FinancialEntryPage extends StatefulWidget {

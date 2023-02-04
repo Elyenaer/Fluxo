@@ -3,10 +3,10 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:firebase_write/custom/widgets/customCreditDebt.dart';
 import 'package:firebase_write/custom/widgets/customTextButton.dart';
 import 'package:firebase_write/custom/widgets/customTextField.dart';
-import 'package:firebase_write/database.dart/connection/accountConnect.dart';
-import 'package:firebase_write/database.dart/connection/accountGroupConnect.dart';
-import 'package:firebase_write/database.dart/register/accountGroupRegister.dart';
-import 'package:firebase_write/database.dart/register/accountRegister.dart';
+import 'package:firebase_write/models/account/accountConnect.dart';
+import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account_group/accountGroupConnect.dart';
+import 'package:firebase_write/models/account_group/accountGroupRegister.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -80,6 +80,14 @@ class _MainPage extends State<AccountManagerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: FloatingActionButton(
+          elevation: 0,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          child: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop("update");          
+          },
+        ),
         title: const Text('CONTAS'),
         centerTitle: true,
       ),
@@ -159,7 +167,7 @@ class _MainPage extends State<AccountManagerPage> {
       header: Container(
         padding: const EdgeInsets.all(8),
         child: CustomTextButton(
-          text: group.group.description! + " - " + group.group.sequence.toString(),
+          text: group.group.description!,
           foregroundColor: Theme.of(context).colorScheme.onSurface,
           fontWeight: FontWeight.bold,
           onPressed: () async {
@@ -225,7 +233,7 @@ class _MainPage extends State<AccountManagerPage> {
           color: theme.foregroundEntryCredit,
         ), 
         title: CustomTextButton(
-          text: register.description! + " - " + register.groupSequence.toString(),
+          text: register.description!,
           onPressed: ()async  {   
             final result = await _accountRegister(context,register,null,null);
            
@@ -245,7 +253,7 @@ class _MainPage extends State<AccountManagerPage> {
           color: theme.foregroundEntryDebt,
         ), 
         title: CustomTextButton(
-          text: register.description! + " - " + register.groupSequence.toString(),
+          text: register.description!,
           onPressed: ()async  {   
             String result = await _accountRegister(context,register,null,null);
             if(result == 'update'){

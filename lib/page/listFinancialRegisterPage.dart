@@ -1,6 +1,6 @@
 
 import 'package:firebase_write/database.dart/connection/financialEntryConnect.dart';
-import 'package:firebase_write/database.dart/register/accountRegister.dart';
+import 'package:firebase_write/models/account/accountRegister.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 import 'package:firebase_write/settings/theme.dart';
