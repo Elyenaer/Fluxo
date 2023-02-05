@@ -2,6 +2,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_write/page/accountManagerPage.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
+import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/report_controller.dart';
 import 'package:firebase_write/page/report/row_register.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,9 @@ class ReportPanel extends StatelessWidget{
           rightHandSideColumnWidth: controller.getRightHandSideColumnWidht(),
           isFixedHeader: true,
           headerWidgets: _titleItem(context),
-          leftSideItemBuilder:  _rowTitle,
-          rightSideItemBuilder: _rowPanel,
-          itemCount: controller.getRowsQuantity(),
+          leftSideItemBuilder:  _rowTitleGroup,
+          rightSideItemBuilder: _rowGroup,
+          itemCount: controller.groups.length,
           rowSeparatorWidget: const Divider(
             height: 1.0,
             thickness: 0.0,
@@ -101,41 +102,84 @@ class ReportPanel extends StatelessWidget{
     return title;
   }
 
-  Widget _rowTitle(BuildContext context,int index) {
-    return Center(
-      child: Container(     
-        color: controller.getBackgroundRowTitle(index),  
-        child: AutoSizeText(
-          controller.registers[index].account.description!,
-          maxLines: 2,
-          minFontSize: 1,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15.0 * controller.scalePanel,
-            color: Colors.white
-          )
-        ),
-        height: controller.getRowHeight(),
-        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-        alignment: Alignment.centerLeft,
-      ),
+  Widget _rowTitleGroup(BuildContext context,int index){
+    return Row(
+      children:_rowTitle(context, controller.groups[index]),
     );
   }
 
-  Widget _rowPanel(BuildContext context,int index) {    
-    return Row(
-      children: <Widget>[
-        SizedBox(
-          height: controller.getRowHeight(),          
-            child: Row(            
-              children: _getRowsPanel(context,controller.registers[index],controller.getBackGroundRowCell(index)),
+  _rowTitle(BuildContext context,GroupRegister group) {
+    List<Widget> titles = <Widget>[];
+
+    for(int i=0;i<group.rows.length;i++){
+      titles.add(
+        Center(
+          child: Container(     
+            color: controller.getBackgroundRowTitle(i),  
+            child: AutoSizeText(
+              group.rows[i].account.description!,
+              maxLines: 2,
+              minFontSize: 1,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0 * controller.scalePanel,
+                color: Colors.white
+              )
             ),
+            height: controller.getRowHeight(),
+            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+            alignment: Alignment.centerLeft,
           ),
+        )
+      );
+    }
+    return titles;
+  }
+
+  Widget _rowGroup(BuildContext context,int index) {    
+
+
+    print("row group ----> " + index.toString());
+
+
+    return Row(
+      children: [
+        SizedBox(
+          height: controller.getGroupHeight(index),   
+          child: Column(            
+            children: _rowPanel(context,controller.groups[index]),
+          ),
+        ),
       ],
     );
   }
+ 
+  List<Widget> _rowPanel(BuildContext context,GroupRegister group) {  
+
+    print("row panel -------> " + group.rows.length.toString());
+
+    List<Widget> rows = <Widget>[];
+    for(int i=0;i<group.rows.length;i++){
+      rows.add(
+        SizedBox(
+          height: controller.getRowHeight(),     
+          width: controller.getPanelWidth(),     
+          child: Center(
+            child: Row(          
+              children: _getRowsPanel(context,group.rows[i],controller.getBackGroundRowCell(i)),
+            ),
+          ),
+        ),
+      );
+    }
+    return rows;
+  }
 
   List<Widget> _getRowsPanel(BuildContext context,RowRegister r,Color backgroundColor){
+    
+    print("get row panel --------------> " + r.register.length.toString());
+    
+    
     List<Widget> rows = <Widget>[];
     for(int i=0;i<r.register.length;i++){      
       rows.add(
@@ -177,7 +221,7 @@ class ReportPanel extends StatelessWidget{
           ),
         ),
       );
-    }    
+    }        
     return rows;
   }
 

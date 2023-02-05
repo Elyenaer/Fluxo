@@ -1,6 +1,7 @@
 
 import 'package:firebase_write/models/account/accountRegister.dart';
 import 'package:firebase_write/models/account_group/accountGroupController.dart';
+import 'package:firebase_write/models/account_group/accountGroupRegister.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +14,14 @@ import '../../database.dart/register/financialEntryRegister.dart';
 import '../../models/account/accountConnect.dart';
 
 class ReportController with ChangeNotifier {
-  late List<GroupRegister> groups = <GroupRegister>[];
-  late final List<String> columnTitle = <String>[];
+  late List<GroupRegister> groups = [];
+  late final List<String> columnTitle = [];
   final TextEditingController tecDateStart = TextEditingController(text: '');
   final TextEditingController tecDateEnd = TextEditingController(text: '');
   late DateTime start,end;
 
   List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
-  String periodValue = 'Diário';
+  String periodValue = 'Diário';  
 
   static const double columnWidth = 100;
   static const double rowHeight = 50;
@@ -33,8 +34,11 @@ class ReportController with ChangeNotifier {
     update();
   }
 
-  update(){
-    _getRegister();
+  update() async {  
+    await _getColumnTitle();  
+    await _getGroup();  
+    await _getAccount();
+    await _getRegister();
   }
   
   _getColumnTitle(){    
@@ -88,26 +92,26 @@ class ReportController with ChangeNotifier {
     
   _getGroup() async {
     groups.clear();
-    groups = await AccountGroupController().getGroups();
+    List<AccountGroupRegister> g = await AccountGroupController().getGroups();
+    for(int i=0;i<g.length;i++){
+      groups.add(GroupRegister(g[i]));
+    }
   }
 
-  _getAccount() async{
-     _getGroup();
-    List<AccountRegister>? account = await AccountConnect().getData();   
+  _getAccount() async{     
+    List<AccountRegister>? account = await AccountConnect().getData(); 
     for(int i=0;i<account!.length;i++){
       RowRegister temp = RowRegister(account[i],columnTitle.length);
       for(int j=0;j<groups.length;j++){
         if(groups[j].group.id==account[i].idGroup){
-          groups[i].add(temp);
+          groups[j].add(temp);
         }        
       }
     }
   }
 
-  _getRegister() async {
-    try{
-      _getColumnTitle();     
-      _getAccount();
+  _getRegister() async {    
+    try{      
       List<FinancialEntryRegister>? reg = await FinancialEntryConnect().getDataGapDate(start,end);
       int positionArray = 0;
       DateTime d = start;
@@ -163,6 +167,10 @@ class ReportController with ChangeNotifier {
     return columnWidth*scalePanel;
   }
 
+  getPanelWidth(){
+    return columnTitle.length*getColumnWidht();
+  }
+
   getLeftHandSideColumnWidht(){
     return (columnWidth+20)*scalePanel;
   }
@@ -175,12 +183,16 @@ class ReportController with ChangeNotifier {
     return rowHeight*scalePanel;
   }
 
+  getGroupHeight(int index){
+    return groups[index].rows.length * getRowHeight();
+  }
+
   getRowHeightGap(){
     return rowHeightGap*scalePanel;
   }
 
   getBackgroundRowTitle(int index){
-    if(registers[index].account.credit!){
+    /*if(registers[index].account.credit!){
       if(index % 2 == 0){
         return theme.backgroundTitleDebt1;
       }else{
@@ -192,11 +204,12 @@ class ReportController with ChangeNotifier {
       }else{
         return theme.backgroundTitleCredit2;
       }
-    }
+    }*/
+    return Colors.white;
   }
 
   getBackGroundRowCell(int index){
-    if(!registers[index].account.credit!){
+    /*if(!registers[index].account.credit!){
       if(index % 2 == 0){
         return theme.backgroundEntryCredit1;
       // ignore: dead_code
@@ -210,7 +223,8 @@ class ReportController with ChangeNotifier {
       }else{
         return theme.backgroundEntryDebt2;
       }
-    }
+    }*/
+    return Colors.white;
   }
 
   getForeground(bool credit){
@@ -219,14 +233,6 @@ class ReportController with ChangeNotifier {
     }else{
       return theme.foregroundEntryDebt;
     }
-  }
-
-  getRowsQuantity(){
-    int total = 0;
-    for(int i=0;i<groups.length;i++){
-      total += groups[i].rows.length;
-    }
-    return total;
   }
 
   setScale(double newScale){

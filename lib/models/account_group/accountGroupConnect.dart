@@ -17,7 +17,7 @@ class AccountGroupConnect {
     };
 }
 
-  Future<AccountGroupRegister?> _convertRegister(Map<String, dynamic> data) async {
+  AccountGroupRegister? _convertRegister(Map<String, dynamic> data){
     try{
       AccountGroupRegister reg = AccountGroupRegister();
 
@@ -25,11 +25,9 @@ class AccountGroupConnect {
       reg.description = data['description'].toString();
       reg.sequence = int.parse(data['sequence']);
 
-      reg.accounts = await AccountConnect().getDataByGroup(reg.id!);
-
       return reg;
     }catch(e){
-      print(" ACCOUNT GROUP ERRO _CONVERTREGISTER $e");
+      print("ACCOUNT GROUP ERRO _CONVERTREGISTER $e");
       return null;
     }
 }
@@ -61,14 +59,15 @@ class AccountGroupConnect {
       // to get data from all documents sequentially
       await collectionRef
         .get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountGroupRegister);
-        }
+          for (var result in querySnapshot.docs) {
+            AccountGroupRegister temp = _convertRegister(result.data() as Map<String,dynamic>) as AccountGroupRegister;
+            registers.add(temp);
+          }
       });
       
       return registers;
     }catch(e){
-      print("ERRO GETDATA -> $e");
+      print("ACCOUNT GROUP ERRO GETDATA -> $e");
       return null;
     }
   }
