@@ -2,6 +2,7 @@
 import 'package:firebase_write/models/account/accountRegister.dart';
 import 'package:firebase_write/models/account_group/accountGroupController.dart';
 import 'package:firebase_write/models/account_group/accountGroupRegister.dart';
+import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,13 @@ import '../../database.dart/connection/financialEntryConnect.dart';
 import '../../database.dart/register/financialEntryRegister.dart';
 import '../../models/account/accountConnect.dart';
 
+enum ReportState {loading,loaded}
+
 class ReportController with ChangeNotifier {
+  var state = ReportState.loading;
+
   late List<GroupRegister> groups = [];
+  late BalanceRegister periodBalance,accumulatedBalance;
   late final List<String> columnTitle = [];
   final TextEditingController tecDateStart = TextEditingController(text: '');
   final TextEditingController tecDateEnd = TextEditingController(text: '');
@@ -24,7 +30,7 @@ class ReportController with ChangeNotifier {
   String periodValue = 'Diário';  
 
   static const double columnWidth = 100;
-  static const double rowHeight = 50;
+  static const double rowHeight = 40;
   static const double rowHeightGap = 20;      
   late double scalePanel = 1.0;
 
@@ -39,6 +45,9 @@ class ReportController with ChangeNotifier {
     await _getGroup();  
     await _getAccount();
     await _getRegister();
+    await _getBalances();
+    state = ReportState.loaded;
+    notifyListeners();
   }
   
   _getColumnTitle(){    
@@ -163,6 +172,28 @@ class ReportController with ChangeNotifier {
     }
   }
 
+  //get periodBalance and accumulatedBalance
+  _getBalances() async {
+    periodBalance = BalanceRegister("SALDO",columnTitle.length);    
+    for(int i=0;i<groups.length;i++){
+      await groups[i].updateBalance();
+      for(int j=0;j<groups[i].balance.length;j++){
+        periodBalance.add(j,groups[i].balance[j].sum);
+      }
+    }
+
+    accumulatedBalance = BalanceRegister("ACUMULADO",columnTitle.length);
+    double lastValue = 0;
+    for(int i=0;i<periodBalance.sum.length;i++){
+      accumulatedBalance.add(i,periodBalance.sum[i]+lastValue);
+      lastValue = accumulatedBalance.sum[i];
+    }
+  }
+
+  getFirstColumnWidht(){
+    return (columnWidth+20)*scalePanel;
+  }
+
   getColumnWidht(){
     return columnWidth*scalePanel;
   }
@@ -179,12 +210,20 @@ class ReportController with ChangeNotifier {
     return columnWidth*(columnTitle.length)*scalePanel;
   }
 
-  getRowHeight(){
+  getRowHeight(int index){
+    if(groups[index].rowIsShowing){
+      return rowHeight*scalePanel;
+    }else{
+      return 0;
+    }    
+  }
+
+  getTitleRowHeight(){
     return rowHeight*scalePanel;
   }
 
   getGroupHeight(int index){
-    return groups[index].rows.length * getRowHeight();
+    return (groups[index].rows.length+1) * getTitleRowHeight();
   }
 
   getRowHeightGap(){

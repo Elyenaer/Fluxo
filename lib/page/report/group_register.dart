@@ -7,7 +7,7 @@ class GroupRegister{
   List<RowRegister> rows = <RowRegister>[];
   List<GroupCellRegister> balance = <GroupCellRegister>[];
   AccountGroupRegister group;
-  double sum = 0;
+  bool rowIsShowing = true;
 
   GroupRegister(this.group);
 
@@ -15,6 +15,20 @@ class GroupRegister{
     rows.add(row);
   }
 
-     
+  updateBalance(){
+    _createBalance(rows[0].register.length);
+    for(int i=0;i<rows.length;i++){
+      for(int j=0;j<balance.length;j++){
+        balance[j].add(rows[i].register[j].sum,rows[i].isCredit());
+      }
+    }    
+  }
+
+  _createBalance(int lenght){
+    for(int i=0;i<lenght;i++){
+      balance.add(GroupCellRegister());
+    }
+  }
+
 
 }

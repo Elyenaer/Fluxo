@@ -4,7 +4,7 @@
 import 'package:firebase_write/database.dart/register/financialEntryRegister.dart';
 
 class CellRegister{
-  late double sum = 0;
+  double sum = 0;
   late int position;
   late List<FinancialEntryRegister> cellRegister = <FinancialEntryRegister>[];
 

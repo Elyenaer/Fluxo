@@ -18,4 +18,8 @@ class RowRegister{
     register[positionArray].include(f);
   }
 
+  isCredit(){
+    return account.credit;
+  }
+
 }
