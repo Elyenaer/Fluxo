@@ -1,14 +1,18 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CustomTextButton extends StatefulWidget{
+class CustomTextButton extends StatelessWidget{
   CustomTextButton ({
     Key? key,
     required this.onPressed,
     required this.text,
     this.foregroundColor,
     this.fontSize,
-    this.fontWeight
+    this.fontWeight,
+    this.maxLines,
+    this.alignment,
+    this.fixedSizeText
   }) : super(key: key);
 
   Function() onPressed;
@@ -16,35 +20,50 @@ class CustomTextButton extends StatefulWidget{
   Color? foregroundColor;
   double? fontSize;
   FontWeight? fontWeight;
-
-  @override
-  State<StatefulWidget> createState() => _MyHomePageState();
-}
-
-  // ignore: non_constant_identifier_names
-  class _MyHomePageState extends State<CustomTextButton > {
+  int? maxLines;
+  Alignment? alignment;
+  bool? fixedSizeText = false;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {  
-        widget.onPressed();
+        onPressed();
       },
       style: ButtonStyle(
-        alignment: Alignment.centerLeft,
+        alignment: alignment ??= Alignment.center,
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.zero, 
         ),
       ),
-      child: Text(
-        widget.text,
-        style: TextStyle(            
-          color: widget.foregroundColor ??= Theme.of(context).primaryColor,
-          fontSize: widget.fontSize ??= 16.0,
-          fontWeight: widget.fontWeight ??= FontWeight.normal
-        ),        
-      )
+      child:_Text(context)
     );
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget _Text(BuildContext context){
+    if(fixedSizeText!=null && fixedSizeText==true){
+      return Text(
+        text,
+        maxLines: maxLines ??= 1,
+        style: TextStyle(            
+          color: foregroundColor ??= Theme.of(context).primaryColor,
+          fontSize: fontSize ??= 16.0,
+          fontWeight: fontWeight ??= FontWeight.normal
+        ),        
+      );
+    }else{
+      return AutoSizeText(
+        text,
+        minFontSize: 1,
+        maxLines: maxLines ??= 1,
+        style: TextStyle(            
+          color: foregroundColor ??= Theme.of(context).primaryColor,
+          fontSize: fontSize ??= 16.0,
+          fontWeight: fontWeight ??= FontWeight.normal
+        ),        
+      );
+    }
   }
 
 }

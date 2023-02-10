@@ -1,7 +1,7 @@
 
 
-import 'package:firebase_write/database.dart/connection/themeConnect.dart';
-import 'package:firebase_write/database.dart/register/themeRegister.dart';
+import 'package:firebase_write/models/theme/themeConnect.dart';
+import 'package:firebase_write/models/theme/themeRegister.dart';
 import 'package:flutter/material.dart';
 
 // ignore: camel_case_types
@@ -9,18 +9,30 @@ class theme{
 
   late ThemeRegister register;
 
-  static Color backgroundTitleDebt1 = const Color.fromARGB(255, 130, 0, 0);
-  static Color backgroundTitleDebt2 = const Color.fromARGB(255, 100, 0, 0);
-  static Color backgroundTitleCredit1 = const Color.fromARGB(255, 0, 0,130);
-  static Color backgroundTitleCredit2 = const Color.fromARGB(255, 0, 0, 100);
-
   static Color backgroundEntryDebt1 = const Color.fromARGB(255, 255, 242, 242);
   static Color backgroundEntryDebt2 = const Color.fromARGB(255, 255, 220, 220);
   static Color backgroundEntryCredit1 = const Color.fromARGB(255, 242, 242, 255);
   static Color backgroundEntryCredit2 = const Color.fromARGB(255, 220, 220, 255);
+/*
+  static Color backgroundTitleDebt1 = const Color.fromARGB(255, 255, 210, 210);
+  static Color backgroundTitleDebt2 = const Color.fromARGB(255, 255, 190, 190);
+  static Color backgroundTitleCredit1 = const Color.fromARGB(255, 210, 210, 255);
+  static Color backgroundTitleCredit2 = const Color.fromARGB(255, 190, 190, 255);*/
+  
+  static Color backgroundTitleDebt1 = backgroundEntryDebt1;
+  static Color backgroundTitleDebt2 = backgroundEntryDebt2;
+  static Color backgroundTitleCredit1 = backgroundEntryCredit1;
+  static Color backgroundTitleCredit2 = backgroundEntryCredit2;
+
+  static Color backgroundBalanceCredit = const Color.fromARGB(255, 70, 70, 255);
+  static Color backgroundBalanceDebt = const Color.fromARGB(255, 255, 0, 0);
 
   static Color foregroundEntryCredit = Colors.blue;
   static Color foregroundEntryDebt = Colors.red;
+
+  static Color foregroundTitleCredit = const Color.fromARGB(255, 0, 0, 180);
+  static Color foregroundTitleDebt = const Color.fromARGB(255, 180, 0, 0);
+
       
  _getTheme() async {
     try{

@@ -35,18 +35,23 @@ class ReportController with ChangeNotifier {
   late double scalePanel = 1.0;
 
   ReportController(){
-    tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 0)));
     tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
     update();
   }
 
   update() async {  
+    _setState(ReportState.loading);
     await _getColumnTitle();  
     await _getGroup();  
     await _getAccount();
     await _getRegister();
     await _getBalances();
-    state = ReportState.loaded;
+    _setState(ReportState.loaded);
+  }
+
+  _setState(var s){
+    state = s;
     notifyListeners();
   }
   
@@ -174,7 +179,7 @@ class ReportController with ChangeNotifier {
 
   //get periodBalance and accumulatedBalance
   _getBalances() async {
-    periodBalance = BalanceRegister("SALDO",columnTitle.length);    
+    periodBalance = BalanceRegister("Saldo",columnTitle.length);    
     for(int i=0;i<groups.length;i++){
       await groups[i].updateBalance();
       for(int j=0;j<groups[i].balance.length;j++){
@@ -182,7 +187,7 @@ class ReportController with ChangeNotifier {
       }
     }
 
-    accumulatedBalance = BalanceRegister("ACUMULADO",columnTitle.length);
+    accumulatedBalance = BalanceRegister("Acumulado",columnTitle.length);
     double lastValue = 0;
     for(int i=0;i<periodBalance.sum.length;i++){
       accumulatedBalance.add(i,periodBalance.sum[i]+lastValue);
@@ -223,54 +228,72 @@ class ReportController with ChangeNotifier {
   }
 
   getGroupHeight(int index){
-    return (groups[index].rows.length+1) * getTitleRowHeight();
+    if(groups[index].rowIsShowing){
+      return (groups[index].rows.length+1) * getTitleRowHeight();
+    }else{
+      return getTitleRowHeight();
+    }    
   }
 
   getRowHeightGap(){
     return rowHeightGap*scalePanel;
   }
 
-  getBackgroundRowTitle(int index){
-    /*if(registers[index].account.credit!){
-      if(index % 2 == 0){
+  getBackgroundRowTitle(int groupIndex,int rowIndex){
+    if(!groups[groupIndex].rows[rowIndex].account.credit!){
+      if(rowIndex % 2 == 0){
         return theme.backgroundTitleDebt1;
       }else{
         return theme.backgroundTitleDebt2;
       }
     }else{
-      if(index == 0){
+      if(rowIndex % 2 == 0){
         return theme.backgroundTitleCredit1;
       }else{
         return theme.backgroundTitleCredit2;
       }
-    }*/
-    return Colors.white;
+    }
   }
 
-  getBackGroundRowCell(int index){
-    /*if(!registers[index].account.credit!){
-      if(index % 2 == 0){
+  getBackGroundRowCell(int groupIndex,int rowIndex){
+    if(groups[groupIndex].rows[rowIndex].account.credit!){
+      if(rowIndex % 2 == 0){
         return theme.backgroundEntryCredit1;
       // ignore: dead_code
       }else{
         return theme.backgroundEntryCredit2;
       }
     }else{
-      if(index % 2 == 0){
+      if(rowIndex % 2 == 0){
         return theme.backgroundEntryDebt1;
       // ignore: dead_code
       }else{
         return theme.backgroundEntryDebt2;
       }
-    }*/
-    return Colors.white;
+    }
+  }
+
+  getBackgroundBalance(double value){
+    if(value<0){
+      return theme.backgroundBalanceDebt;
+    }else{
+      return theme.backgroundBalanceCredit;
+    }
   }
 
   getForeground(bool credit){
-    if(!credit){
+    if(credit){
       return theme.foregroundEntryCredit;
     }else{
       return theme.foregroundEntryDebt;
+    }
+  }
+
+  getTitleForeground(int groupIndex,int rowIndex){
+    if(groups[groupIndex].rows[rowIndex].account.credit!){
+      return theme.foregroundTitleCredit;
+    }else{
+      return theme.foregroundTitleDebt;
     }
   }
 
@@ -282,6 +305,11 @@ class ReportController with ChangeNotifier {
   setPeriod(String value){
     periodValue = value;
     update();
+  }
+
+  setGroupRowIsShowing(int index){
+    groups[index].rowIsShowing = !groups[index].rowIsShowing;
+    notifyListeners();
   }
 
 }

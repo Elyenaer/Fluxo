@@ -1,4 +1,7 @@
 
+import 'package:firebase_write/models/account_group/accountGroupController.dart';
+import 'package:firebase_write/page/accountManager/account_manager_controller.dart';
+import 'package:firebase_write/page/accountManager/account_manager_page.dart';
 import 'package:firebase_write/page/financialEntryPage.dart';
 import 'package:firebase_write/page/report/report_controller.dart';
 import 'package:firebase_write/page/report/report_page.dart';
@@ -31,11 +34,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => ReportController(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => AccountManagerController(),
+        ),
       ],
       child: MaterialApp(
         theme: themeMain,
         debugShowCheckedModeBanner: false,
-        home: const ReportPage(),      
+        home: const AccountManagerPage(),      
       ),      
     );  
   }

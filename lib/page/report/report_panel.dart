@@ -1,6 +1,7 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_write/page/accountManagerPage.dart';
+import 'package:firebase_write/custom/widgets/customTextButton.dart';
+import 'package:firebase_write/page/accountManager/account_manager_page.dart';
 import 'package:firebase_write/page/listFinancialRegisterPage.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
@@ -29,7 +30,7 @@ class ReportPanel extends StatelessWidget{
           ),
         ),
       height: MediaQuery.of(context).size.height-200,        
-      child: controller.state == ReportState.loading 
+      child: controller.state == ReportState.loading
       ? const Center(child: CircularProgressIndicator())
       : HorizontalDataTable(
           leftHandSideColumnWidth: controller.getLeftHandSideColumnWidht(),
@@ -39,10 +40,6 @@ class ReportPanel extends StatelessWidget{
           leftSideItemBuilder:  _rowGroupLeft,
           rightSideItemBuilder: _rowGroupRight,
           itemCount: controller.groups.length+1,
-          rowSeparatorWidget: const Divider(
-            height: 1.0,
-            thickness: 0.0,
-          ),
         ),     
     );
   }
@@ -52,7 +49,7 @@ class ReportPanel extends StatelessWidget{
 
     title.add(
       Container(     
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).appBarTheme.backgroundColor,
         width: controller.getFirstColumnWidht(),
         height: controller.getTitleRowHeight(),
         child: Transform.scale(
@@ -73,7 +70,7 @@ class ReportPanel extends StatelessWidget{
             },      
             icon: Icon(
               Icons.schema_outlined,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).appBarTheme.foregroundColor,
             ),
           )
         )
@@ -114,56 +111,61 @@ class ReportPanel extends StatelessWidget{
   }
 
   _rowTitle(BuildContext context,int index) {
+    List<Widget> titles = <Widget>[];
 
     //go to balance rows
     if(index>=controller.groups.length){
-      return _rowTitleBalance(context);
+      titles.add(_rowTitleBalance(context,controller.periodBalance));
+      titles.add(_rowTitleBalance(context,controller.accumulatedBalance));
+      return titles;
     }
 
-    GroupRegister group = controller.groups[index];    
-    List<Widget> titles = <Widget>[];
-    for(int i=0;i<group.rows.length;i++){
-      titles.add(
-        Center(
-          child: Container(     
-            color: controller.getBackgroundRowTitle(i),  
-            child: AutoSizeText(
-              group.rows[i].account.description!,
-              maxLines: 2,
-              minFontSize: 1,
-              style: TextStyle(
+    if(controller.groups[index].rowIsShowing){
+      for(int i=0;i<controller.groups[index].rows.length;i++){
+        titles.add(
+          Center(
+            child: Container( 
+              height: controller.getTitleRowHeight(),
+              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+              alignment: Alignment.centerLeft,    
+              color: controller.getBackgroundRowTitle(index,i),  
+              child: CustomTextButton(
+                text: controller.groups[index].rows[i].account.description!,                
+                maxLines: 2,
+                foregroundColor: controller.getTitleForeground(index,i),
                 fontWeight: FontWeight.bold,
                 fontSize: 15.0 * controller.scalePanel,
-                color: Colors.black
-              )
+                onPressed: () {}, 
+              ),            
             ),
-            height: controller.getTitleRowHeight(),
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            alignment: Alignment.centerLeft,
-          ),
-        )
-      );
-    }
+          )
+        );
+      }
+    }    
 
-    titles.add(Center(
-      child: Container(     
-        //color: controller.getBackgroundRowTitle(i),  
-        child: AutoSizeText(
-          group.group.description!,
-          maxLines: 2,
-          minFontSize: 1,
-          style: TextStyle(
+    titles.add(
+      Center(
+        child: Container(    
+          height: controller.getTitleRowHeight(),
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          alignment: Alignment.centerLeft,
+          color: Theme.of(context).appBarTheme.backgroundColor,
+          child: CustomTextButton(
+            text: controller.groups[index].group.description!,
+            foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+            maxLines: 2,
             fontWeight: FontWeight.bold,
             fontSize: 15.0 * controller.scalePanel,
-            color: Colors.black
-          )
+            onPressed: () {
+              controller.setGroupRowIsShowing(index);            
+            },
+          ),
         ),
-        height: controller.getTitleRowHeight(),
-        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-        alignment: Alignment.centerLeft,
-      ),
-    )
-  );
+      )
+    );
+
+    //put spaces between spaces
+    titles.add(_blankSpace(1));
 
     return titles;
   }
@@ -182,6 +184,8 @@ class ReportPanel extends StatelessWidget{
  
   List<Widget> _rowPanel(BuildContext context,int index) {  
     List<Widget> rows = [];
+
+    //check if index is heading to balance and accumulated
     if(index>=controller.groups.length){
       rows.add(
         SizedBox(
@@ -208,61 +212,62 @@ class ReportPanel extends StatelessWidget{
       return rows;
     }
 
-    GroupRegister group = controller.groups[index];    
-    for(int i=0;i<group.rows.length;i++){
-      rows.add(
-        SizedBox(
-          height: controller.getRowHeight(index),     
-          width: controller.getPanelWidth(),     
-          child: Center(
-            child: Row(          
-              children: _getRowsPanel(context,group.rows[i],controller.getBackGroundRowCell(i)),
+    GroupRegister group = controller.groups[index];  
+
+    //check if rows from group is showing
+    if(group.rowIsShowing){
+      for(int i=0;i<group.rows.length;i++){
+        rows.add(
+          SizedBox(
+            height: controller.getRowHeight(index),     
+            width: controller.getPanelWidth(),     
+            child: Center(
+              child: Row(          
+                children: _getRowsPanel(context,group.rows[i],controller.getBackGroundRowCell(index,i)),
+              ),
             ),
           ),
-        ),
-      );
-    }
+        );
+      }
+    }      
 
+    //include balance of group
     rows.add(
         SizedBox(
-          height: controller.getRowHeight(index),     
+          height: controller.getTitleRowHeight(),     
           width: controller.getPanelWidth(),     
           child: Center(
             child: Row(          
-              children: _getGroupRowsPanel(context,group,Colors.green),
+              children: _getGroupRowsPanel(context,group),
             ),
           ),
         ),
       );
+
+    rows.add(_blankSpace(controller.columnTitle.length));
 
     return rows;
   }
 
   List<Widget> _getRowsPanel(BuildContext context,RowRegister r,Color backgroundColor){
-    List<Widget> rows = <Widget>[];
+    List<Widget> rows = <Widget>[];    
     for(int i=0;i<r.register.length;i++){      
       rows.add(
         Container(
           width: controller.getColumnWidht(),
           height: controller.getTitleRowHeight(),
           color: backgroundColor,
-          child: TextButton(       
-            child: AutoSizeText(                            
-              convert.doubleToCurrencyBR(r.register[i].sum),
-              minFontSize: 1,
-              maxLines: 1,
-              style: TextStyle(
-                color: controller.getForeground(r.account.credit!),
-                fontSize: 15.0 * controller.scalePanel           
-              ),
-            ),
+          child: CustomTextButton(                         
+            text: convert.doubleToCurrencyBR(r.register[i].sum),
+            foregroundColor: controller.getForeground(r.account.credit!),
+            fontSize: 15.0 * controller.scalePanel,  
             onPressed: () {
               final updateCheck = Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => 
                   ListFinancialRegisterPage(
-                    backgroundTitle: controller.getBackgroundRowTitle(i),
+                    backgroundTitle: Colors.yellow,
                     account: r.account,
                     title: controller.columnTitle[i],
                     start: controller.start,
@@ -284,27 +289,20 @@ class ReportPanel extends StatelessWidget{
     return rows;
   }
 
-  List<Widget> _getGroupRowsPanel(BuildContext context,GroupRegister r,Color backgroundColor){
+  List<Widget> _getGroupRowsPanel(BuildContext context,GroupRegister r){
     List<Widget> rows = <Widget>[];
     for(int i=0;i<r.balance.length;i++){      
       rows.add(
         Container(
           width: controller.getColumnWidht(),
           height: controller.getTitleRowHeight(),
-          color: backgroundColor,
-          child: TextButton(       
-            child: AutoSizeText(                            
-              convert.doubleToCurrencyBR(r.balance[i].sum),
-              minFontSize: 1,
-              maxLines: 1,
-              style: TextStyle(
-                //color: controller.getForeground(r.account.credit!),
-                fontSize: 15.0 * controller.scalePanel           
-              ),
-            ),
-            onPressed: () {
-              
-            },              
+          color: controller.getBackgroundBalance(r.balance[i].sum),
+          child: CustomTextButton(
+            text: convert.doubleToCurrencyBR(r.balance[i].sum),
+            fontSize: 15.0 * controller.scalePanel,
+            fontWeight: FontWeight.bold,
+            foregroundColor: Colors.white,
+            onPressed: () {}
           ),
         ),
       );
@@ -312,79 +310,58 @@ class ReportPanel extends StatelessWidget{
     return rows;
   }
 
-  List<Widget> _rowTitleBalance(BuildContext context) {
-    List<Widget> titles = <Widget>[];
-    titles.add(
-      Center(
-        child: Container(     
-          color: Colors.blue,  
-          child: AutoSizeText(
-            controller.periodBalance.description,
-            maxLines: 2,
-            minFontSize: 1,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0 * controller.scalePanel,
-              color: Colors.black
-            )
-          ),
+  _rowTitleBalance(BuildContext context,BalanceRegister b) {
+    return Center(
+        child: Container(   
           height: controller.getTitleRowHeight(),
           padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.centerLeft,  
+          color: Theme.of(context).appBarTheme.backgroundColor,  
+          child: CustomTextButton(
+            text: b.description,
+            fontWeight: FontWeight.bold,
+            fontSize: 15.0 * controller.scalePanel,
+            foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+            onPressed: () {},          
+          ),          
         ),
-      )
-    );
-
-    titles.add(
-      Center(
-        child: Container(     
-          color: Colors.blue,  
-          child: AutoSizeText(
-            controller.accumulatedBalance.description,
-            maxLines: 2,
-            minFontSize: 1,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0 * controller.scalePanel,
-              color: Colors.black
-            )
-          ),
-          height: controller.getTitleRowHeight(),
-          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          alignment: Alignment.centerLeft,
-        ),
-      )
-    );
-
-    return titles;
-    }
+      );
+  }
   
   List<Widget> _getRowsPanelBalance(BuildContext context,BalanceRegister r){
     List<Widget> rows = <Widget>[];
     for(int i=0;i<r.sum.length;i++){      
       rows.add(
-        SizedBox(
+        Container(
           width: controller.getColumnWidht(),
           height: controller.getTitleRowHeight(),
-          //color: backgroundColor,
-          child: TextButton(       
-            child: AutoSizeText(                            
-              convert.doubleToCurrencyBR(r.sum[i]),
-              minFontSize: 1,
-              maxLines: 1,
-              style: TextStyle(
-                //color: controller.getForeground(r.account.credit!),
-                fontSize: 15.0 * controller.scalePanel           
-              ),
-            ),
-            onPressed: () {
-              
-            },              
+          color: controller.getBackgroundBalance(r.sum[i]),
+          child: CustomTextButton(
+            text: convert.doubleToCurrencyBR(r.sum[i]),            
+            fontSize: 15.0 * controller.scalePanel,  
+            fontWeight: FontWeight.bold,
+            foregroundColor: Colors.white,
+            onPressed: () {},
           ),
         ),
       );
     }        
     return rows;
+  }
+
+  //put space between groups
+  _blankSpace(int quantity){
+    List<Widget> space = [];
+    for(int i=0;i<quantity;i++){
+      space.add(
+        SizedBox(
+          height: controller.getRowHeightGap(),
+        )
+      );
+    }
+    return Row(
+      children: space
+    );
   }
 
 }
