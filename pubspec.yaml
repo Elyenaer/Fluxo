@@ -14,15 +14,19 @@ dependencies:
   provider:
   http:
 
-  cupertino_icons: ^1.0.2
-  firebase_core: ^1.6.0
-  cloud_firestore: ^2.5.1
+  cupertino_icons: ^1.0.2  
   flutter_switch: ^0.3.2
   mask_text_input_formatter: ^2.4.0
-  intl: ^0.18.0
+  intl: ^0.17.0
   horizontal_data_table: ^4.1.4
   auto_size_text: ^3.0.0
   drag_and_drop_lists: ^0.3.1
+
+  #firebase
+  firebase_core: ^2.5.0
+  cloud_firestore: ^4.3.2
+  firebase_auth: ^4.2.6
+  firebase_auth_web: ^5.2.5
 
   #scrollable_table_view: ^1.0.0  
   #string_validator: ^0.3.0

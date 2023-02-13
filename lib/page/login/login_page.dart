@@ -1,7 +1,12 @@
-/*import 'package:firebase_write/page/login/auth_service.dart';
+import 'package:firebase_write/help/message.dart';
+import 'package:firebase_write/page/login/auth_service.dart';
+import 'package:firebase_write/page/report/report_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_write/help/valid.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -9,7 +14,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late String email, password;
 
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   checkFields() {
     final form = formKey.currentState;
@@ -20,89 +25,112 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  String? validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = RegExp(pattern.toString());
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
-    else
-      return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: SizedBox(
-                height: 250.0,
-                width: 300.0,
+      body: Center(
+        child: SizedBox(
+          height: 250.0,
+          width: 300.0,
+          child: Column(
+            children: <Widget>[
+              Form(
+                key: formKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Form(
-                        key: formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 25.0,
-                                    right: 25.0,
-                                    top: 20.0,
-                                    bottom: 5.0),
-                                child: SizedBox(
-                                  height: 50.0,
-                                  child: TextFormField(
-                                    decoration:const InputDecoration(
-                                      hintText: 'Email'
-                                    ),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Email is required'
-                                        : validateEmail(value.trim()),
-                                    onChanged: (value) {
-                                      email = value;
-                                    },
-                                  ),
-                                )),
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 25.0,
-                                    right: 25.0,
-                                    top: 20.0,
-                                    bottom: 5.0),
-                                child: SizedBox(
-                                  height: 50.0,
-                                  child: TextFormField(
-                                    obscureText: true,
-                                    decoration: const InputDecoration(hintText: 'Password'),
-                                    validator: (value) => value!.isEmpty
-                                        ? 'Password is required'
-                                        : null,
-                                    onChanged: (value) {
-                                      password = value;
-                                    },
-                                  ),
-                                )),
-                            InkWell(
-                                onTap: () {
-                                  if (checkFields()) {
-                                    AuthService().signIn(email, password);
-                                  }
-                                },
-                                child: Container(
-                                    height: 40.0,
-                                    width: 100.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withOpacity(0.2),
-                                    ),
-                                    child: const Center(
-                                      child: Text('Sign in')
-                                      )
-                                    )
-                                  )
-                          ],
-                        ))
+                    _emailTextField(),
+                    _passwordTextField(),
+                    _signButton()
                   ],
-                ))));
+                )
+              )
+            ],
+          )
+        )
+      )
+    );
   }
-}*/
+
+  _emailTextField(){
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 25.0,
+        right: 25.0,
+        top: 20.0,
+        bottom: 5.0
+      ),
+      child: SizedBox(
+        height: 50.0,
+        child: TextFormField(
+          decoration:const InputDecoration(
+            hintText: 'Email'
+          ),
+          validator: (value) => value!.isEmpty
+              ? 'Email is required'
+              : valid.validateEmail(value.trim()),
+          onChanged: (value) {
+            email = value;
+          },
+        ),
+      )
+    );
+  }
+
+  _passwordTextField(){
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: 25.0,
+          right: 25.0,
+          top: 20.0,
+          bottom: 5.0
+        ),
+      child: SizedBox(
+        height: 50.0,
+        child: TextFormField(
+          obscureText: true,
+          decoration: const InputDecoration(hintText: 'Password'),
+          validator: (value) => value!.isEmpty
+              ? 'Password is required'
+              : null,
+          onChanged: (value) {
+            password = value;
+          },
+        ),
+      )
+    );
+  }
+
+  _signButton(){
+    return InkWell(
+      onTap: () async {
+        if (checkFields()) {
+          var response = await AuthService().signIn(email, password);
+          
+          if(response=='success'){
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => 
+                  const ReportPage()),
+              );   
+          }else{
+            message.simple(context,"ERRO",response);
+          }
+
+        }
+      },
+      child: Container(
+        height: 40.0,
+        width: 100.0,
+        decoration: BoxDecoration(
+          color: Colors.green.withOpacity(0.2),
+        ),
+        child: const Center(
+          child: Text('Sign in')
+        )
+      )
+    );
+  }
+
+}

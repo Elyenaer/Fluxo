@@ -1,6 +1,5 @@
 
 import 'package:firebase_write/page/account_manager/account_manager_group_register.dart';
-import 'package:firebase_write/page/report/group_register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_write/help/message.dart';
 import '../../models/account/accountConnect.dart';

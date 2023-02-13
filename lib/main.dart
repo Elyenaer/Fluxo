@@ -1,20 +1,20 @@
 
+import 'package:firebase_write/firebase/firebase_config.dart';
+import 'package:firebase_write/page/login/auth_service.dart';
+import 'package:firebase_write/page/login/login_page.dart';
 import 'package:firebase_write/page/account_manager/account_manager_controller.dart';
 import 'package:firebase_write/page/financial_register/financial_entry_controller.dart';
 import 'package:firebase_write/page/list_financial_register/list_financial_register_controller.dart';
 import 'package:firebase_write/page/report/report_controller.dart';
 import 'package:firebase_write/page/report/report_page.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import '../settings/theme.dart';
 
-
-
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();  
+  await FirebaseConfig.start();
   ThemeData themeMain = await theme().current();
-  await Firebase.initializeApp();
   runApp(MyApp(themeMain: themeMain));
 }
 
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: themeMain,
         debugShowCheckedModeBanner: false,
-        home: const ReportPage(),      
+        home: const LoginPage(),      
       ),      
     );  
   }

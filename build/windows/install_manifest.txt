@@ -7,4 +7,7 @@ C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug
 C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/NOTICES
 C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
 C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf
+C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf
+C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf
 C:/Users/Home/Documents/Desenvolvimento/Flutter/Fluxo/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag
