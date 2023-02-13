@@ -131,6 +131,7 @@ class theme{
         ),
 
         scaffoldBackgroundColor: register.backgroundMain,
+        backgroundColor: register.widgetSecondaryColor,
         primaryColor: register.widgetPrimaryColor,
       );
     }catch(e){

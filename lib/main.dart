@@ -1,6 +1,7 @@
 
 import 'package:firebase_write/firebase/firebase_config.dart';
 import 'package:firebase_write/page/login/auth_service.dart';
+import 'package:firebase_write/page/login/login_controller.dart';
 import 'package:firebase_write/page/login/login_page.dart';
 import 'package:firebase_write/page/account_manager/account_manager_controller.dart';
 import 'package:firebase_write/page/financial_register/financial_entry_controller.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => AccountManagerController(),),
         ChangeNotifierProvider(create: (ctx) => ListFinancialRegisterController(),),
         ChangeNotifierProvider(create: (ctx) => FinancialEntryController(),),
+        ChangeNotifierProvider(create: (ctx) => LoginController()),
       ],
       child: MaterialApp(
         theme: themeMain,

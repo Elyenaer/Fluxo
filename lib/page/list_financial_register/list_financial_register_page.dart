@@ -44,7 +44,7 @@ class _MyHomePageState extends State<ListFinancialRegisterPage> {
     controller = Provider.of(context);
     controller.setData(widget.account.id!,widget.start,widget.end);
     return Material(
-      type: MaterialType.transparency,
+      color: Theme.of(context).backgroundColor,
       child: controller.state == ListFinancialRegisterState.loading
         ? const Center(child: CircularProgressIndicator()):          
       Column(

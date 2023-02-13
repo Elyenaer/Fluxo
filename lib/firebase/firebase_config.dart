@@ -17,5 +17,9 @@ class FirebaseConfig{
     );
   }
 
+  static callUsage(){
+    Firebase.apps.
+  }
+
 
 }

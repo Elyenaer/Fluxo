@@ -1,8 +1,9 @@
 import 'package:firebase_write/help/message.dart';
-import 'package:firebase_write/page/login/auth_service.dart';
+import 'package:firebase_write/page/login/login_controller.dart';
 import 'package:firebase_write/page/report/report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/valid.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,30 +13,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late String email, password;
-
-  final formKey = GlobalKey<FormState>();
-
-  checkFields() {
-    final form = formKey.currentState;
-    if (form!.validate()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  late LoginController controller;
 
   @override
   Widget build(BuildContext context) {
+    controller = Provider.of(context);
     return Scaffold(
-      body: Center(
+      body: controller.state == LoginState.loading
+      ? const Center(child: CircularProgressIndicator())
+      : Center(
         child: SizedBox(
           height: 250.0,
           width: 300.0,
           child: Column(
             children: <Widget>[
               Form(
-                key: formKey,
+                key: controller.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -70,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
               ? 'Email is required'
               : valid.validateEmail(value.trim()),
           onChanged: (value) {
-            email = value;
+            controller.email = value;
           },
         ),
       )
@@ -94,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               ? 'Password is required'
               : null,
           onChanged: (value) {
-            password = value;
+            controller.password = value;
           },
         ),
       )
@@ -104,8 +97,8 @@ class _LoginPageState extends State<LoginPage> {
   _signButton(){
     return InkWell(
       onTap: () async {
-        if (checkFields()) {
-          var response = await AuthService().signIn(email, password);
+        if (controller.checkFields()) {
+          var response = await controller.authentication();
           
           if(response=='success'){
             Navigator.push(
