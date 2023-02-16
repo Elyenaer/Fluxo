@@ -1,23 +1,27 @@
 
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
+import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
+import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
+import 'package:firebase_write/settings/manager_access/manager_access.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
-import 'package:firebase_write/settings/theme.dart';
+import 'package:firebase_write/models/theme/theme_controller.dart';
 import 'package:intl/intl.dart';
 import '../../models/financial_entry/financial_entry_connect.dart';
-import '../../models/account/accountConnect.dart';
+import '../../models/account/account_connect.dart';
 
-enum ReportState {loading,loaded}
+enum ReportState {loadingUserPreferences,loadingPanelData,loaded}
 
 class ReportController with ChangeNotifier {
-  var state = ReportState.loading;
+  var state = ReportState.loadingUserPreferences;
+  late UserPreferencesRegister userPreferences;
 
   late List<GroupRegister> groups = [];
   late BalanceRegister periodBalance,accumulatedBalance;
@@ -25,6 +29,7 @@ class ReportController with ChangeNotifier {
   final TextEditingController tecDateStart = TextEditingController(text: '');
   final TextEditingController tecDateEnd = TextEditingController(text: '');
   late DateTime start,end;
+
 
   List<String> periodList = <String>['Diário', 'Semanal', 'Mensal', 'Anual'];
   String periodValue = 'Diário';  
@@ -34,14 +39,32 @@ class ReportController with ChangeNotifier {
   static const double rowHeightGap = 20;      
   late double scalePanel = 1.0;
 
-  ReportController(){
-    tecDateStart.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: -5)));
-    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(DateTime.now().add(const Duration(days: 2)));      
+  ReportController() {
+    userPreferences = ManagerAccess.userPreferences;
+    tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences.start_date_report!);
+    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences.end_date_report!);   
+    scalePanel = userPreferences.scale!;
+    periodValue = userPreferences.period_report!;
     update();
   }
 
+  @override
+  dispose(){    
+    _savePreferences();
+    super.dispose();
+  }
+
+  _savePreferences() async {
+    userPreferences.start_date_report = convert.StringToDatetime(tecDateStart.text);
+    userPreferences.end_date_report = convert.StringToDatetime(tecDateEnd.text);
+    userPreferences.scale = scalePanel;
+    userPreferences.period_report = periodValue;
+
+    await UserPreferencesConnect().update(userPreferences);
+  }
+
   update() async {  
-    _setState(ReportState.loading);
+    _setState(ReportState.loadingPanelData);
     await _getColumnTitle();  
     await _getGroup();  
     await _getAccount();
@@ -174,10 +197,8 @@ class ReportController with ChangeNotifier {
 
         positionArray++;
       }
-      
-      notifyListeners();
     }catch(e){
-      print('REPORT CONTROLLER ERRO _GETREGISTER -> $e');
+      debugPrint('REPORT CONTROLLER ERRO _GETREGISTER -> $e');
       return '';
     }
   }
@@ -247,15 +268,15 @@ class ReportController with ChangeNotifier {
   getBackgroundRowTitle(int groupIndex,int rowIndex){
     if(!groups[groupIndex].rows[rowIndex].account.credit!){
       if(rowIndex % 2 == 0){
-        return theme.backgroundTitleDebt1;
+        return ThemeController.backgroundTitleDebt1;
       }else{
-        return theme.backgroundTitleDebt2;
+        return ThemeController.backgroundTitleDebt2;
       }
     }else{
       if(rowIndex % 2 == 0){
-        return theme.backgroundTitleCredit1;
+        return ThemeController.backgroundTitleCredit1;
       }else{
-        return theme.backgroundTitleCredit2;
+        return ThemeController.backgroundTitleCredit2;
       }
     }
   }
@@ -263,42 +284,42 @@ class ReportController with ChangeNotifier {
   getBackGroundRowCell(int groupIndex,int rowIndex){
     if(groups[groupIndex].rows[rowIndex].account.credit!){
       if(rowIndex % 2 == 0){
-        return theme.backgroundEntryCredit1;
+        return ThemeController.backgroundEntryCredit1;
       // ignore: dead_code
       }else{
-        return theme.backgroundEntryCredit2;
+        return ThemeController.backgroundEntryCredit2;
       }
     }else{
       if(rowIndex % 2 == 0){
-        return theme.backgroundEntryDebt1;
+        return ThemeController.backgroundEntryDebt1;
       // ignore: dead_code
       }else{
-        return theme.backgroundEntryDebt2;
+        return ThemeController.backgroundEntryDebt2;
       }
     }
   }
 
   getBackgroundBalance(double value){
     if(value<0){
-      return theme.backgroundBalanceDebt;
+      return ThemeController.backgroundBalanceDebt;
     }else{
-      return theme.backgroundBalanceCredit;
+      return ThemeController.backgroundBalanceCredit;
     }
   }
 
   getForeground(bool credit){
     if(credit){
-      return theme.foregroundEntryCredit;
+      return ThemeController.foregroundEntryCredit;
     }else{
-      return theme.foregroundEntryDebt;
+      return ThemeController.foregroundEntryDebt;
     }
   }
 
   getTitleForeground(int groupIndex,int rowIndex){
     if(groups[groupIndex].rows[rowIndex].account.credit!){
-      return theme.foregroundTitleCredit;
+      return ThemeController.foregroundTitleCredit;
     }else{
-      return theme.foregroundTitleDebt;
+      return ThemeController.foregroundTitleDebt;
     }
   }
 

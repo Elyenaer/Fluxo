@@ -1,7 +1,7 @@
 
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:firebase_write/custom/widgets/customTextButton.dart';
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/page/account_manager/account_group_register_dialog.dart';
 import 'package:firebase_write/page/account_manager/account_manager_controller.dart';
@@ -9,10 +9,8 @@ import 'package:firebase_write/page/account_manager/account_manager_group_regist
 import 'package:firebase_write/page/account_manager/account_register_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:firebase_write/settings/theme.dart';
+import 'package:firebase_write/models/theme/theme_controller.dart';
 import 'package:provider/provider.dart';
-
 import '../../models/account_group/account_group_connect.dart';
 
 class AccountManagerPage extends StatefulWidget {
@@ -158,7 +156,7 @@ class _MainPage extends State<AccountManagerPage> {
         IconButton(
           icon: Icon(
             Icons.delete,
-            color: theme.foregroundEntryDebt,
+            color: ThemeController.foregroundEntryDebt,
           ),
           iconSize: 25,
           onPressed: () { 
@@ -176,8 +174,8 @@ class _MainPage extends State<AccountManagerPage> {
       child: register.credit!
       ? ListTile(
         leading: Icon(
-          theme.creditIcon,
-          color: theme.foregroundEntryCredit,
+          ThemeController.creditIcon,
+          color: ThemeController.foregroundEntryCredit,
         ), 
         title: CustomTextButton(
           text: register.description!,
@@ -189,14 +187,14 @@ class _MainPage extends State<AccountManagerPage> {
               controller.update();
             }
           },
-          foregroundColor: theme.foregroundEntryCredit,
+          foregroundColor: ThemeController.foregroundEntryCredit,
         ),
         trailing: const SizedBox(width: 20,),
       )
       : ListTile(
         leading:  Icon(
-          theme.debtIcon,
-          color: theme.foregroundEntryDebt,
+          ThemeController.debtIcon,
+          color: ThemeController.foregroundEntryDebt,
         ), 
         title: CustomTextButton(
           text: register.description!,
@@ -208,7 +206,7 @@ class _MainPage extends State<AccountManagerPage> {
               controller.update();
             }
           },
-          foregroundColor: theme.foregroundEntryDebt,
+          foregroundColor: ThemeController.foregroundEntryDebt,
         ),
         trailing: const SizedBox(width: 20,),
       )

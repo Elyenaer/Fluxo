@@ -1,6 +1,6 @@
 
-import '../../models/account/accountConnect.dart';
-import '../../models/account/accountRegister.dart';
+import '../../models/account/account_connect.dart';
+import '../../models/account/account_register.dart';
 import '../../models/account_group/account_group_register.dart';
 
 class AccountManagerGroupRegister {

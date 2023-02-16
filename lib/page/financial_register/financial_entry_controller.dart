@@ -1,6 +1,6 @@
 
-import 'package:firebase_write/models/account/accountConnect.dart';
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_connect.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_connect.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class FinancialEntryController with ChangeNotifier{
     tdcDescription.dispose();
     tdcDate.dispose();
     tdcValue.dispose();
-     super.dispose();
+    super.dispose();
   }
 
   setData(FinancialEntryRegister? r) async {
@@ -87,7 +87,7 @@ class FinancialEntryController with ChangeNotifier{
       _account_debit = await _account.getDataType('D');
       changeType(isCredit);
     } catch (e) {
-      print('Erro SetType -> $e');
+      debugPrint('Erro SetType -> $e');
     }
   }
 
@@ -141,7 +141,7 @@ class FinancialEntryController with ChangeNotifier{
       register.value = convert.currencyToDouble(tdcValue.text);
       return true;
     }catch(e){
-      print('ERRO GETDATA -> $e');     
+      debugPrint('ERRO GETDATA -> $e');     
       return false;
     }    
   }
@@ -165,7 +165,7 @@ class FinancialEntryController with ChangeNotifier{
       tdcDate.text = convert.DatetimeToDateBr(register.date);
       tdcValue.text = convert.doubleToCurrencyBR(register.value);
     }catch(e){
-      print("ERRO _SETDATASCREEN -> $e");
+      debugPrint("ERRO _SETDATASCREEN -> $e");
     }
   }
 
@@ -213,7 +213,7 @@ class FinancialEntryController with ChangeNotifier{
       typeValue = typeList.first;
       notifyListeners();
     } catch (e) {
-      print('Erro ChangeType -> $e');
+      debugPrint('Erro ChangeType -> $e');
     }
   }
 

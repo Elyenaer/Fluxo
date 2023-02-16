@@ -30,7 +30,7 @@ class ReportPanel extends StatelessWidget{
           ),
         ),
       height: MediaQuery.of(context).size.height-200,        
-      child: controller.state == ReportState.loading
+      child: controller.state != ReportState.loaded
       ? const Center(child: CircularProgressIndicator())
       : HorizontalDataTable(
           leftHandSideColumnWidth: controller.getLeftHandSideColumnWidht(),

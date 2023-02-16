@@ -1,13 +1,13 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_write/models/account/accountConnect.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/help/funcNumber.dart';
+import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
+import 'package:flutter/material.dart';
 
 class AccountGroupConnect {
 
-  final CollectionReference collectionRef =
-      FirebaseFirestore.instance.collection("account_group");
+  final CollectionReference collectionRef = DBsettings.getDbCollection("account_group");
 
   Map<String, String> _convertData(AccountGroupRegister reg){
     return <String, String>{
@@ -27,19 +27,19 @@ class AccountGroupConnect {
 
       return reg;
     }catch(e){
-      print("ACCOUNT GROUP ERRO _CONVERTREGISTER $e");
+      debugPrint("ACCOUNT GROUP ERRO _CONVERTREGISTER $e");
       return null;
     }
 }
 
   Future<void> setData(AccountGroupRegister register) async {
     collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
-      => print("Failed to add user: $error"));
+      => debugPrint("Failed to add user: $error"));
   }
 
   Future<void> update(AccountGroupRegister register) async {
     collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
-      => print("Failed to add user: $error"));
+      => debugPrint("Failed to add user: $error"));
   }
 
   Future<bool> delete(AccountGroupRegister register) async {
@@ -47,7 +47,7 @@ class AccountGroupConnect {
       collectionRef.doc(register.id.toString()).delete();
       return true;
     }catch(e){
-      print("Failed to add user: $e");
+      debugPrint("Failed to add user: $e");
       return false;
     }
   }
@@ -67,7 +67,7 @@ class AccountGroupConnect {
       
       return registers;
     }catch(e){
-      print("ACCOUNT GROUP ERRO GETDATA -> $e");
+      debugPrint("ACCOUNT GROUP ERRO GETDATA -> $e");
       return null;
     }
   }

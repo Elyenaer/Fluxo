@@ -3,11 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
+import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
+import 'package:flutter/material.dart';
 
 class FinancialEntryConnect {
   
-final CollectionReference collectionRef =
-      FirebaseFirestore.instance.collection("financial_entry");
+final CollectionReference collectionRef = DBsettings.getDbCollection("financial_entry");
 
 Map<String, String> _convertData(FinancialEntryRegister register){
   return <String, String>{
@@ -31,26 +32,26 @@ FinancialEntryRegister? _convertRegister(Map<String, dynamic> data){
 
     return reg;
   }catch(e){
-    print("FINANCIAL ENTRY ERRO _CONVERTREGISTER $e");
+    debugPrint("FINANCIAL ENTRY ERRO _CONVERTREGISTER $e");
     return null;
   }
 }
 
 Future<void> setData(FinancialEntryRegister register) async {
   collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
-    => print("Failed to add user: $error"));
+    => debugPrint("Failed to add user: $error"));
 }
 
 Future<void> update(FinancialEntryRegister register) async {
   collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
-    => print("Failed to add user: $error"));
+    => debugPrint("Failed to add user: $error"));
 }
 
 Future<void> delete(FinancialEntryRegister register) async {
   try{
     collectionRef.doc(register.id.toString()).delete();
   }catch(e){
-     print("Failed to add user: $e");
+     debugPrint("Failed to add user: $e");
   }
 }
 
@@ -85,7 +86,7 @@ Future<List<FinancialEntryRegister>?> getData() async {
       });
       return registers;
     }catch(e){
-      print("ERRO GETDATA -> $e");
+      debugPrint("ERRO GETDATA -> $e");
       return null;
     }
   }
@@ -106,7 +107,7 @@ Future<List<FinancialEntryRegister>?> getDataGapDate(DateTime start,DateTime end
       });
       return registers;
     }catch(e){
-      print("ERRO GETDATAGAPDATE -> $e");
+      debugPrint("ERRO GETDATAGAPDATE -> $e");
       return null;
     }
   }
@@ -128,7 +129,7 @@ Future<List<FinancialEntryRegister>?> getDataGapDateIdAccount(int idAccount,Date
     });
     return registers;
   }catch(e){
-    print("ERRO GETDATAGAPDATEIDACCOUNT -> $e");
+    debugPrint("ERRO GETDATAGAPDATEIDACCOUNT -> $e");
     return null;
   }
 }
@@ -149,7 +150,7 @@ Future<bool> checkAccount(int idAccount) async {
     );
     return false;
   }catch(e){
-    print("ERRO CHECKACCOUNT -> $e");
+    debugPrint("ERRO CHECKACCOUNT -> $e");
     return false;
   }
 }

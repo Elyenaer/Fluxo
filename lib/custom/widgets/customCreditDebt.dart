@@ -1,9 +1,10 @@
 
-// ignore_for_file: must_be_immutable
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
+// ignore: must_be_immutable
 class CustomCreditDebt extends StatefulWidget{
   CustomCreditDebt({
     Key? key,

@@ -19,26 +19,30 @@ class ReportPage extends StatefulWidget{
 
   // ignore: non_constant_identifier_names
   class _MyHomePageState extends State<ReportPage> {    
+    late ReportController controller;
     
   @override
-  void initState(){
+  void initState(){    
     super.initState();
   }
 
   @override
   void dispose(){
+    controller.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    ReportController controller = Provider.of(context);
+  Widget build(BuildContext context) {    
+    controller = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text("RELATÓRIO"),
       ),
-      body: Padding(
+      body: controller.state == ReportState.loadingUserPreferences
+      ? const Center(child: CircularProgressIndicator())
+      : Padding(
         padding:const EdgeInsets.all(30.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,

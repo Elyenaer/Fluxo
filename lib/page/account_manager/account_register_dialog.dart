@@ -1,10 +1,10 @@
 
-import 'package:firebase_write/models/account/accountConnect.dart';
+import 'package:firebase_write/models/account/account_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/message.dart';
 import '../../custom/widgets/customCreditDebt.dart';
 import '../../custom/widgets/customTextField.dart';
-import '../../models/account/accountRegister.dart';
+import '../../models/account/account_register.dart';
 
 // ignore: non_constant_identifier_names
 Future<String> AccountRegisterDialog(

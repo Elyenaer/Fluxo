@@ -1,5 +1,5 @@
 
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 
 class AccountGroupRegister {
   int? id;

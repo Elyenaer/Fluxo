@@ -1,0 +1,25 @@
+2023/02/15-17:42:27.813 e30 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.3509ff02\flutter_tools_chrome_device.17e3ecd1\Default\IndexedDB\http_localhost_56910.indexeddb.leveldb/MANIFEST-000001
+2023/02/15-17:42:27.814 e30 Recovering log #106
+2023/02/15-17:42:27.814 e30 Reusing old log C:\Users\Home\AppData\Local\Temp\flutter_tools.3509ff02\flutter_tools_chrome_device.17e3ecd1\Default\IndexedDB\http_localhost_56910.indexeddb.leveldb/000106.log 
+2023/02/15-17:42:27.815 e30 Delete type=2 #105
+2023/02/15-17:42:27.842 1684 Level-0 table #111: started
+2023/02/15-17:42:27.846 1684 Level-0 table #111: 753 bytes OK
+2023/02/15-17:42:27.849 1684 Delete type=0 #106
+2023/02/15-17:42:27.849 1684 Manual compaction at level-0 from '\x00\x1f\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00 \x00\x00\x00' @ 0 : 0; will stop at '\x00\x1f\x00\x00\x05' @ 1287 : 1
+2023/02/15-17:42:27.850 1684 Compacting 1@0 + 1@1 files
+2023/02/15-17:42:27.853 1684 Generated table #112@0: 108 keys, 3383 bytes
+2023/02/15-17:42:27.853 1684 Compacted 1@0 + 1@1 files => 3383 bytes
+2023/02/15-17:42:27.856 1684 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/02/15-17:42:27.856 1684 Delete type=2 #111
+2023/02/15-17:42:27.856 e30 Manual compaction at level-0 from '\x00\x1f\x00\x00\x05' @ 1287 : 1 .. '\x00 \x00\x00\x00' @ 0 : 0; will stop at (end)
+2023/02/15-17:42:48.748 1684 Level-0 table #114: started
+2023/02/15-17:42:48.751 1684 Level-0 table #114: 5801 bytes OK
+2023/02/15-17:42:48.753 1684 Delete type=2 #108
+2023/02/15-17:42:48.753 1684 Delete type=0 #110
+2023/02/15-17:42:48.754 e30 Manual compaction at level-0 from '\x00 \x00\x00\x00' @ 72057594037927935 : 1 .. '\x00!\x00\x00\x00' @ 0 : 0; will stop at '\x00 \x00\x00\x05' @ 1344 : 1
+2023/02/15-17:42:48.754 e30 Compacting 1@0 + 1@1 files
+2023/02/15-17:42:48.757 e30 Generated table #115@0: 113 keys, 3388 bytes
+2023/02/15-17:42:48.757 e30 Compacted 1@0 + 1@1 files => 3388 bytes
+2023/02/15-17:42:48.759 e30 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/02/15-17:42:48.760 e30 Delete type=2 #114
+2023/02/15-17:42:48.760 e30 Manual compaction at level-0 from '\x00 \x00\x00\x05' @ 1344 : 1 .. '\x00!\x00\x00\x00' @ 0 : 0; will stop at (end)

@@ -1,6 +1,6 @@
 
 import 'package:firebase_write/custom/widgets/customFloatingButton.dart';
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
 import 'package:firebase_write/page/financial_register/financial_entry_page.dart';
 import 'package:firebase_write/page/list_financial_register/list_financial_register_controller.dart';

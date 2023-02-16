@@ -1,12 +1,19 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:firebase_write/help/message.dart';
+import 'package:firebase_write/main_elyfluxo.dart';
+import 'package:firebase_write/models/theme/theme_controller.dart';
 import 'package:firebase_write/page/login/login_controller.dart';
-import 'package:firebase_write/page/report/report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/valid.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({
+    Key? key,
+  }) 
+  : super(key: key);
+
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -98,19 +105,20 @@ class _LoginPageState extends State<LoginPage> {
     return InkWell(
       onTap: () async {
         if (controller.checkFields()) {
-          var response = await controller.authentication();
-          
-          if(response=='success'){
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => 
-                  const ReportPage()),
-              );   
+          var response = await controller.authentication();          
+          if(response=='one'){
+            /*Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => 
+                  const ReportPage()
+              ),
+            );*/
+            await ThemeController().current();
+            runApp(const Elyfluxo());
           }else{
             message.simple(context,"ERRO",response);
           }
-
         }
       },
       child: Container(

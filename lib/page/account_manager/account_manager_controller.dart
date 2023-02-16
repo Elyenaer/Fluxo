@@ -2,8 +2,8 @@
 import 'package:firebase_write/page/account_manager/account_manager_group_register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_write/help/message.dart';
-import '../../models/account/accountConnect.dart';
-import '../../models/account/accountRegister.dart';
+import '../../models/account/account_connect.dart';
+import '../../models/account/account_register.dart';
 import '../../models/account_group/account_group_connect.dart';
 import '../../models/account_group/account_group_register.dart';
 

@@ -1,4 +1,4 @@
-import 'package:firebase_write/models/account/accountRegister.dart';
+import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
 import 'package:firebase_write/page/report/cell_register.dart';
 

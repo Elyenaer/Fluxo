@@ -1,7 +1,8 @@
 
-import 'package:firebase_write/models/account/accountConnect.dart';
+import 'package:firebase_write/models/account/account_connect.dart';
 import 'package:firebase_write/models/account_group/account_group_connect.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
+import 'package:flutter/material.dart';
 
 class AccountGroupController {
 
@@ -17,7 +18,7 @@ _getAccounts(List<AccountGroupRegister>? group) async {
     }
     return group;
   }catch(e){
-    print("ACCOUNTGROUPCONTROLLER ERRO _GETACCOUNTS $e");
+    debugPrint("ACCOUNTGROUPCONTROLLER ERRO _GETACCOUNTS $e");
   }  
 }
 
