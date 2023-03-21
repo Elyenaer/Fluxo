@@ -38,7 +38,7 @@ class ThemeController with ChangeNotifier{
       
  _getTheme(int idTheme) async {
     try{
-      register = (await ThemeConnect().getId(idTheme))!;
+      register = (await ThemeConnect().getDataById(idTheme))!;
     }catch(e){
       debugPrint("ERRO _GETTHEME -> $e");
     }

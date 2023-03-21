@@ -1,8 +1,9 @@
 
 class FinancialEntryRegister {
-  late final int id;
-  late final int accountId;
-  late final String description;
-  late final double value;
-  late final DateTime date;
+  int? id;
+  int? idCompany;
+  int? idAccount;
+  String? description;
+  double? value;
+  DateTime? date;
 }

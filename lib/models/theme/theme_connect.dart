@@ -1,19 +1,22 @@
 // ignore_for_file: file_names
+import 'dart:convert';
+
 import 'package:firebase_write/help/funcColor.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
 import 'package:flutter/material.dart';
 
+import '../../settings/manager_access/api/api_request.dart';
 import 'theme_register.dart';
 
 // ignore: camel_case_types
 class ThemeConnect {
 
-  final String collection = "theme";
+  final _table = "theme";
 
   Map<String, String> _convertData(ThemeRegister reg){
     return <String, String>{
-      'id': funcNumber.includeZero(reg.id,4),
+      'id': reg.id.toString(),
       'name': reg.name,    
       'bakcgroundMain': funcColor.getHexByColor(reg.backgroundMain),   
       'bakcgroundTitle': funcColor.getHexByColor(reg.backgroundTitle),   
@@ -53,6 +56,7 @@ class ThemeConnect {
     }
 }
 
+/*
   Future<ThemeRegister?> getId(int id) async {
     try {
       ThemeRegister? register;
@@ -71,47 +75,31 @@ class ThemeConnect {
       debugPrint("ERRO GETID -> $e");
       return null;
     }
-  }
+  }*/
 
-  Future<Map<String, String>?> get(int id) async {
+  Future<ThemeRegister?> getDataById(int id) async {
     try {
+      ThemeRegister? registers;
 
-      // to get data from all documents sequentially      
-      await DBsettings.getDbCollection(collection)
-      .where('id', isGreaterThanOrEqualTo: id)    
-      .get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          return result.data();
-        }
-      });
+      var res = await ApiRequest.getAll(_table);
+      var data = json.decode(res.body);
 
-      return null;
+      for(var item in data){
+        registers = _convertRegister(item);
+      }
+
+      return registers;
     }catch(e){
-      debugPrint("ERRO GETDATA -> $e");
+      debugPrint("THEMEREGISTER ERRO GETDATABYID -> $e");
       return null;
     }
   }
 
+/*
   Future<void> setData(ThemeRegister register) async {
     await DBsettings.getDbCollection(collection).doc(register.id.toString()).set(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
-  }
-
-  Future<bool> createCollection() async {
-    bool success = false;
-    try{
-      await DBsettings.getDbCollection(collection).add({
-        "key": collection 
-      }).then((_){
-        success = true;
-      });
-    }catch(e){
-      debugPrint("ERRO -> $e");      
-    }finally{
-      // ignore: control_flow_in_finally
-      return success;
-    }    
-  }
+  }*/
 
 }
 

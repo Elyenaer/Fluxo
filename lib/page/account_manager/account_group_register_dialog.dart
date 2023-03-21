@@ -14,7 +14,7 @@ Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) asy
   AccountGroupConnect connect = AccountGroupConnect();
   AccountGroupRegister register = AccountGroupRegister();
 
-  TextEditingController _tecId = TextEditingController(text: await connect.getNextId());
+  TextEditingController _tecId = TextEditingController(text: "");
   TextEditingController _tecDescription = TextEditingController(text: '');
 
   List<Widget> buttons = <Widget>[];

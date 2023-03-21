@@ -36,13 +36,13 @@ class ShowFinancialRegister extends StatelessWidget{
             Row(
               verticalDirection: VerticalDirection.up,
               children: [
-                formats.standard(convert.DatetimeToDateBr(register.date),Theme.of(context).colorScheme.onSurface),
+                formats.standard(convert.DatetimeToDateBr(register.date!),Theme.of(context).colorScheme.onSurface),
                 const SizedBox(width: 20,),
                 Expanded(
-                  child: formats.standard(register.description,Theme.of(context).colorScheme.onSurface),              
+                  child: formats.standard(register.description!,Theme.of(context).colorScheme.onSurface),              
                 ), 
                 const SizedBox(width: 20,),
-                formats.standard(convert.doubleToCurrencyBR(register.value),Theme.of(context).colorScheme.onSurface)
+                formats.standard(convert.doubleToCurrencyBR(register.value!),Theme.of(context).colorScheme.onSurface)
               ],
             ),   
             Transform.scale(

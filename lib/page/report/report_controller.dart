@@ -3,12 +3,12 @@ import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
+import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
 //import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
 import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
-import 'package:firebase_write/settings/manager_access/manager_access.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
@@ -21,7 +21,7 @@ enum ReportState {loadingUserPreferences,loadingPanelData,loaded}
 
 class ReportController with ChangeNotifier {
   var state = ReportState.loadingUserPreferences;
-  late UserPreferencesRegister userPreferences;
+  late UserPreferencesRegister? userPreferences;
 
   late List<GroupRegister> groups = [];
   late BalanceRegister periodBalance,accumulatedBalance;
@@ -40,13 +40,16 @@ class ReportController with ChangeNotifier {
   late double scalePanel = 1.0;
 
   ReportController() {
-    userPreferences = ManagerAccess.userPreferences;
-    tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences.start_date_report!);
-    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences.end_date_report!);   
-    scalePanel = userPreferences.scale!;
-    periodValue = userPreferences.period_report!;
+    _getUserPreferences();
     update();
   }
+
+  _getUserPreferences() async {
+    userPreferences = await UserPreferencesConnect().getById(1);
+    tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences!.start_date_report!);
+    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences!.end_date_report!);   
+    scalePanel = userPreferences!.scale!;
+    periodValue = userPreferences!.period_report!;  }
 
   @override
   dispose(){    
@@ -172,14 +175,14 @@ class ReportController with ChangeNotifier {
         }
 
         for(int i=0;i<reg!.length;i++){
-          if(reg[i].date.isAfter(d2)){
+          if(reg[i].date!.isAfter(d2)){
             break;
-          }else if(reg[i].date.isBefore(d)){
+          }else if(reg[i].date!.isBefore(d)){
             continue;
           }
           for(int j=0;j<groups.length;j++){
             for(int x=0;x<groups[j].rows.length;x++){
-              if(reg[i].accountId==groups[j].rows[x].account.id){
+              if(reg[i].idAccount==groups[j].rows[x].account.id){
                 groups[j].rows[x].include(reg[i],positionArray);
               }
             }

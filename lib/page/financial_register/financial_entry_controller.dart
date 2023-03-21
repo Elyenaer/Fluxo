@@ -92,7 +92,7 @@ class FinancialEntryController with ChangeNotifier{
   }
 
   Future<void> setNextId() async {
-    tdcId.text = await FinancialEntryConnect().getNextId();
+    tdcId.text = '';
   }
   
   void save(BuildContext context) async {
@@ -132,9 +132,9 @@ class FinancialEntryController with ChangeNotifier{
       register = FinancialEntryRegister();
       register.id = int.parse(tdcId.text);
       if (isCredit) {
-        register.accountId = AccountConnect.getID(_account_credit!, typeValue);
+        register.idAccount = AccountConnect.getID(_account_credit!, typeValue);
       } else {
-        register.accountId = AccountConnect.getID(_account_debit!, typeValue);
+        register.idAccount = AccountConnect.getID(_account_debit!, typeValue);
       }
       register.description = tdcDescription.text;
       register.date = convert.StringToDatetime(tdcDate.text);
@@ -151,9 +151,9 @@ class FinancialEntryController with ChangeNotifier{
       tdcId.text = register.id.toString();
 
       //check account ref register
-      List<AccountRegister>? a = _account_debit?.where((i) => i.id == register.accountId).toList();
+      List<AccountRegister>? a = _account_debit?.where((i) => i.id == register.idAccount).toList();
       if(a!.isEmpty){
-         a = _account_credit?.where((i) => i.id == register.accountId).toList();
+         a = _account_credit?.where((i) => i.id == register.idAccount).toList();
       }
 
       isCredit = a![0].credit!;
@@ -161,9 +161,9 @@ class FinancialEntryController with ChangeNotifier{
       await changeType(isCredit);
 
       typeValue = a[0].description!;
-      tdcDescription.text = register.description;
-      tdcDate.text = convert.DatetimeToDateBr(register.date);
-      tdcValue.text = convert.doubleToCurrencyBR(register.value);
+      tdcDescription.text = register.description!;
+      tdcDate.text = convert.DatetimeToDateBr(register.date!);
+      tdcValue.text = convert.doubleToCurrencyBR(register.value!);
     }catch(e){
       debugPrint("ERRO _SETDATASCREEN -> $e");
     }
@@ -180,10 +180,10 @@ class FinancialEntryController with ChangeNotifier{
   void delete(BuildContext context) async{
       bool confirm = await message.confirm(context,"CONFIRMA EXCLUSÃO?",
       "ID: " + register.id.toString() +
-      "DATA: " + convert.DatetimeToDateBr(register.date) + "\n" 
-      + register.description.toUpperCase()
+      "DATA: " + convert.DatetimeToDateBr(register.date!) + "\n" 
+      + register.description!.toUpperCase()
       + "\nVALOR: "
-      + convert.doubleToCurrencyBR(register.value)
+      + convert.doubleToCurrencyBR(register.value!)
     );
     if(confirm){
       FinancialEntryConnect().delete(register);

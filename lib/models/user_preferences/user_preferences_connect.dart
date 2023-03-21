@@ -1,13 +1,17 @@
-/*
+
+import 'dart:convert';
+
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
 import 'package:flutter/material.dart';
 
+import '../../settings/manager_access/api/api_request.dart';
+
 class UserPreferencesConnect {
 
-  final collection = "user_preferences";
+  final _table = "user_preferences";
 
   UserPreferencesRegister? _convertRegister(Map<String, dynamic> data){
     try{
@@ -31,7 +35,7 @@ class UserPreferencesConnect {
 
   Map<String, String> _convertData(UserPreferencesRegister register){
     return <String, String>{
-      'id_user': funcNumber.includeZero(register.id_user!,5),
+      'id_user': register.id_user!.toString(),
       'start_date_report': convert.DatetimeToDatabase(register.start_date_report!),
       'end_date_report': convert.DatetimeToDatabase(register.end_date_report!),
       'scale': register.scale.toString(),
@@ -41,48 +45,29 @@ class UserPreferencesConnect {
   }
 
   Future<UserPreferencesRegister?> getById(int idUser) async {
-    try {
-      UserPreferencesRegister? register;
+     try {
+      UserPreferencesRegister? registers;
 
-      // to get data from all documents sequentially      
-      await collectionRef
-      .where('id_user', isEqualTo: funcNumber.includeZero(idUser,5))    
-      .get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          register = _convertRegister(result.data() as Map<String,dynamic>);
-        }
-      });
+      var res = await ApiRequest.getAll(_table);
+      var data = json.decode(res.body);
 
-      return register;
+      for(var item in data){
+        registers = _convertRegister(item);
+      }
+
+      return registers;
     }catch(e){
-      debugPrint("ERRO GETID -> $e");
+      debugPrint("FINANCIALENTRYREGISTER ERRO GETDATA -> $e");
       return null;
     }
   }
 
   Future<void> update(UserPreferencesRegister register) async {
-    await DBsettings.getDbCollection(collection).doc(register.id_user.toString()).update(_convertData(register)).catchError((error)
-      => debugPrint("Failed to add user: $error"));
+    await ApiRequest.update(_table,_convertData(register), register.id_user);
   }
 
-  Future<bool> createCollection() async {
-    bool success = false;
-    try{
-      await DBsettings.getDbCollection(collection).add({
-        "key": collection 
-      }).then((_){
-        success = true;
-      });
-    }catch(e){
-      debugPrint("ERRO -> $e");      
-    }finally{
-      // ignore: control_flow_in_finally
-      return success;
-    }    
-  }
 
 }
-*/
 
 
 

@@ -12,7 +12,7 @@ class CellRegister{
   CellRegister(this.position);
 
   bool include(FinancialEntryRegister f){
-    sum += f.value;
+    sum += f.value!;
     cellRegister.add(f);
     return true;
   }

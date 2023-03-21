@@ -1,6 +1,5 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_write/settings/manager_access/manager_access.dart';
 import 'package:firebase_write/settings/manager_access/user/user_connect.dart';
 import 'package:firebase_write/settings/manager_access/user/user_register.dart';
 import 'package:firebase_write/settings/manager_access/user_company/user_company_register.dart';
@@ -57,7 +56,7 @@ class AuthSettings {
 
   Future<List<UserCompanyRegister?>?> _checkUserAccess(UserRegister user) async {
     try{
-      return await ManagerAccess().getCompanys(user);
+      //return await ManagerAccess().getCompanys(user);
     }catch(e){
       return null;
     }

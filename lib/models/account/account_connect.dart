@@ -1,13 +1,13 @@
 
-import 'package:firebase_write/models/financial_entry/financial_entry_connect.dart';
-import 'package:firebase_write/help/funcNumber.dart';
+import 'dart:convert';
 import 'package:firebase_write/models/account/account_register.dart';
-import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
 import 'package:flutter/material.dart';
+
+import '../../settings/manager_access/api/api_request.dart';
 
 class AccountConnect {
 
-  final String collection = "account";
+  final String _table = "account";
 
   Map<String, String> _convertData(AccountRegister reg){
     
@@ -18,11 +18,12 @@ class AccountConnect {
     }
 
   return <String, String>{
-      'id': funcNumber.includeZero(reg.id!,4),
+      'id': reg.id!.toString(),
+      'company_id': reg.idCompany!.toString(),
       'type': c,
       'description': reg.description!,  
-      'id_group' : funcNumber.includeZero(reg.idGroup!,3),
-      'group_sequence' : funcNumber.includeZero(reg.groupSequence!,3),    
+      'acccount_group_id' : reg.idGroup!.toString(),
+      'account_group_sequence' : reg.groupSequence!.toString(),    
     };
 }
 
@@ -39,8 +40,9 @@ class AccountConnect {
       }
       reg.description = data['description'] as String;
       
-      reg.idGroup = int.parse(data['id_group']);
-      reg.groupSequence = int.parse(data['group_sequence']);
+      reg.idGroup = int.parse(data['account_group_id']);
+      reg.idCompany = int.parse(data['company_id']);
+      reg.groupSequence = int.parse(data['account_group_sequence']);
 
       return reg;
     }catch(e){
@@ -50,24 +52,24 @@ class AccountConnect {
 }
 
   Future<void> setData(AccountRegister register) async {
-    await DBsettings.getDbCollection(collection).doc(register.id.toString()).set(_convertData(register)).catchError((error)
-      => debugPrint("Failed to add user: $error"));
-}
+    await ApiRequest.setData(_table,_convertData(register));
+  }
 
   Future<List<AccountRegister>?> getData() async {
     try {
       List<AccountRegister> registers = [];
 
-      // to get data from all documents sequentially
-      await DBsettings.getDbCollection(collection).get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountRegister);
-        }
-      });
-      
+      var res = await ApiRequest.getAll(_table);
+      var data = json.decode(res.body);
+
+      for(var item in data){
+        AccountRegister? r = _convertRegister(item);
+        registers.add(r!);
+      }
+
       return registers;
     }catch(e){
-      debugPrint("ERRO GETDATA -> $e");
+      debugPrint("ACCOUNT ERRO GETDATA -> $e");
       return null;
     }
   }
@@ -76,79 +78,43 @@ class AccountConnect {
     try {
       List<AccountRegister> registers = [];
 
-      // to get data from all documents sequentially
-      await await DBsettings.getDbCollection(collection)
-        .where('id_group', isEqualTo: idGroup)
-        .get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountRegister);
-        }
-      });
-      
+      var res = await ApiRequest.getCustom(
+        " SELECT * FROM $_table WHERE account_group_id = '$idGroup' "
+      );
+      var data = json.decode(res.body);
+
+      for(var item in data){
+        AccountRegister? r = _convertRegister(item);
+        registers.add(r!);
+      }
+
       return registers;
     }catch(e){
-      debugPrint("ERRO GETDATA -> $e");
+      debugPrint("ERRO GETDATABYGROUP -> $e");
       return null;
     }
-  }
-
-  Future<bool> delete(AccountRegister register) async {
-    try{
-      //check if there are registers in account
-      if(await FinancialEntryConnect().checkAccount(register.id!)){
-        return false;
-      }
-      await DBsettings.getDbCollection(collection).doc(register.id.toString()).delete();
-      return true;
-    }catch(e){
-      debugPrint("Failed to add user: $e");
-      return false;
-    }
-  }
-
-  Future<void> update(AccountRegister register) async {
-    await DBsettings.getDbCollection(collection).doc(register.id.toString()).update(_convertData(register)).catchError((error)
-      => debugPrint("Failed to add user: $error"));
   }
 
   Future<List<AccountRegister>?> getDataType(String type) async {
     try {
       List<AccountRegister> registers = [];
 
-      // to get data from all documents sequentially
-      await DBsettings.getDbCollection(collection)
-      .where('type', isEqualTo: type)
-      .get().then((querySnapshot) {
-        for (var result in querySnapshot.docs) {
-          registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountRegister);
-        }
-      });
+      var res = await ApiRequest.getCustom(
+        " SELECT * FROM $_table WHERE type = '$type' "
+      );
+      var data = json.decode(res.body);
+
+      for(var item in data){
+        AccountRegister? r = _convertRegister(item);
+        registers.add(r!);
+      }
 
       return registers;
     }catch(e){
-      debugPrint("ERRO GETDATA --> $e");
+      debugPrint("ERRO GETDATATYPE --> $e");
       return null;
     }
   }
-
-  Future<String> getNextId() async {
-  try{
-    // ignore: prefer_typing_uninitialized_variables
-    var i;
-    await DBsettings.getDbCollection(collection)
-    .orderBy("id", descending: true)
-    .limit(1)
-    .get()
-    .then(
-      // ignore: avoid_function_literals_in_foreach_calls
-      (value) => value.docs.forEach((document) {
-        i = document.reference.id.toString();
-      }));
-    return (int.parse(i)+1).toString();
-  }catch(e){
-    return '1';
-  }
-}
 
   static int getID(List<AccountRegister> list,String descriptionTarget){
     for(int i=0;i<list.length;i++){
@@ -157,22 +123,14 @@ class AccountConnect {
       }
     }
     return 0;
-  }   
+  } 
 
-  Future<bool> createCollection() async {
-    bool success = false;
-    try{
-      await DBsettings.getDbCollection(collection).add({
-        "key": collection 
-      }).then((_){
-        success = true;
-      });
-    }catch(e){
-      debugPrint("ERRO -> $e");      
-    }finally{
-      // ignore: control_flow_in_finally
-      return success;
-    }    
+  Future<bool> delete(AccountRegister register) async {
+    return await ApiRequest.delete(_table,register.id);
+  }
+
+  Future<void> update(AccountRegister register) async {
+    await ApiRequest.update(_table,_convertData(register), register.id);
   }
 
 }

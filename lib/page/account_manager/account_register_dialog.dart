@@ -24,7 +24,7 @@ Future<String> AccountRegisterDialog(
     description = account.description.toString();    
   }else{
     register = AccountRegister();
-    id = await connect.getNextId();
+    id = "";
     description = '';
   }  
 

@@ -1,7 +1,6 @@
 
 // ignore_for_file: unnecessary_null_comparison
 import 'package:firebase_write/models/theme/theme_controller.dart';
-import 'package:firebase_write/settings/manager_access/manager_access.dart';
 import 'package:firebase_write/settings/manager_access/user/user_register.dart';
 import 'package:firebase_write/settings/manager_access/user_company/user_company_register.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class LoginController with ChangeNotifier{
 
       userRegister = response[2];
 
-      await ManagerAccess().setDatabaseCompany(companys[0]!.idCompany!);
+      //await ManagerAccess().setDatabaseCompany(companys[0]!.idCompany!);
       //await ManagerAccess().getUserPreferences(userRegister.id!);
       //themeController.current(userPreferences!.id_theme!);
 

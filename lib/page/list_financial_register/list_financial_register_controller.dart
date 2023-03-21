@@ -37,10 +37,10 @@ class ListFinancialRegisterController with ChangeNotifier{
   void deleteFinancialRegister(BuildContext context,FinancialEntryRegister r) async {  
     bool confirm = await message.confirm(context,"CONFIRMA EXCLUSÃO?",
       "ID: " + r.id.toString() 
-      + "\nDATA: " + convert.DatetimeToDateBr(r.date) + "\n" 
-      + r.description.toUpperCase()
+      + "\nDATA: " + convert.DatetimeToDateBr(r.date!) + "\n" 
+      + r.description!.toUpperCase()
       + "\nVALOR: "
-      + convert.doubleToCurrencyBR(r.value)
+      + convert.doubleToCurrencyBR(r.value!)
     ); 
 
     if(confirm){      
