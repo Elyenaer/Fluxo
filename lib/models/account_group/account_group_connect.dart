@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
@@ -7,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class AccountGroupConnect {
 
-  final CollectionReference collectionRef = DBsettings.getDbCollection("account_group");
+  final String collection = "account_group";
 
   Map<String, String> _convertData(AccountGroupRegister reg){
     return <String, String>{
@@ -15,7 +14,7 @@ class AccountGroupConnect {
       'description': reg.description!,    
       'sequence': funcNumber.includeZero(reg.sequence!,0),
     };
-}
+  }
 
   AccountGroupRegister? _convertRegister(Map<String, dynamic> data){
     try{
@@ -33,18 +32,18 @@ class AccountGroupConnect {
 }
 
   Future<void> setData(AccountGroupRegister register) async {
-    collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
+    await DBsettings.getDbCollection(collection).doc(register.id.toString()).set(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
   }
 
   Future<void> update(AccountGroupRegister register) async {
-    collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
+    await DBsettings.getDbCollection(collection).doc(register.id.toString()).update(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
   }
 
   Future<bool> delete(AccountGroupRegister register) async {
     try{
-      collectionRef.doc(register.id.toString()).delete();
+      await DBsettings.getDbCollection(collection).doc(register.id.toString()).delete();
       return true;
     }catch(e){
       debugPrint("Failed to add user: $e");
@@ -57,7 +56,7 @@ class AccountGroupConnect {
       List<AccountGroupRegister> registers = [];
 
       // to get data from all documents sequentially
-      await collectionRef
+      await DBsettings.getDbCollection(collection)
         .get().then((querySnapshot) {
           for (var result in querySnapshot.docs) {
             AccountGroupRegister temp = _convertRegister(result.data() as Map<String,dynamic>) as AccountGroupRegister;
@@ -76,7 +75,7 @@ class AccountGroupConnect {
   try{
     // ignore: prefer_typing_uninitialized_variables
     var i;
-    await collectionRef
+    await DBsettings.getDbCollection(collection)
     .orderBy("id", descending: true)
     .limit(1)
     .get()
@@ -90,5 +89,21 @@ class AccountGroupConnect {
     return '1';
   }
 }
+
+  Future<bool> createCollection() async {
+    bool success = false;
+    try{
+      await DBsettings.getDbCollection(collection).add({
+        "key": collection 
+      }).then((_){
+        success = true;
+      });
+    }catch(e){
+      debugPrint("ERRO -> $e");      
+    }finally{
+      // ignore: control_flow_in_finally
+      return success;
+    }    
+  }
 
 }

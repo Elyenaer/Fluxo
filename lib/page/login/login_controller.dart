@@ -53,7 +53,7 @@ class LoginController with ChangeNotifier{
       userRegister = response[2];
 
       await ManagerAccess().setDatabaseCompany(companys[0]!.idCompany!);
-      await ManagerAccess().getUserPreferences(userRegister.id!);
+      //await ManagerAccess().getUserPreferences(userRegister.id!);
       //themeController.current(userPreferences!.id_theme!);
 
       return 'one';

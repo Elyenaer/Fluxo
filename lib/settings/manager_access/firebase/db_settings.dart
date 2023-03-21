@@ -24,8 +24,7 @@ class DBsettings{
     }catch(e){
       debugPrint('ERRO STARTMANAGERUSER -> $e');
     }
-  }
-  
+  }  
 
   static startCompanyDatabase(CompanyRegister register) async {
     try{
@@ -45,6 +44,24 @@ class DBsettings{
 
     }
   }
+
+  static startTestDatabase() async {
+    try{
+      FirebaseOptions options =  const FirebaseOptions(
+          apiKey: "AIzaSyBWHADRy995r4uBl-eeoLoOrb27J5Gb0fA",
+          authDomain: "fir-demo-65ace.firebaseapp.com",
+          projectId: "fir-demo-65ace",
+          storageBucket: "fir-demo-65ace.appspot.com",
+          messagingSenderId: "157354318879",
+          appId: "1:157354318879:web:606556d582a1aaf32d492a",
+          measurementId: "G-CT86Q2K740"
+        );
+      FirebaseApp appCompanyDatabase = await Firebase.initializeApp(options: options,name: 'companyDatabase');  
+      databaseCompany =  FirebaseFirestore.instanceFor(app: appCompanyDatabase);
+    }catch(e){
+      debugPrint('ERRO STARTTESTDATABASE -> $e');
+    }
+  }  
 
   static getDbCollection(String collection){
     return databaseCompany.collection(collection);

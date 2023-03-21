@@ -60,6 +60,7 @@ class CompanyConnect {
         }));
       return (int.parse(i)+1).toString();
     }catch(e){
+      print(e);
       return '1';
     }
   }

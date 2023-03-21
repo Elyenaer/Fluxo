@@ -21,9 +21,10 @@ class ManagerAccess {
     await DBsettings.startCompanyDatabase(register!);
   }
 
+/*
   getUserPreferences(int idUser) async {
     userPreferences = (await UserPreferencesConnect().getById(idUser))!;
-  }
+  }*/
 
 
 

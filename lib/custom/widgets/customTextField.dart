@@ -9,7 +9,8 @@ class CustomTextField extends StatelessWidget{
     this.label,
     this.icon,
     this.enabled,
-    this.maxLines
+    this.maxLines,
+    this.onChanged
     }) : super(key: key);
 
   TextEditingController controller;
@@ -17,12 +18,18 @@ class CustomTextField extends StatelessWidget{
   IconData? icon;
   bool? enabled;
   int? maxLines;
+  Function()? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       maxLines: maxLines ??= 1,
       controller: controller,
+      onChanged: (value) {
+        if(onChanged!=null){
+          onChanged!();
+        }
+      },
       decoration: InputDecoration(
         enabled: enabled ??= true,
         border: const OutlineInputBorder(),

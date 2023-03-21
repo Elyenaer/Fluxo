@@ -1,5 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_connect.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/models/account/account_register.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class AccountConnect {
 
-  final CollectionReference collectionRef = DBsettings.getDbCollection("account");
+  final String collection = "account";
 
   Map<String, String> _convertData(AccountRegister reg){
     
@@ -51,7 +50,7 @@ class AccountConnect {
 }
 
   Future<void> setData(AccountRegister register) async {
-    collectionRef.doc(register.id.toString()).set(_convertData(register)).catchError((error)
+    await DBsettings.getDbCollection(collection).doc(register.id.toString()).set(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
 }
 
@@ -60,8 +59,7 @@ class AccountConnect {
       List<AccountRegister> registers = [];
 
       // to get data from all documents sequentially
-      await collectionRef
-        .get().then((querySnapshot) {
+      await DBsettings.getDbCollection(collection).get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
           registers.add(_convertRegister(result.data() as Map<String,dynamic>) as AccountRegister);
         }
@@ -79,7 +77,7 @@ class AccountConnect {
       List<AccountRegister> registers = [];
 
       // to get data from all documents sequentially
-      await collectionRef
+      await await DBsettings.getDbCollection(collection)
         .where('id_group', isEqualTo: idGroup)
         .get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
@@ -100,7 +98,7 @@ class AccountConnect {
       if(await FinancialEntryConnect().checkAccount(register.id!)){
         return false;
       }
-      collectionRef.doc(register.id.toString()).delete();
+      await DBsettings.getDbCollection(collection).doc(register.id.toString()).delete();
       return true;
     }catch(e){
       debugPrint("Failed to add user: $e");
@@ -109,7 +107,7 @@ class AccountConnect {
   }
 
   Future<void> update(AccountRegister register) async {
-    collectionRef.doc(register.id.toString()).update(_convertData(register)).catchError((error)
+    await DBsettings.getDbCollection(collection).doc(register.id.toString()).update(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
   }
 
@@ -118,7 +116,7 @@ class AccountConnect {
       List<AccountRegister> registers = [];
 
       // to get data from all documents sequentially
-      await collectionRef
+      await DBsettings.getDbCollection(collection)
       .where('type', isEqualTo: type)
       .get().then((querySnapshot) {
         for (var result in querySnapshot.docs) {
@@ -137,7 +135,7 @@ class AccountConnect {
   try{
     // ignore: prefer_typing_uninitialized_variables
     var i;
-    await collectionRef
+    await DBsettings.getDbCollection(collection)
     .orderBy("id", descending: true)
     .limit(1)
     .get()
@@ -160,5 +158,21 @@ class AccountConnect {
     }
     return 0;
   }   
+
+  Future<bool> createCollection() async {
+    bool success = false;
+    try{
+      await DBsettings.getDbCollection(collection).add({
+        "key": collection 
+      }).then((_){
+        success = true;
+      });
+    }catch(e){
+      debugPrint("ERRO -> $e");      
+    }finally{
+      // ignore: control_flow_in_finally
+      return success;
+    }    
+  }
 
 }

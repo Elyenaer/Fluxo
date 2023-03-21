@@ -3,7 +3,7 @@ import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
-import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
+//import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
 import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
@@ -50,10 +50,11 @@ class ReportController with ChangeNotifier {
 
   @override
   dispose(){    
-    _savePreferences();
+    //_savePreferences();
     super.dispose();
   }
 
+/*
   _savePreferences() async {
     userPreferences.start_date_report = convert.StringToDatetime(tecDateStart.text);
     userPreferences.end_date_report = convert.StringToDatetime(tecDateEnd.text);
@@ -61,7 +62,7 @@ class ReportController with ChangeNotifier {
     userPreferences.period_report = periodValue;
 
     await UserPreferencesConnect().update(userPreferences);
-  }
+  }*/
 
   update() async {  
     _setState(ReportState.loadingPanelData);

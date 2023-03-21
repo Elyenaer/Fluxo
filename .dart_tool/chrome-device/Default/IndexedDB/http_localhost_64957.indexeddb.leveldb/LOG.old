@@ -1,0 +1,45 @@
+2023/02/17-16:45:50.175 ba8 Reusing MANIFEST C:\Users\Home\AppData\Local\Temp\flutter_tools.7d330d0a\flutter_tools_chrome_device.cb5d3872\Default\IndexedDB\http_localhost_64957.indexeddb.leveldb/MANIFEST-000001
+2023/02/17-16:45:50.175 ba8 Recovering log #26
+2023/02/17-16:45:50.176 ba8 Reusing old log C:\Users\Home\AppData\Local\Temp\flutter_tools.7d330d0a\flutter_tools_chrome_device.cb5d3872\Default\IndexedDB\http_localhost_64957.indexeddb.leveldb/000026.log 
+2023/02/17-16:45:50.176 ba8 Delete type=2 #25
+2023/02/17-16:45:50.217 2a20 Level-0 table #31: started
+2023/02/17-16:45:50.221 2a20 Level-0 table #31: 761 bytes OK
+2023/02/17-16:45:50.224 2a20 Delete type=0 #26
+2023/02/17-16:45:50.226 ba8 Manual compaction at level-0 from '\x00\x0b\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0c\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0b\x00\x00\x05' @ 319 : 1
+2023/02/17-16:45:50.226 ba8 Compacting 1@0 + 1@1 files
+2023/02/17-16:45:50.229 ba8 Generated table #32@0: 64 keys, 1723 bytes
+2023/02/17-16:45:50.229 ba8 Compacted 1@0 + 1@1 files => 1723 bytes
+2023/02/17-16:45:50.233 ba8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/02/17-16:45:50.233 ba8 Delete type=2 #31
+2023/02/17-16:45:50.237 ba8 Manual compaction at level-0 from '\x00\x0b\x00\x00\x05' @ 319 : 1 .. '\x00\x0c\x00\x00\x00' @ 0 : 0; will stop at (end)
+2023/02/17-16:45:50.891 2a20 Level-0 table #34: started
+2023/02/17-16:45:50.894 2a20 Level-0 table #34: 712 bytes OK
+2023/02/17-16:45:50.896 2a20 Delete type=2 #28
+2023/02/17-16:45:50.896 2a20 Delete type=0 #30
+2023/02/17-16:45:50.897 ba8 Manual compaction at level-0 from '\x00\x0c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x0d\x00\x00\x00' @ 0 : 0; will stop at '\x00\x0c\x00\x00\x05' @ 352 : 1
+2023/02/17-16:45:50.897 ba8 Compacting 1@0 + 1@1 files
+2023/02/17-16:45:50.898 ba8 Generated table #35@0: 64 keys, 1631 bytes
+2023/02/17-16:45:50.898 ba8 Compacted 1@0 + 1@1 files => 1631 bytes
+2023/02/17-16:45:50.900 ba8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/02/17-16:45:50.900 ba8 Delete type=2 #34
+2023/02/17-16:45:50.900 ba8 Manual compaction at level-0 from '\x00\x0c\x00\x00\x05' @ 352 : 1 .. '\x00\x0d\x00\x00\x00' @ 0 : 0; will stop at (end)
+2023/02/17-16:51:32.765 ba8 Level-0 table #37: started
+2023/02/17-16:51:32.769 ba8 Level-0 table #37: 232 bytes OK
+2023/02/17-16:51:32.770 ba8 Delete type=2 #32
+2023/02/17-16:51:32.770 ba8 Delete type=0 #33
+2023/02/17-16:51:32.771 ba8 Manual compaction at level-0 from (begin) .. (end); will stop at '\x00\x00\x00\x002\x02\x0a\x01\x00\x00\x00\x00\x00\x00\x00\x00' @ 366 : 0
+2023/02/17-16:51:32.771 ba8 Compacting 1@0 + 1@1 files
+2023/02/17-16:51:32.774 ba8 Generated table #38@0: 65 keys, 1635 bytes
+2023/02/17-16:51:32.774 ba8 Compacted 1@0 + 1@1 files => 1635 bytes
+2023/02/17-16:51:32.775 ba8 compacted to: files[ 0 1 1 0 0 0 0 ]
+2023/02/17-16:51:32.775 ba8 Delete type=2 #35
+2023/02/17-16:51:32.775 ba8 Delete type=2 #37
+2023/02/17-16:51:32.776 ba8 Manual compaction at level-0 from '\x00\x00\x00\x002\x02\x0a\x01\x00\x00\x00\x00\x00\x00\x00\x00' @ 366 : 0 .. (end); will stop at (end)
+2023/02/17-16:51:32.776 ba8 Manual compaction at level-1 from (begin) .. (end); will stop at '\x00\x03\x01\x02\x019\x00c\x00o\x00m\x00p\x00a\x00n\x00y\x00D\x00a\x00t\x00a\x00b\x00a\x00s\x00e\x00!\x001\x00:\x001\x005\x007\x003\x005\x004\x003\x001\x008\x008\x007\x009\x00:\x00w\x00e\x00b\x00:\x006\x000\x006\x005\x005\x006\x00d\x005\x008\x002\x00a\x001\x00a\x00a\x00f\x003\x002\x00d\x004\x009\x002\x00a' @ 151 : 1
+2023/02/17-16:51:32.776 ba8 Compacting 1@1 + 1@2 files
+2023/02/17-16:51:32.780 ba8 Generated table #39@1: 35 keys, 1309 bytes
+2023/02/17-16:51:32.780 ba8 Compacted 1@1 + 1@2 files => 1309 bytes
+2023/02/17-16:51:32.781 ba8 compacted to: files[ 0 0 1 0 0 0 0 ]
+2023/02/17-16:51:32.782 ba8 Delete type=2 #5
+2023/02/17-16:51:32.782 ba8 Delete type=2 #38
+2023/02/17-16:51:32.783 2a20 Manual compaction at level-1 from '\x00\x03\x01\x02\x019\x00c\x00o\x00m\x00p\x00a\x00n\x00y\x00D\x00a\x00t\x00a\x00b\x00a\x00s\x00e\x00!\x001\x00:\x001\x005\x007\x003\x005\x004\x003\x001\x008\x008\x007\x009\x00:\x00w\x00e\x00b\x00:\x006\x000\x006\x005\x005\x006\x00d\x005\x008\x002\x00a\x001\x00a\x00a\x00f\x003\x002\x00d\x004\x009\x002\x00a' @ 151 : 1 .. (end); will stop at (end)

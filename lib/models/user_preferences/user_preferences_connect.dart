@@ -1,5 +1,4 @@
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+/*
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcNumber.dart';
 import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class UserPreferencesConnect {
 
-  late CollectionReference collectionRef = DBsettings.getDbCollection("user_preferences");
+  final collection = "user_preferences";
 
   UserPreferencesRegister? _convertRegister(Map<String, dynamic> data){
     try{
@@ -62,12 +61,28 @@ class UserPreferencesConnect {
   }
 
   Future<void> update(UserPreferencesRegister register) async {
-    collectionRef.doc(register.id_user.toString()).update(_convertData(register)).catchError((error)
+    await DBsettings.getDbCollection(collection).doc(register.id_user.toString()).update(_convertData(register)).catchError((error)
       => debugPrint("Failed to add user: $error"));
   }
 
-}
+  Future<bool> createCollection() async {
+    bool success = false;
+    try{
+      await DBsettings.getDbCollection(collection).add({
+        "key": collection 
+      }).then((_){
+        success = true;
+      });
+    }catch(e){
+      debugPrint("ERRO -> $e");      
+    }finally{
+      // ignore: control_flow_in_finally
+      return success;
+    }    
+  }
 
+}
+*/
 
 
 

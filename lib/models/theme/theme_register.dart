@@ -21,39 +21,39 @@ class ThemeRegister{
   late Color widgetContainer;
 
   setBackgrounMain(String hex){
-    backgroundMain = funcColor.getHex(hex);
+    backgroundMain = funcColor.getColorByHex(hex);
   }
 
   setBackgrounTitle(String hex){
-    backgroundTitle = funcColor.getHex(hex);
+    backgroundTitle = funcColor.getColorByHex(hex);
   }
 
   setForegroundMain(String hex){
-    foregroundMain = funcColor.getHex(hex);
+    foregroundMain = funcColor.getColorByHex(hex);
   }
 
   setForegroundTitle(String hex){
-    foregroundTitle = funcColor.getHex(hex);
+    foregroundTitle = funcColor.getColorByHex(hex);
   }
 
   setWidgetPrimaryColor(String hex){
-    widgetPrimaryColor = funcColor.getHex(hex);
+    widgetPrimaryColor = funcColor.getColorByHex(hex);
   }
 
   setWidgetSecondaryColor(String hex){
-    widgetSecondaryColor = funcColor.getHex(hex);
+    widgetSecondaryColor = funcColor.getColorByHex(hex);
   }
 
   setWidgetForeground(String hex){
-    widgetForeground = funcColor.getHex(hex);
+    widgetForeground = funcColor.getColorByHex(hex);
   }
 
   setWidgetTextColor(String hex){
-    widgetTextColor = funcColor.getHex(hex);
+    widgetTextColor = funcColor.getColorByHex(hex);
   }
 
   setWidgetContainer(String hex){
-    widgetContainer = funcColor.getHex(hex);
+    widgetContainer = funcColor.getColorByHex(hex);
   }
 
 

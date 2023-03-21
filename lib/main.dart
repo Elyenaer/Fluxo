@@ -1,20 +1,22 @@
 
+import 'package:firebase_write/Teste/testePage.dart';
 import 'package:firebase_write/models/theme/theme_controller.dart';
-import 'package:firebase_write/settings/adm/new_project_controller.dart';
-import 'package:firebase_write/settings/adm/new_project_page.dart';
+import 'package:firebase_write/page/report/report_page.dart';
 import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
 import 'package:firebase_write/page/login/login_controller.dart';
-//import 'package:firebase_write/page/login/login_page.dart';
 import 'package:firebase_write/page/account_manager/account_manager_controller.dart';
 import 'package:firebase_write/page/financial_register/financial_entry_controller.dart';
 import 'package:firebase_write/page/list_financial_register/list_financial_register_controller.dart';
 import 'package:firebase_write/page/report/report_controller.dart';
+import 'package:firebase_write/settings/manager_access/api/db_settings_api.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();  
-  await DBsettings.startManagerUser();
+  WidgetsFlutterBinding.ensureInitialized(); 
+  //await DBsettings.startManagerUser();
+  //await DBsettings.startTestDatabase();
+  //await DBsettingsMysql.startDatabase();
   runApp(const MyApp());
 }
 
@@ -33,14 +35,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => ListFinancialRegisterController(),),
         ChangeNotifierProvider(create: (ctx) => FinancialEntryController(),),
         ChangeNotifierProvider(create: (ctx) => LoginController()),
-        ChangeNotifierProvider(create: (ctx) => ThemeController()),
-        ChangeNotifierProvider(create: (ctx) => NewProjectController())
-      ],
-      
+        ChangeNotifierProvider(create: (ctx) => ThemeController())
+      ],      
       child: MaterialApp(
         theme: ThemeController.theme,
         debugShowCheckedModeBanner: false,
-        home: const NewProjectPage(),      
+        home: const Teste(),      
       ),      
     );  
   }
