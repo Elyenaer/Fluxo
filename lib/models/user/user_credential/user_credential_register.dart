@@ -1,0 +1,4 @@
+
+class UserCredentialRegister {
+  String? email;
+}

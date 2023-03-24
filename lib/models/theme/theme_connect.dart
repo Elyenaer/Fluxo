@@ -1,9 +1,5 @@
 // ignore_for_file: file_names
 import 'dart:convert';
-
-import 'package:firebase_write/help/funcColor.dart';
-import 'package:firebase_write/help/funcNumber.dart';
-import 'package:firebase_write/settings/manager_access/firebase/db_settings.dart';
 import 'package:flutter/material.dart';
 
 import '../../settings/manager_access/api/api_request.dart';
@@ -14,6 +10,7 @@ class ThemeConnect {
 
   final _table = "theme";
 
+  /*
   Map<String, String> _convertData(ThemeRegister reg){
     return <String, String>{
       'id': reg.id.toString(),
@@ -29,12 +26,13 @@ class ThemeConnect {
       'widgetTextColor': funcColor.getHexByColor(reg.widgetTextColor),   
     }; 
   }
+  */
 
   ThemeRegister? _convertRegister(Map<String, dynamic> data){
     try{
       ThemeRegister register = ThemeRegister();
 
-      register.id = int.parse(data['id']);
+      register.id = data['theme_id'];
       register.name = data['name'];
 
       register.setBackgrounMain(data['backgroundMain']);
@@ -51,7 +49,7 @@ class ThemeConnect {
 
       return register;
     }catch(e){
-      debugPrint("ERRO _CONVERTREGISTER $e");
+      debugPrint("THEME ERRO _CONVERTREGISTER $e");
       return null;
     }
 }
@@ -81,7 +79,7 @@ class ThemeConnect {
     try {
       ThemeRegister? registers;
 
-      var res = await ApiRequest.getAll(_table);
+      var res = await ApiRequest.getById(_table,id);
       var data = json.decode(res.body);
 
       for(var item in data){

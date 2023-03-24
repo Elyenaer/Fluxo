@@ -1,0 +1,5 @@
+
+user -> user used in app / sql;
+user_preferences -> user preferences, like theme, screen scale, colors etc. One for user_access;
+user_access -> connect user with company access;
+user_credential -> user data came from google firebase, like, last access, criation date, email etc;

@@ -1,6 +1,8 @@
 
 import 'dart:convert';
 import 'package:firebase_write/models/account/account_register.dart';
+import 'package:firebase_write/settings/manager_access/api/db_settings_api.dart';
+import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
 import 'package:flutter/material.dart';
 
 import '../../settings/manager_access/api/api_request.dart';
@@ -18,11 +20,11 @@ class AccountConnect {
     }
 
   return <String, String>{
-      'id': reg.id!.toString(),
-      'company_id': reg.idCompany!.toString(),
+      'account_id': reg.id!.toString(),
+      'client_id': CurrentAccess.client.id.toString(),
       'type': c,
       'description': reg.description!,  
-      'acccount_group_id' : reg.idGroup!.toString(),
+      'account_group_id' : reg.idGroup!.toString(),
       'account_group_sequence' : reg.groupSequence!.toString(),    
     };
 }
@@ -31,18 +33,19 @@ class AccountConnect {
     try{
       AccountRegister reg = AccountRegister();
 
-      reg.id = int.parse(data['id']);
+      reg.id = data['account_id'];
 
       if(data['type'] == "C"){
         reg.credit = true;
       }else{
         reg.credit = false;
       }
-      reg.description = data['description'] as String;
+
+      reg.description = data['description'];
       
-      reg.idGroup = int.parse(data['account_group_id']);
-      reg.idCompany = int.parse(data['company_id']);
-      reg.groupSequence = int.parse(data['account_group_sequence']);
+      reg.idGroup = data['account_group_id'];
+      reg.idClient = data['client_id'];
+      reg.groupSequence = data['account_group_sequence'];
 
       return reg;
     }catch(e){
@@ -59,7 +62,7 @@ class AccountConnect {
     try {
       List<AccountRegister> registers = [];
 
-      var res = await ApiRequest.getAll(_table);
+      var res = await ApiRequest.getAllByClient(_table);
       var data = json.decode(res.body);
 
       for(var item in data){
@@ -79,7 +82,7 @@ class AccountConnect {
       List<AccountRegister> registers = [];
 
       var res = await ApiRequest.getCustom(
-        " SELECT * FROM $_table WHERE account_group_id = '$idGroup' "
+        " SELECT * FROM ${DBsettingsApi.dbName}$_table WHERE account_group_id = '$idGroup' "
       );
       var data = json.decode(res.body);
 
@@ -100,7 +103,7 @@ class AccountConnect {
       List<AccountRegister> registers = [];
 
       var res = await ApiRequest.getCustom(
-        " SELECT * FROM $_table WHERE type = '$type' "
+        " SELECT * FROM ${DBsettingsApi.dbName}$_table WHERE type = '$type' "
       );
       var data = json.decode(res.body);
 
@@ -111,7 +114,7 @@ class AccountConnect {
 
       return registers;
     }catch(e){
-      debugPrint("ERRO GETDATATYPE --> $e");
+      debugPrint("ERRO ACOCOUNT CONNECT GETDATATYPE --> $e");
       return null;
     }
   }

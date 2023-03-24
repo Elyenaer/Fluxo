@@ -2,9 +2,26 @@ import 'dart:convert';
 
 import 'package:firebase_write/settings/manager_access/api/base_url.dart';
 import 'package:firebase_write/settings/manager_access/api/db_settings_api.dart';
+import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
 import 'package:http/http.dart' as http;
 
 class ApiRequest {
+
+  static getAllByClient(table) async {
+    try{
+      var res = http.post(
+        Uri.parse(BaseUrl.get),
+        body: { 
+          "query": "SELECT * FROM ${DBsettingsApi.dbName}$table WHERE client_id = '${CurrentAccess.client.id}'",
+          "db_user": DBsettingsApi.dbUser,
+          "db_pass": DBsettingsApi.dbPassword
+        }
+      );
+      return res;
+    }catch(e){
+      return e;
+    }
+  }
 
   static getAll(table) async {
     try{
@@ -65,7 +82,7 @@ class ApiRequest {
       }
       keys = keys.substring(0,keys.length-1) + ")";
       values = values.substring(0,values.length-1) + ")";
-
+      
       var res = await http.post(
         Uri.parse(BaseUrl.post),
         body: { 
@@ -125,7 +142,7 @@ class ApiRequest {
         }
       );
 
-      if(jsonDecode(res.body)['success']=='true'){
+      if(jsonDecode(res.body)['success'].toString()=="true"){
         return true;
       }
 

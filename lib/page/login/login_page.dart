@@ -1,9 +1,8 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:firebase_write/help/message.dart';
-import 'package:firebase_write/main_elyfluxo.dart';
-import 'package:firebase_write/models/theme/theme_controller.dart';
 import 'package:firebase_write/page/login/login_controller.dart';
+import 'package:firebase_write/page/login/login_select_client_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/valid.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +24,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     controller = Provider.of(context);
+
+    if(controller.state == LoginState.startAccess){
+      dispose();
+    }
+
     return Scaffold(
       body: controller.state == LoginState.loading
       ? const Center(child: CircularProgressIndicator())
@@ -105,17 +109,14 @@ class _LoginPageState extends State<LoginPage> {
     return InkWell(
       onTap: () async {
         if (controller.checkFields()) {
-          var response = await controller.authentication();          
-          if(response=='one'){
-            /*Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => 
-                  const ReportPage()
-              ),
-            );*/
-            await ThemeController().current();
-            runApp(const Elyfluxo());
+          var response = await controller.authentication();   
+          if(response=='one'){  
+                           
+          }else if((response=='multiple')){
+            final int? result = await LoginSelectClientDialog(context, controller.clients);  
+            if(result!>0){
+              controller.startAccesByClient(result);
+            }            
           }else{
             message.simple(context,"ERRO",response);
           }
@@ -133,5 +134,7 @@ class _LoginPageState extends State<LoginPage> {
       )
     );
   }
+
+
 
 }

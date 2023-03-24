@@ -67,10 +67,7 @@ class convert{
 
    // ignore: non_constant_identifier_names
    static DateTime DatabaseToDatetime(String date){
-    return DateTime.parse(
-      date.substring(0,4) +'-'+ 
-      date.substring(4,6) +'-'+ 
-      date.substring(6,8));
+    return DateTime.parse(date);
   }
 
   // ignore: non_constant_identifier_names

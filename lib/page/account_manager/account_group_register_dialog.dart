@@ -11,9 +11,6 @@ Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) asy
 
   String result = '';
 
-  AccountGroupConnect connect = AccountGroupConnect();
-  AccountGroupRegister register = AccountGroupRegister();
-
   TextEditingController _tecId = TextEditingController(text: "");
   TextEditingController _tecDescription = TextEditingController(text: '');
 
@@ -32,13 +29,12 @@ Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) asy
       Icons.add,
     ),
     onPressed: () async { 
-      result = 'update';
-
-      register.id = int.parse(_tecId.text);
+      AccountGroupRegister register = AccountGroupRegister();
       register.description = _tecDescription.text;
       register.sequence = sequence;
-      await connect.setData(register);
-      
+
+      await AccountGroupConnect().setData(register);
+
       Navigator.of(context).pop('update');
       message.simple(context,"","GRUPO CADASTRADO COM SUCESSO!");
     },

@@ -28,7 +28,6 @@ class ReportPage extends StatefulWidget{
 
   @override
   void dispose(){
-    controller.dispose();
     super.dispose();
   }
 
@@ -49,45 +48,43 @@ class ReportPage extends StatefulWidget{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[    
             Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget> [
-                  Flexible(
-                    child: CustomDropDown(
-                      list: controller.periodList, 
-                      selected: controller.periodValue, 
-                      change: (value){
-                        controller.setPeriod(value);
-                      }
-                    ),
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget> [
+                Flexible(
+                  child: CustomDropDown(
+                    list: controller.periodList, 
+                    selected: controller.periodValue, 
+                    change: (value){
+                      controller.setPeriod(value);
+                    }
                   ),
-                  const SizedBox(width: 30,),
-                  Flexible(
-                    child: CustomDateTextField(
-                      controller: controller.tecDateStart,
-                      label: 'Data Inicial',
-                      function: () {
-                        controller.update();                    
-                      }
-                    ),
+                ),
+                const SizedBox(width: 30,),
+                Flexible(
+                  child: CustomDateTextField(
+                    controller: controller.tecDateStart,
+                    label: 'Data Inicial',
+                    function: () {
+                      controller.update();                    
+                    }
                   ),
-                  const SizedBox(width: 30,),
-                  Flexible(
-                    child: CustomDateTextField(
-                      controller: controller.tecDateEnd,
-                      label: 'Data Final',
-                      function: () {
-                        controller.update();                    
-                      }
-                    ),
-                  ),          
-                ]
+                ),
+                const SizedBox(width: 30,),
+                Flexible(
+                  child: CustomDateTextField(
+                    controller: controller.tecDateEnd,
+                    label: 'Data Final',
+                    function: () {
+                      controller.update();                    
+                    }
+                  ),
+                ),          
+              ]
             ),  
             const SizedBox(height: 20,),
             Expanded(
-              child:/* _isLoading
-              ?  const Center(child: CircularProgressIndicator())
-              :*/Row(
+              child:Row(
                 children: [
                   Expanded(
                     child: ReportPanel(controller: controller),

@@ -1,5 +1,4 @@
 import 'package:firebase_write/models/theme/theme_controller.dart';
-import 'package:firebase_write/page/login/login_controller.dart';
 import 'package:firebase_write/page/report/report_controller.dart';
 import 'package:firebase_write/page/report/report_page.dart';
 import 'package:firebase_write/page/account_manager/account_manager_controller.dart';
@@ -22,9 +21,8 @@ class Elyfluxo extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => AccountManagerController(),),
         ChangeNotifierProvider(create: (ctx) => ListFinancialRegisterController(),),
         ChangeNotifierProvider(create: (ctx) => FinancialEntryController(),),
-        ChangeNotifierProvider(create: (ctx) => LoginController(),),
-      ],
-      
+        ChangeNotifierProvider(create: (ctx) => ThemeController())
+      ],      
       child: MaterialApp(
         theme: ThemeController.theme,
         debugShowCheckedModeBanner: false,

@@ -1,10 +1,13 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_write/settings/manager_access/user/user_connect.dart';
-import 'package:firebase_write/settings/manager_access/user/user_register.dart';
-import 'package:firebase_write/settings/manager_access/user_company/user_company_register.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_write/models/user/user_credential/user_credential_connect.dart';
+import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
+import 'package:flutter/material.dart';
 
 class AuthSettings {
+  static late FirebaseAuth auth;
+
   //Handle Authentication
   /*
   handleAuth() {
@@ -20,46 +23,51 @@ class AuthSettings {
     );
   }*/
 
+  static start() async {
+    try{
+      FirebaseOptions options =  const FirebaseOptions(
+        apiKey: "AIzaSyAimy9hMv3ft2EbiRRGPRsznklHeJ1Ug2A",
+        authDomain: "elyfluxo.firebaseapp.com",
+        projectId: "elyfluxo",
+        storageBucket: "elyfluxo.appspot.com",
+        messagingSenderId: "481729723898",
+        appId: "1:481729723898:web:7bcb151941755ecbcbf843"
+      );
+      FirebaseApp appManagerUser = await Firebase.initializeApp(options: options);  
+      auth = FirebaseAuth.instanceFor(app: appManagerUser);
+    }catch(e){
+      debugPrint('ERRO STARTMANAGERUSER -> $e');
+      return null;
+    }
+  }  
+
   //Sign Out
   signOut() {
-    FirebaseAuth.instance.signOut();
+    auth.signOut();
   }
 
   //Sign in
-  Future<List> signIn(email, password) async {
+  Future<String> signIn(email, password) async {
     String response = '';
-    List<UserCompanyRegister?>? company;
-    UserRegister? user;
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
         email: email,
         password: password
       ).then((userCredential) async {
-          user = await _getUser(userCredential);
-          company = await _checkUserAccess(user!);
+          await CurrentAccess().userStart(
+            UserCredentialConnect().convertRegister(userCredential)!
+          );
         }
       ).catchError(
         (e) {
           response = e;
         }
       );
-      return [response,company,user];
+      return response;
     }catch(e){
       response = e.toString();
-      return [response,company,user];
+      return response;
     }
   }
 
-  Future<UserRegister?> _getUser(UserCredential userCredential) async {
-    return await UserConnect().getByUid(userCredential.user!.uid);
-  }
-
-  Future<List<UserCompanyRegister?>?> _checkUserAccess(UserRegister user) async {
-    try{
-      //return await ManagerAccess().getCompanys(user);
-    }catch(e){
-      return null;
-    }
-  }
-    
 }

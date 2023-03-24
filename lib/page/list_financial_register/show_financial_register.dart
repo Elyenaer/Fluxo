@@ -6,7 +6,7 @@ import 'package:firebase_write/page/financial_register/financial_entry_page.dart
 import 'package:firebase_write/page/list_financial_register/list_financial_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/convert.dart';
-import 'package:firebase_write/settings/formats.dart';
+import 'package:firebase_write/help/formats.dart';
 
 // ignore: must_be_immutable
 class ShowFinancialRegister extends StatelessWidget{

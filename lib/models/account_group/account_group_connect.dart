@@ -3,15 +3,16 @@ import 'dart:convert';
 
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/settings/manager_access/api/api_request.dart';
+import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
 import 'package:flutter/material.dart';
 
 class AccountGroupConnect {
 
   final String _table = "account_group";
 
-  Map<String, String> _convertData(AccountGroupRegister reg){
+  Map<String, String> _convertData(AccountGroupRegister reg){   
     return <String, String>{
-      'company_id' : reg.idCompany!.toString(),
+      'client_id' : CurrentAccess.client.id.toString(),
       'description': reg.description!,    
       'sequence': reg.sequence!.toString(),
     };
@@ -22,8 +23,8 @@ class AccountGroupConnect {
       AccountGroupRegister reg = AccountGroupRegister();
 
       reg.id = data['account_group_id'];
-      reg.idCompany = data['company_id'];
-      reg.description = data['description'].toString();
+      reg.idClient = data['client_id'];
+      reg.description = data['description'];
       reg.sequence = data['sequence'];
 
       return reg;
@@ -41,7 +42,7 @@ class AccountGroupConnect {
     try {
       List<AccountGroupRegister> registers = [];
 
-      var res = await ApiRequest.getAll(_table);
+      var res = await ApiRequest.getAllByClient(_table);
       var data = json.decode(res.body);
 
       for(var item in data){

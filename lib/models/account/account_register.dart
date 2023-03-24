@@ -1,7 +1,7 @@
 
 class AccountRegister {
   int? id;
-  int? idCompany;
+  int? idClient;
   int? idGroup;
   bool? credit;
   String? description;  

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 // ignore: camel_case_types
 class ThemeController with ChangeNotifier{
 
-  static ThemeData theme = ThemeData.dark();
+  static ThemeData theme = ThemeData.light();
   late ThemeRegister register;
 
   static Color backgroundEntryDebt1 = const Color.fromARGB(255, 255, 242, 242);
@@ -34,24 +34,10 @@ class ThemeController with ChangeNotifier{
 
   static IconData debtIcon = Icons.attach_money;
   static IconData creditIcon = Icons.money_off;
-
-      
- _getTheme(int idTheme) async {
+  
+  get(int idTheme) async {
     try{
       register = (await ThemeConnect().getDataById(idTheme))!;
-    }catch(e){
-      debugPrint("ERRO _GETTHEME -> $e");
-    }
-  }
-
-  getTheme() async {
-    await current();
-    return theme;
-  }
-
-  current() async {
-    try{
-      await _getTheme(1);
       theme = ThemeData(
 
         appBarTheme: AppBarTheme(
@@ -129,13 +115,12 @@ class ThemeController with ChangeNotifier{
         ),
 
         textTheme: TextTheme(
-          subtitle1: TextStyle(
+          displayMedium: TextStyle(
             color: register.widgetTextColor,
           )
         ),
 
         scaffoldBackgroundColor: register.backgroundMain,
-        backgroundColor: register.widgetSecondaryColor,
         primaryColor: register.widgetPrimaryColor,
       );
       notifyListeners();

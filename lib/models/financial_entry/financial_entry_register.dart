@@ -1,7 +1,7 @@
 
 class FinancialEntryRegister {
   int? id;
-  int? idCompany;
+  int? idClient;
   int? idAccount;
   String? description;
   double? value;

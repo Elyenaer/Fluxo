@@ -11,10 +11,10 @@ Future<String> AccountRegisterDialog(
   BuildContext context,
   AccountRegister? account,
   int? idGroup,
-  int? sequence) async { 
+  int? sequence
+) async { 
 
   String result = '';
-  AccountConnect connect = AccountConnect();
   AccountRegister register;
   String id;
   String description;

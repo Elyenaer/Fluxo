@@ -3,9 +3,9 @@ import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
-import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
+import 'package:firebase_write/models/user/user_preferences/user_preferences_connect.dart';
 //import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
-import 'package:firebase_write/models/user_preferences/user_preferences_register.dart';
+import 'package:firebase_write/models/user/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
@@ -40,21 +40,12 @@ class ReportController with ChangeNotifier {
   late double scalePanel = 1.0;
 
   ReportController() {
-    _getUserPreferences();
-    update();
+    initState();    
   }
 
-  _getUserPreferences() async {
-    userPreferences = await UserPreferencesConnect().getById(1);
-    tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences!.start_date_report!);
-    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences!.end_date_report!);   
-    scalePanel = userPreferences!.scale!;
-    periodValue = userPreferences!.period_report!;  }
-
-  @override
-  dispose(){    
-    //_savePreferences();
-    super.dispose();
+  Future<void> initState() async {     
+    await _getUserPreferences();    
+    await update();
   }
 
 /*
@@ -65,9 +56,10 @@ class ReportController with ChangeNotifier {
     userPreferences.period_report = periodValue;
 
     await UserPreferencesConnect().update(userPreferences);
-  }*/
+  }
+*/
 
-  update() async {  
+  update() async {       
     _setState(ReportState.loadingPanelData);
     await _getColumnTitle();  
     await _getGroup();  
@@ -75,6 +67,14 @@ class ReportController with ChangeNotifier {
     await _getRegister();
     await _getBalances();
     _setState(ReportState.loaded);
+  }
+
+  _getUserPreferences() async {
+    userPreferences = await UserPreferencesConnect().getById(1);
+    tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences!.start_date_report!);
+    tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences!.end_date_report!);   
+    scalePanel = userPreferences!.scale!;
+    periodValue = userPreferences!.period_report!;  
   }
 
   _setState(var s){

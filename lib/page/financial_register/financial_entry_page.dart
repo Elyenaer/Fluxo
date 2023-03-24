@@ -20,18 +20,23 @@ class FinancialEntryPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<FinancialEntryPage> {
-  late FinancialEntryController controller;  
+  late FinancialEntryController _controller; 
+
+  @override
+  void initState(){        
+    super.initState();  
+  }
 
   @override
   void dispose() {
-    controller.dispose();
+    //_controller.dispose(); Error #1
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    controller = Provider.of(context);
-    controller.setData(widget.register);
+  Widget build(BuildContext context) {    
+    _controller = Provider.of(context);
+    _controller.setData(widget.register);
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +51,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
         centerTitle: true,
         title: const Text("LANÇAMENTO FINANCEIRO"),
       ),
-      body: controller.state == FinancialEntryState.loading
+      body: _controller.state == FinancialEntryState.loading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(30.0),
@@ -60,7 +65,7 @@ class _MyHomePageState extends State<FinancialEntryPage> {
                         children: <Widget>[
                           Flexible(
                             child: CustomTextField(
-                              controller: controller.tdcId,
+                              controller: _controller.tdcId,
                               icon: Icons.article_rounded,
                               enabled: false,
                               label: "Id",
@@ -70,32 +75,32 @@ class _MyHomePageState extends State<FinancialEntryPage> {
                             width: 50,
                           ),
                           CustomCreditDebt(
-                            isCredit: controller.isCredit, 
+                            isCredit: _controller.isCredit, 
                             onToggle: (value) {
-                              controller.changeType(value);                     
+                              _controller.changeType(value);                     
                             },
                           ),
                         ]),                       
                     CustomDropDown(
-                      list: controller.typeList,
-                      selected: controller.typeValue,
+                      list: _controller.typeList,
+                      selected: _controller.typeValue,
                       icon: Icons.account_balance,
                       add: () {
                       },                    
                       change: (value) {
-                        controller.typeValue=value;             
+                        _controller.typeValue=value;             
                       },
                     ),
                     CustomTextField(
-                      controller: controller.tdcDescription,
+                      controller: _controller.tdcDescription,
                       label: 'Descrição',
                     ),
                     CustomDateTextField(
-                      controller: controller.tdcDate,
+                      controller: _controller.tdcDate,
                     ),
                     CustomCurrencytextField(
-                      controller: controller.tdcValue, 
-                      errorText: controller.errorValue,
+                      controller: _controller.tdcValue, 
+                      errorText: _controller.errorValue,
                     ),
                     _buttonRow(),
                   ]),
@@ -106,41 +111,41 @@ class _MyHomePageState extends State<FinancialEntryPage> {
   Widget _buttonRow() {
     List<Widget> buttons = <Widget>[];
     
-    if (controller.btUpdate) {
+    if (_controller.btUpdate) {
       buttons.add(
         CustomFloatingButton(
           onPressed: () {
-            controller.update(context);
+            _controller.update(context);
           },
           icon: Icons.update,
         )      
       );
     }
-    if (controller.btDelete) {
+    if (_controller.btDelete) {
       buttons.add(
         CustomFloatingButton(
           onPressed: () {
-            controller.delete(context);
+            _controller.delete(context);
           },
           icon: Icons.delete
         )
       );
     }
-    if (controller.btInclude) {
+    if (_controller.btInclude) {
       buttons.add(
         CustomFloatingButton(
           onPressed: () {
-            controller.save(context);
+            _controller.save(context);
           },
           icon: Icons.add,
         )
       );
     }
-    if (controller.btClear) {
+    if (_controller.btClear) {
       buttons.add(
         CustomFloatingButton(
           onPressed: () {
-            controller.clean();
+            _controller.clean();
           },
           icon: Icons.cleaning_services
         )
