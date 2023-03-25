@@ -34,8 +34,14 @@ class AccountGroupConnect {
     }
 }
 
-  Future<void> setData(AccountGroupRegister register) async {
-    await ApiRequest.setData(_table,_convertData(register));
+  Future<int> setData(AccountGroupRegister register) async {
+    try{
+      var response = await ApiRequest.setData(_table,_convertData(register));
+      return response[1];
+    }catch(e){
+      debugPrint("ACCOUNTGROUPCONNECT SETDATA -> $e");
+      return 0;
+    }    
   }
 
   Future<List<AccountGroupRegister>?> getData() async {

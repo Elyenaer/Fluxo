@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_write/settings/manager_access/api/base_url.dart';
 import 'package:firebase_write/settings/manager_access/api/db_settings_api.dart';
 import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ApiRequest {
@@ -92,13 +93,14 @@ class ApiRequest {
         }
       );
 
-      if(jsonDecode(res.body)['success']=='true'){
-        return true;
+      if(jsonDecode(res.body)['success']==true){
+        return [true,jsonDecode(res.body)['id']];
       }
 
-      return false;
+      return [false,'0'];
     }catch(e){
-      return e;
+      debugPrint("APIREQUEST SETDATA -> $e");
+      return [false,e];
     }
   }
 

@@ -20,7 +20,6 @@ class AccountConnect {
     }
 
   return <String, String>{
-      'account_id': reg.id!.toString(),
       'client_id': CurrentAccess.client.id.toString(),
       'type': c,
       'description': reg.description!,  
@@ -54,8 +53,15 @@ class AccountConnect {
     }
 }
 
-  Future<void> setData(AccountRegister register) async {
-    await ApiRequest.setData(_table,_convertData(register));
+  Future<int> setData(AccountRegister register) async {
+    try{
+      var response = await ApiRequest.setData(_table,_convertData(register));
+      return response[1];
+    }catch(e){
+      debugPrint("ACCOUNTCONNECT SETDATA -> $e");
+      return 0;
+    }
+    
   }
 
   Future<List<AccountRegister>?> getData() async {

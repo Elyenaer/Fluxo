@@ -3,12 +3,11 @@ import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/models/financial_entry/financial_entry_register.dart';
-import 'package:firebase_write/models/user/user_preferences/user_preferences_connect.dart';
-//import 'package:firebase_write/models/user_preferences/user_preferences_connect.dart';
 import 'package:firebase_write/models/user/user_preferences/user_preferences_register.dart';
 import 'package:firebase_write/page/report/balance_register.dart';
 import 'package:firebase_write/page/report/group_register.dart';
 import 'package:firebase_write/page/report/row_register.dart';
+import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/convert.dart';
 import 'package:firebase_write/help/funcDate.dart';
@@ -61,8 +60,8 @@ class ReportController with ChangeNotifier {
 
   update() async {       
     _setState(ReportState.loadingPanelData);
-    await _getColumnTitle();  
-    await _getGroup();  
+    await _getColumnTitle(); 
+    await _getGroup();
     await _getAccount();
     await _getRegister();
     await _getBalances();
@@ -70,7 +69,7 @@ class ReportController with ChangeNotifier {
   }
 
   _getUserPreferences() async {
-    userPreferences = await UserPreferencesConnect().getById(1);
+    userPreferences = CurrentAccess.userPreferences;
     tecDateStart.text = DateFormat('dd/MM/yyyy').format(userPreferences!.start_date_report!);
     tecDateEnd.text = DateFormat('dd/MM/yyyy').format(userPreferences!.end_date_report!);   
     scalePanel = userPreferences!.scale!;
@@ -209,21 +208,27 @@ class ReportController with ChangeNotifier {
 
   //get periodBalance and accumulatedBalance
   _getBalances() async {
-    periodBalance = BalanceRegister("Saldo",columnTitle.length);    
-    for(int i=0;i<groups.length;i++){
-      await groups[i].updateBalance();
-      for(int j=0;j<groups[i].balance.length;j++){
-        periodBalance.add(j,groups[i].balance[j].sum);
-      }
-    }
+    try{
 
-    accumulatedBalance = BalanceRegister("Acumulado",columnTitle.length);
-    double lastValue = 0;
-    for(int i=0;i<periodBalance.sum.length;i++){
-      accumulatedBalance.add(i,periodBalance.sum[i]+lastValue);
-      lastValue = accumulatedBalance.sum[i];
-    }
+      periodBalance = BalanceRegister("Saldo",columnTitle.length);   
+      for(int i=0;i<groups.length;i++){
+        await groups[i].updateBalance();
+        for(int j=0;j<groups[i].balance.length;j++){
+          periodBalance.add(j,groups[i].balance[j].sum);
+        }
+      }
+      
+      accumulatedBalance = BalanceRegister("Acumulado",columnTitle.length);
+      double lastValue = 0;
+      for(int i=0;i<periodBalance.sum.length;i++){
+        accumulatedBalance.add(i,periodBalance.sum[i]+lastValue);
+        lastValue = accumulatedBalance.sum[i];
+      }
+    }catch(e){
+      debugPrint("REPORTCONTROLLER ERROR _GETBALANCES -> $e");
+    }      
   }
+    
 
   getFirstColumnWidht(){
     return (columnWidth+20)*scalePanel;

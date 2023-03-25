@@ -27,17 +27,27 @@ class UserPreferencesConnect {
       debugPrint("ERRO USERPREFERENCESCONNECT _CONVERTREGISTER $e");
       return null;
     }
-}
+  }
 
   Map<String, String> _convertData(UserPreferencesRegister register){
     return <String, String>{
-      'id_user': register.id_user_preferences!.toString(),
       'start_date_report': convert.DatetimeToDatabase(register.start_date_report!),
       'end_date_report': convert.DatetimeToDatabase(register.end_date_report!),
       'scale': register.scale.toString(),
-      'id_theme': register.id_theme.toString(),
+      'theme_id': register.id_theme.toString(),
       'period_report': register.period_report!
     };
+  }
+
+  Future<int> setData(UserPreferencesRegister register) async {
+    try{
+      var response = await ApiRequest.setData(_table,_convertData(register));
+      return response[1];
+    }catch(e){
+      debugPrint("USERPREFERENCESCONNECT SETDATA -> $e");
+      return 0;
+    }
+    
   }
 
   Future<UserPreferencesRegister?> getById(int idUser) async {

@@ -34,8 +34,14 @@ class UserConnect {
     }
 }
 
-  Future<void> setData(UserRegister register) async {
-    await ApiRequest.setData(_table,_convertData(register));
+  Future<int> setData(UserRegister register) async {
+    try{
+      var response = await ApiRequest.setData(_table,_convertData(register));
+      return response[1];
+    }catch(e){
+      debugPrint("USERCONNECT SETDATA -> $e");
+      return 0;      
+    }    
   }
 
   Future<List<UserRegister>?> getData() async {
@@ -57,12 +63,40 @@ class UserConnect {
     }
   }
 
+  Future<UserRegister?> getDataById(int id) async {
+    try {
+      UserRegister register;
+
+      var res = await ApiRequest.getById(_table,id);
+      var data = json.decode(res.body);
+
+      for(var item in data){
+        register = _convertRegister(item)!;
+        return register;
+      }
+
+      return null;
+    }catch(e){
+      debugPrint("USERREGISTER ERRO GETDATA -> $e");
+      return null;
+    }
+  }
+
   Future<UserRegister?> getUserByCredential(UserCredentialRegister userCredential) async {
+    try {
+      return await getUserByEmail(userCredential.email!);
+    }catch(e){
+      debugPrint("USERREGISTER ERRO GETUSERBYCREDENTIAL -> $e");
+      return null;
+    }
+  }
+
+  Future<UserRegister?> getUserByEmail(String email) async {
     try {
       UserRegister? register;
 
       var res = await ApiRequest.getCustom(
-        " SELECT * FROM ${DBsettingsApi.dbName}$_table WHERE email = '${userCredential.email}' "
+        " SELECT * FROM ${DBsettingsApi.dbName}$_table WHERE email = '$email' "
       );
       var data = json.decode(res.body);
 
@@ -72,7 +106,7 @@ class UserConnect {
 
       return register;
     }catch(e){
-      debugPrint("USERREGISTER ERRO GETUSERBYCREDENTIAL -> $e");
+      debugPrint("USERREGISTER ERRO GETUSERBYEMAIL -> $e");
       return null;
     }
   }

@@ -4,4 +4,5 @@ class UserAccessRegister {
   int? userId;
   int? userPreferencesId;
   int? clientId;
+  
 }

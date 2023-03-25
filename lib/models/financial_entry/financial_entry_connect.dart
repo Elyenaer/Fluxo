@@ -13,7 +13,6 @@ class FinancialEntryConnect {
 
   Map<String, String> _convertData(FinancialEntryRegister register){
     return <String, String>{
-      'id': register.id!.toString(),
       'client_id': CurrentAccess.client.id.toString(),
       'description': register.description!,
       'account_id': register.idAccount.toString(),
