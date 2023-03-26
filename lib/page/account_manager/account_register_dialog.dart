@@ -1,5 +1,5 @@
 
-import 'package:firebase_write/models/account/account_connect.dart';
+import 'package:firebase_write/page/account_manager/account_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_write/help/message.dart';
 import '../../custom/widgets/customCreditDebt.dart';
@@ -14,25 +14,10 @@ Future<String> AccountRegisterDialog(
   int? sequence
 ) async { 
 
-  String result = '';
-  AccountRegister register;
-  String id;
-  String description;
-  if(account!=null){
-    register = account;
-    id = account.id.toString();
-    description = account.description.toString();    
-  }else{
-    register = AccountRegister();
-    id = "";
-    description = '';
-  }  
+  AccountRegisterController _controller = AccountRegisterController(account,idGroup,sequence);
 
-  TextEditingController _tecId = TextEditingController(text: id);
-  TextEditingController _tecDescription = TextEditingController(text: description);
-  bool _isCredit = true;
-  
   List<Widget> buttons = <Widget>[];
+  
   buttons.add(FloatingActionButton(
     child: const Icon(
       Icons.arrow_back,
@@ -42,16 +27,19 @@ Future<String> AccountRegisterDialog(
     },
     ),
   );
+
+  // ignore: unnecessary_null_comparison
   if(account!=null){
+
     buttons.add(FloatingActionButton(
       child: const Icon(
         Icons.delete,
       ),
       onPressed: () async { 
-        if(await AccountConnect().delete(register)){
+        if(await _controller.delete()){
           if(await message.confirm(context,'CONFIRME EXCLUSÃO',
           'VOCÊ TEM CERTEZA QUE DESEJA EXCLUIR ESSA CONTA?')){
-            result = 'update';
+            _controller.result = 'update';
             Navigator.of(context).pop('update');
             message.simple(context,'','CONTA EXCLUÍDA COM SUCESSO!');
           }else{
@@ -65,39 +53,30 @@ Future<String> AccountRegisterDialog(
       },
       )
     );
+
     buttons.add(FloatingActionButton(
       child: const Icon(
         Icons.update,
       ),
       onPressed: () async { 
-        result = 'update';
-
-        register.description = _tecDescription.text;
-        register.credit = _isCredit;
-        await AccountConnect().update(register);
-        
-        Navigator.of(context).pop('update');
-        message.simple(context,"","CONTA ATUALIZADA COM SUCESSO!");
+        if(await _controller.update()){
+          Navigator.of(context).pop('update');
+          message.simple(context,"","CONTA ATUALIZADA COM SUCESSO!");
+        }
       },
       )
     );
+
   }else{
     buttons.add(FloatingActionButton(
       child: const Icon(
         Icons.add,
       ),
       onPressed: () async { 
-        result = 'update';
-
-        register.id = int.parse(_tecId.text);
-        register.description = _tecDescription.text;
-        register.idGroup = idGroup;
-        register.credit = _isCredit;
-        register.groupSequence = sequence;
-        await AccountConnect().setData(register);
-        
-        Navigator.of(context).pop('update');
-        message.simple(context,"","CONTA CADASTRADA COM SUCESSO!");
+        if(await _controller.save()){
+          Navigator.of(context).pop('update');
+          message.simple(context,"","CONTA CADASTRADA COM SUCESSO!");
+        }
       },
       )
     );
@@ -108,27 +87,21 @@ Future<String> AccountRegisterDialog(
       children: [
         Row(
           children: [
-            Expanded(
-              child: CustomTextField(
-                icon: Icons.article_rounded,
-                label: 'ID',
-                enabled: false,
-                controller: _tecId
-              ),
-            ),
             const SizedBox(width: 20),
-            CustomCreditDebt(
-              isCredit: _isCredit, 
-              onToggle: (value) {
-                _isCredit = value;              
-              }
-            )          
+            Expanded(
+              child: CustomCreditDebt(
+                isCredit: _controller.isCredit, 
+                onToggle: (value) {
+                  _controller.isCredit = value;              
+                }
+              )  
+            ),                    
           ],
         ),
         const SizedBox(height: 20),
         CustomTextField(
           label: 'Descrição',
-          controller: _tecDescription
+          controller: _controller.tecDescription
         )
       ],
     )
@@ -138,7 +111,15 @@ Future<String> AccountRegisterDialog(
     title: const Center(
       child: Text('CADASTRO DE CONTAS'),
     ),
-    content: build,
+    content: SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 150.0,
+          minWidth: 150.0, 
+        ),
+        child: build,
+      ),
+    ),
     actionsAlignment: MainAxisAlignment.center,
     actions: buttons,
   );
@@ -150,5 +131,5 @@ Future<String> AccountRegisterDialog(
     },
   );
 
-  return result;
+  return _controller.result;
 }

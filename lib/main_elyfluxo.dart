@@ -11,10 +11,10 @@ import 'package:provider/provider.dart';
 class Elyfluxo extends StatelessWidget {
   const Elyfluxo({
     Key? key,
-  }) : super(key: key);
+  }) : super(key: key);   
 
   @override
-  Widget build(BuildContext context) {        
+  Widget build(BuildContext context) {           
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => ReportController(),),

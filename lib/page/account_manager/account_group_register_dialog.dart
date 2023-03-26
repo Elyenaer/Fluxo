@@ -1,59 +1,48 @@
 
 import 'package:firebase_write/custom/widgets/customTextField.dart';
+import 'package:firebase_write/page/account_manager/account_group_register_controller.dart';
 import 'package:flutter/material.dart';
-
-import '../../models/account_group/account_group_connect.dart';
-import '../../models/account_group/account_group_register.dart';
 import 'package:firebase_write/help/message.dart';
 
 // ignore: non_constant_identifier_names
-Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) async { 
+Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) async {   
 
-  String result = '';
-
-  TextEditingController _tecId = TextEditingController(text: "");
-  TextEditingController _tecDescription = TextEditingController(text: '');
+  AccountGroupRegisterController _controller = AccountGroupRegisterController(sequence);
 
   List<Widget> buttons = <Widget>[];
-  buttons.add(FloatingActionButton(
-    child: const Icon(
-      Icons.arrow_back,
-    ),
-    onPressed: () { 
-      Navigator.of(context).pop();
-    },
+  buttons.add(
+    FloatingActionButton(    
+      child: const Icon(
+        Icons.arrow_back,
+      ),
+      onPressed: () { 
+        Navigator.of(context).pop();
+      },
     ),
   );
-  buttons.add(FloatingActionButton(
-    child: const Icon(
-      Icons.add,
-    ),
-    onPressed: () async { 
-      AccountGroupRegister register = AccountGroupRegister();
-      register.description = _tecDescription.text;
-      register.sequence = sequence;
-
-      await AccountGroupConnect().setData(register);
-
-      Navigator.of(context).pop('update');
-      message.simple(context,"","GRUPO CADASTRADO COM SUCESSO!");
-    },
+  buttons.add(
+    FloatingActionButton(
+      child: const Icon(
+        Icons.add,
+      ),
+      onPressed: () async { 
+        if(await _controller.save()){
+          Navigator.of(context).pop('update');
+          message.simple(context,"","GRUPO CADASTRADO COM SUCESSO!");
+        }else{
+          message.simple(context,"ERRO","ALGO DEU ERRADO");
+        }
+      },
     )
   );
   
   Widget build = Center(
     child: Column(
       children: [
-        CustomTextField(
-          icon: Icons.article_rounded,
-          label: 'ID',
-          enabled: false,
-          controller: _tecId
-        ),
         const SizedBox(height: 20,),
         CustomTextField(
           label: 'Descrição',
-          controller: _tecDescription
+          controller: _controller.tecDescription
         )
       ],
     )
@@ -63,7 +52,15 @@ Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) asy
     title: const Center(
       child: Text('CADASTRO DE GRUPOS'),
     ),
-    content: build,
+    content: SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxHeight: 100.0,
+          minWidth: 100.0, 
+        ),
+        child: build,
+      ),
+    ),
     actionsAlignment: MainAxisAlignment.center,
     actions: buttons,
   );
@@ -75,5 +72,5 @@ Future<String> AccountGroupRegisterDialog(BuildContext context,int sequence) asy
     },
   );
 
-  return result;
+  return _controller.result;
 }

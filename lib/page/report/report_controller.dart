@@ -1,4 +1,5 @@
 
+import 'package:firebase_write/help/message.dart';
 import 'package:firebase_write/models/account/account_register.dart';
 import 'package:firebase_write/models/account_group/account_group_controller.dart';
 import 'package:firebase_write/models/account_group/account_group_register.dart';
@@ -134,6 +135,9 @@ class ReportController with ChangeNotifier {
     groups.clear();
     List<AccountGroupRegister> g = await AccountGroupController().getGroups();
     for(int i=0;i<g.length;i++){
+      if(g[i].accounts==null || g[i].accounts!.isEmpty){
+        continue;
+      }
       groups.add(GroupRegister(g[i]));
     }
   }
@@ -209,7 +213,6 @@ class ReportController with ChangeNotifier {
   //get periodBalance and accumulatedBalance
   _getBalances() async {
     try{
-
       periodBalance = BalanceRegister("Saldo",columnTitle.length);   
       for(int i=0;i<groups.length;i++){
         await groups[i].updateBalance();
@@ -217,7 +220,7 @@ class ReportController with ChangeNotifier {
           periodBalance.add(j,groups[i].balance[j].sum);
         }
       }
-      
+
       accumulatedBalance = BalanceRegister("Acumulado",columnTitle.length);
       double lastValue = 0;
       for(int i=0;i<periodBalance.sum.length;i++){
@@ -225,10 +228,9 @@ class ReportController with ChangeNotifier {
         lastValue = accumulatedBalance.sum[i];
       }
     }catch(e){
-      debugPrint("REPORTCONTROLLER ERROR _GETBALANCES -> $e");
+      message.error(runtimeType,StackTrace.current,"_getBalances",e);
     }      
-  }
-    
+  }    
 
   getFirstColumnWidht(){
     return (columnWidth+20)*scalePanel;

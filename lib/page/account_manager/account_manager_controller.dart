@@ -28,9 +28,9 @@ class AccountManagerController with ChangeNotifier{
     _setState(AccountManagerState.loaded);
   }
 
-  updateGroup(AccountGroupRegister group){
+  updateGroup(AccountGroupRegister group) async {
     _setState(AccountManagerState.loading);
-     AccountGroupConnect().update(group);
+    await AccountGroupConnect().update(group);
     _setState(AccountManagerState.loaded);
   }
   

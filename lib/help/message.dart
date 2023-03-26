@@ -29,6 +29,14 @@ static void simple(BuildContext context,String title,String text) {
   );
 }
 
+static void error(runtimeType,stackTraceCurrent,method,e) { 
+  debugPrint("\n---------------------------------------\nClass: ${runtimeType.toString()}\n" 
+    "Method: $method \n"
+    "local: ${StackTrace.current.toString().split(' ')[5]}\n"
+    "Error: $e \n---------------------------------------\n"
+  );
+}
+
 static Future<bool> confirm(BuildContext context,String title,String text) async { 
   bool confirm = false;
 

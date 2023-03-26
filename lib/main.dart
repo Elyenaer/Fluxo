@@ -10,7 +10,7 @@ late final FirebaseAuth auth;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
-  await AuthSettings.start();
+  await AuthSettings.start(); 
   runApp(const MyApp());
 }
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {        
+  Widget build(BuildContext context) {         
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (ctx) => LoginController())
