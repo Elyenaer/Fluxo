@@ -3,7 +3,12 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "404.html": "0a27a4163254fc8fce870c8cc3a3f94f",
+  ".vs/ProjectSettings.json": "e88a33ccaa92ae56561422612f557911",
+".vs/slnx.sqlite": "faebba71f97f0be49ab5933a7c566a65",
+".vs/VSWorkspaceState.json": "c5d8964c7f5288c0be2b2463a8eccc7a",
+".vs/web/FileContentIndex/0b674330-0b6a-4f0b-bf87-336faeb095ab.vsidx": "ef6ca6dd9afa665a77ccf3ceaa9e9628",
+".vs/web/FileContentIndex/read.lock": "d41d8cd98f00b204e9800998ecf8427e",
+"404.html": "0a27a4163254fc8fce870c8cc3a3f94f",
 "assets/AssetManifest.json": "801125fca546f506babac9af4ec061ba",
 "assets/FontManifest.json": "5a32d4310a6f5d9a6b651e75ba0d7372",
 "assets/fonts/MaterialIcons-Regular.otf": "e7069dfd19b331be16bed984668fe080",
@@ -12,7 +17,6 @@ const RESOURCES = {
 "assets/packages/font_awesome_flutter/lib/fonts/fa-brands-400.ttf": "99f29024aee8f4672a47cc3a81b9b84a",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-regular-400.ttf": "48ce1bb8a42776caa951cb782d277730",
 "assets/packages/font_awesome_flutter/lib/fonts/fa-solid-900.ttf": "d8e9b6203ce2657c991f0b339ccb3a6d",
-"assets/shaders/ink_sparkle.frag": "ae6c1fd6f6ee6ee952cde379095a8f3f",
 "canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
 "canvaskit/canvaskit.wasm": "3de12d898ec208a5f31362cc00f09b9e",
 "canvaskit/profiling/canvaskit.js": "c21852696bc1cc82e8894d851c01921a",
@@ -23,9 +27,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "afe460e9108dde80e51238e4de2b41b6",
-"/": "afe460e9108dde80e51238e4de2b41b6",
-"main.dart.js": "3bd29313e0dd4e559516ed6e032ce103",
+"index.html": "20ebaa7eb0a4fdaaec3a4ba0468c3797",
+"/": "20ebaa7eb0a4fdaaec3a4ba0468c3797",
+"main.dart.js": "a3ded968a5a19397d390685d85bee22b",
 "manifest.json": "43e3eb4f48464d2bbb8a95542fe1bffc",
 "version.json": "62f1f607de1f16b773faee94f12213ed"
 };

@@ -227,29 +227,29 @@ class _MainPage extends State<AccountManagerPage> {
         controller.allLists[oldListIndex].remove(oldItemIndex);        
       }
 
-      controller.update();   
+      await controller.update();   
   }
 
-  void onReorderList(int oldListIndex,int newListIndex) {    
-      final movedList = lists.removeAt(oldListIndex);
-      lists.insert(newListIndex, movedList);
+  Future<void> onReorderList(int oldListIndex,int newListIndex) async {    
+    final movedList = lists.removeAt(oldListIndex);
+    lists.insert(newListIndex, movedList);
 
-      controller.allLists[oldListIndex].group.sequence = newListIndex;
-      AccountGroupConnect().update(controller.allLists[oldListIndex].group);
+    controller.allLists[oldListIndex].group.sequence = newListIndex;
+    await AccountGroupConnect().update(controller.allLists[oldListIndex].group);
 
-      if(oldListIndex<=newListIndex){
-        for(int i=newListIndex;i>oldListIndex;i--){
-          controller.allLists[i].group.sequence = i-1;   
-          AccountGroupConnect().update(controller.allLists[i].group);       
-        }        
-      }else{
-        for(int i=newListIndex;i<oldListIndex;i++){
-          controller.allLists[i].group.sequence = i+1;
-          AccountGroupConnect().update(controller.allLists[i].group);
-        }
+    if(oldListIndex<=newListIndex){
+      for(int i=newListIndex;i>oldListIndex;i--){
+        controller.allLists[i].group.sequence = i-1;   
+        await AccountGroupConnect().update(controller.allLists[i].group);       
+      }        
+    }else{
+      for(int i=newListIndex;i<oldListIndex;i++){
+        controller.allLists[i].group.sequence = i+1;
+        await AccountGroupConnect().update(controller.allLists[i].group);
       }
+    }
 
-    controller.update();
+    await controller.update();
   }
 
 }

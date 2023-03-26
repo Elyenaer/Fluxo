@@ -8,12 +8,27 @@ import 'package:http/http.dart' as http;
 
 class ApiRequest {
 
-  static getAllByClient(table) async {
+  static getAllByClient(table, {String? orderVariable, bool? ascending}) async {
     try{
+
+      String query = "SELECT * FROM ${DBsettingsApi.dbName}$table WHERE client_id = '${CurrentAccess.client.id}'";
+
+      //check if it need is ordered
+      if(orderVariable!=null){
+        query = query + " ORDER BY '$orderVariable' ";
+        if(ascending!=null){
+          if(ascending){
+            query = query + " ASC";            
+          }else{
+            query = query + " DESC";            
+          }
+        }
+      }
+
       var res = http.post(
         Uri.parse(BaseUrl.get),
         body: { 
-          "query": "SELECT * FROM ${DBsettingsApi.dbName}$table WHERE client_id = '${CurrentAccess.client.id}'",
+          "query": query,
           "db_user": DBsettingsApi.dbUser,
           "db_pass": DBsettingsApi.dbPassword
         }

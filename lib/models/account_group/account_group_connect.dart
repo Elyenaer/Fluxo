@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:firebase_write/models/account_group/account_group_register.dart';
 import 'package:firebase_write/settings/manager_access/api/api_request.dart';
+import 'package:firebase_write/settings/manager_access/api/db_settings_api.dart';
 import 'package:firebase_write/settings/manager_access/current_access/current_access.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,19 @@ class AccountGroupConnect {
     try {
       List<AccountGroupRegister> registers = [];
 
-      var res = await ApiRequest.getAllByClient(_table);
+/*
+      var res = await ApiRequest.getAllByClient(
+        _table,
+        orderVariable: "sequence",
+        ascending: true
+      );*/
+
+      var res = await ApiRequest.getCustom(
+        "SELECT * FROM ${DBsettingsApi.dbName}$_table "
+        "WHERE client_id = '${CurrentAccess.client.id}' "
+        "ORDER BY CAST(sequence AS UNSIGNED), sequence"
+      );
+
       var data = json.decode(res.body);
 
       for(var item in data){
